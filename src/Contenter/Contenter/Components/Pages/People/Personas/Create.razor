@@ -1,0 +1,13 @@
+﻿@page "/p/personas/c"
+@rendermode InteractiveServer
+@code
+{
+}
+<h3>Create Persona</h3>
+@inject NavigationManager navigationManager
+<_Create
+  OnAfterSave=@(async (Contenter.Models.Persons.Persona model) => {
+    this.navigationManager.NavigateTo($"/p/personas/{model.Id}");
+  })>
+  Create
+</_Create>

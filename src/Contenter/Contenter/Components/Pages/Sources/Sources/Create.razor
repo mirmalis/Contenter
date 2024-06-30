@@ -1,0 +1,13 @@
+﻿@page "/s/sources/c"
+@rendermode InteractiveServer
+@code
+{
+}
+<h3>Create Source</h3>
+@inject NavigationManager navigationManager
+<_Create
+  OnAfterSave=@(async (Contenter.Models.Sources.Source model) => {
+    this.navigationManager.NavigateTo($"/s/sources/{model.Id}");
+  })>
+  Create
+</_Create>

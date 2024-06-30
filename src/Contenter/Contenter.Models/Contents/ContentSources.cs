@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace Contenter.Models.Contents;
-public class ContentSources
+public class ContentSources: ILister
 {
 	[Required]
 	public Content Content { get; set; } = default!;

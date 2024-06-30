@@ -1,0 +1,19 @@
+﻿@inherits _Editor<Contenter.Models.Contents.ContentFam, Guid>
+@page "/c/fam/{id:guid}/e"
+@rendermode InteractiveServer
+
+@code {
+  protected override IQueryable<Contenter.Models.Contents.ContentFam> Includer(IQueryable<Contenter.Models.Contents.ContentFam> dbset)
+  {
+    return base.Includer(dbset)
+    ;
+  }
+}
+
+<h3>Edit</h3>
+@if (this.model != null)
+{
+  <_Bind model=@this.model OnValidSubmitCallback=@this.DoUpdate>
+    Save
+  </_Bind>
+}

@@ -3,6 +3,7 @@
 namespace Contenter.Models.Sources;
 public class Source: IIded<Guid>
 {
+  public override string ToString() => this.Href;
   public Guid Id { get; set; }
   public DateTime CreatedAt { get; set; }
 

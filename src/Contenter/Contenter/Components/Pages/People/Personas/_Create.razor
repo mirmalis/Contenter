@@ -1,0 +1,21 @@
+﻿@inherits _Creator<Contenter.Models.Persons.Persona>
+@rendermode InteractiveServer
+@code {
+  //[Parameter]
+  //public Guid? XId { get; set; }
+  //[Parameter]
+  //public Guid? YId { get; set; }
+  override protected async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+    //if (this.XId != null)
+    //{
+    //}
+    //if (this.YId != null)
+    //{
+    //}
+  }
+}
+<_Bind model=@this.model OnValidSubmitCallback=@(async (model) => await this.DoCreate(this.model))>
+  @ChildContent
+</_Bind>

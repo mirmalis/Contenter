@@ -1,0 +1,15 @@
+﻿@page "/c/fam/{id:guid}"
+@code {
+  [Parameter]
+  public Guid Id { get; set; }
+}
+<FluentLabel Typo=@Typography.H5>
+  ContentFam
+</FluentLabel>
+<_Display Id=@this.Id />
+
+<div>
+  <a href="/c/fam/@this.Id/e">Edit</a>
+  |
+  <a href="/c/fam/@this.Id/d">Delete</a>
+</div>

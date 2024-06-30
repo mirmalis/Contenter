@@ -3,6 +3,7 @@
 namespace Contenter.Models.Contents;
 public class ContentFam: IIded<Guid>
 {
+  public override string ToString() => this.Name;
   public Guid Id { get; set; }
 
   [Required]

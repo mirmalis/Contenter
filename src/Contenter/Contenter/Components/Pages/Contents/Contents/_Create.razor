@@ -1,0 +1,22 @@
+﻿@inherits _Creator<Contenter.Models.Contents.Content>
+@rendermode InteractiveServer
+@code {
+  [Parameter]
+  public Guid? FamId { get; set; }
+  //[Parameter]
+  //public Guid? YId { get; set; }
+  override protected async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+    if (this.FamId != null)
+    {
+      this.model.Fam = await this.db.Set<Contenter.Models.Contents.ContentFam>().FirstOrDefaultAsync(item => item.Id == this.FamId);
+    }
+    //if (this.YId != null)
+    //{
+    //}
+  }
+}
+<_Bind model=@this.model OnValidSubmitCallback=@(async (model) => await this.DoCreate(this.model))>
+  @ChildContent
+</_Bind>

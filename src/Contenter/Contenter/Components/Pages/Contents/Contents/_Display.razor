@@ -1,0 +1,64 @@
+﻿@inherits _Displayer<Contenter.Models.Contents.Content, Guid>
+
+<ExpList
+  ParamExpectedCount="1"
+  ParamSource=@(
+    this.Source.Select(item => new {
+      item.Name,
+      item.PublishedAt,
+      Fam = item.FamId == null ? null : new {
+        Id = item.FamId!.Value,
+        item.Fam!.Name,
+      },
+      Guests =  item.GuestPersonaAssignments
+      .OrderBy(item => item.Index)
+      .Select(ass => new {
+        Id = ass.GuestId,
+        ass.Guest.Name,
+      }),
+      Sources = item.SourceAssignments
+      .OrderBy(item => item.Index)
+      .Select(ass => new {
+        Id = ass.SourceId,
+        ass.Source.Href,
+        Definition = ass.Source.Definition == null ? null : new {
+          ass.Source.Definition.Name,
+          Platform = new {
+            ass.Source.Definition.Platform.Id,
+            ass.Source.Definition.Platform.Name,
+            ass.Source.Definition.Platform.IconPath,
+          }
+        }
+      })
+    })
+  )
+>
+  <IfSome Context="model">
+    <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
+      @if (model.Fam != null)
+      {
+        <a href="/c/fam/@model.Fam.Id">@model.Fam.Name</a>
+        <text>&raquo; </text>
+      }
+      @model.Name
+    </FluentStack>
+    @Before
+    <div>
+      Guests
+      <OneOrMany ParamList=@(model.Guests) Context="guest">
+        <a href="/p/personas/@guest.Id">@guest.Name</a>
+      </OneOrMany>
+    </div>
+    <div>
+      Sources (<a href="/s/sources/c?ContentId=@this.Id">add</a>)
+      <OneOrMany ParamList=@(model.Sources) Context="source">
+        <ChildContent>
+          <AIcon href=@source.Href DefinitionName=@source.Definition?.Name iconPath=@source.Definition?.Platform.IconPath PlatformId=@source.Definition?.Platform.Id PlatformName=@source.Definition?.Platform.Name>
+            source
+          </AIcon>
+        </ChildContent>
+      </OneOrMany>
+    </div>
+    @After
+  </IfSome>
+</ExpList>

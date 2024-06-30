@@ -1,0 +1,62 @@
+﻿@inherits _Displayer<Contenter.Models.Contents.ContentFam, Guid>
+
+<ExpList
+  ParamExpectedCount="1"
+  ParamSource=@(
+    this.Source.Select(item => new {
+      item.Name,
+      Contents = item.Contents
+      .OrderByDescending(item => item.PublishedAt)
+      .Select(ct => new {
+        ct.Id,
+        ct.Name,
+        Guests = ct.GuestPersonaAssignments
+        .OrderBy(ass => ass.Index)
+        .Select(ass => new {
+          ass.Guest.Id,
+          ass.Guest.Name,
+        })
+        ,
+        Sources = ct.SourceAssignments
+        .OrderBy(item => item.Index)
+        .Select(ass => new {
+          ass.Source.Href,
+          Definition = ass.Source.Definition == null ? null : new {
+            ass.Source.Definition.Name,
+            Platform = new {
+              ass.Source.Definition.Platform.Id,
+              ass.Source.Definition.Platform.Name,
+              ass.Source.Definition.Platform.IconPath,
+            }
+          }
+        })
+      })
+    })
+  )
+>
+  <IfSome Context="model">
+    <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
+      @model.Name
+    </FluentStack>
+    @Before
+    <OneOrMany ParamList=@(model.Contents) Context="ct">
+      <ChildContent>
+        <a href="/c/contents/@ct.Id">@ct.Name</a>
+        @if (ct.Guests.Any())
+        {
+          <text>
+            (@foreach (var guest in ct.Guests)
+            {
+              <a href="/p/personas/@guest.Id">@guest.Name</a>
+              @if (guest != ct.Guests.Last())
+              {
+                <text>, </text>
+              }
+            })
+          </text>
+        }
+      </ChildContent>
+    </OneOrMany>
+    @After
+  </IfSome>
+</ExpList>

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace Contenter.Models.Contents;
-public class ContentGuests<TGuest>
+public class ContentGuests<TGuest>: ILister
 	where TGuest : class, IIded<Guid>
 {
 	[Required]

@@ -19,7 +19,6 @@ public class Program
     builder.Services.AddScoped<Contenter.Components.Account.IdentityUserAccessor>();
     builder.Services.AddScoped<Contenter.Components.Account.IdentityRedirectManager>();
     builder.Services.AddScoped<AuthenticationStateProvider, Contenter.Components.Account.IdentityRevalidatingAuthenticationStateProvider>();
-
     builder.Services.AddAuthentication(options => {
       options.DefaultScheme = IdentityConstants.ApplicationScheme;
       options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
@@ -32,7 +31,9 @@ public class Program
 
     builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-    builder.Services.AddIdentityCore<Contenter.Data.ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    builder.Services.AddIdentityCore<Contenter.Data.ApplicationUser>(options => {
+      options.SignIn.RequireConfirmedAccount = false;
+    })
         .AddEntityFrameworkStores<Contenter.Data.ApplicationDbContext>()
         .AddSignInManager()
         .AddDefaultTokenProviders();

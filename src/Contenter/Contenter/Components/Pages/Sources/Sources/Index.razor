@@ -1,0 +1,18 @@
+﻿@page "/s/sources"
+@inject Contenter.Data.Database db
+<h3>Index</h3>
+
+@code {
+  private PaginationState paginationState = new();
+}
+<FluentDataGrid Pagination=@this.paginationState
+  Items=@(
+    this.db.Set<Contenter.Models.Sources.Source>()
+  )
+>
+  <TemplateColumn Context="model">
+    @model
+    <a href="/s/sources/@model.Id">@model</a>
+  </TemplateColumn>
+</FluentDataGrid>
+<FluentPaginator State=@this.paginationState />

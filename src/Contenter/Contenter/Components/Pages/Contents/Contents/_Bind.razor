@@ -1,0 +1,102 @@
+﻿@inherits _Binder<Contenter.Models.Contents.Content>
+@rendermode InteractiveServer
+@inject IDialogService dialoger
+@code {
+  override protected async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+  }
+  
+  private Contenter.Models.Sources.SourceDefinition? sourceDefinition { get; set; }
+  private Contenter.Models.Persons.Persona? guestPersona { get; set; }
+  
+}
+<EditForm Model=@this.model OnValidSubmit=@this.OnValidSubmit FormName="create">
+  <DataAnnotationsValidator />
+  <FluentValidationSummary />
+
+  <FluentStack Orientation="@Orientation.Vertical">
+    <div>
+      <FluentTextField @bind-Value=@model.Name Label="Name" Required />
+    </div>
+    <div>
+      <EFSelect @bind-value=@this.model.Fam Label="Fam" Required="false" />
+    </div>
+    <div>
+      Guests:
+      <div>
+        <EFSelect @bind-value=@this.guestPersona />
+        <FluentButton OnClick=@AddGuest Disabled=@(this.guestPersona == null || model.GuestPersonaAssignments.Any(ass => ass.Guest == this.guestPersona))>Add</FluentButton>
+      </div>
+      <Listmanager @bind-list=@model.GuestPersonaAssignments Context="ass">
+        <td>@ass.Guest</td>
+        <td>
+          <FluentNumberField @bind-Value=@ass.Percentage Style="min-width:60px;"/>
+        </td>
+      </Listmanager>
+    </div>
+    <div>
+      Sources:
+      <div>
+        <EFFlunetSelector TContext=@(Contenter.Data.Database)
+                          T=@(Contenter.Models.Sources.SourceDefinition)
+                          ParamSource=@(db => db.Set<Contenter.Models.Sources.SourceDefinition>().Include(item => item.Platform))
+                          @bind-value=@this.sourceDefinition>
+          <ItemTemplate Context="sd">
+            @if (sd != null)
+            {
+              <Icon ShowPlatformName DefinitionName=@sd.Name iconPath=@sd.Platform.IconPath PlatformName=@sd.Platform.Name PlatformId=@sd.PlatformId>
+                ??
+              </Icon>
+            }
+            else
+            {
+              <text>null</text>
+            }
+          </ItemTemplate>
+        </EFFlunetSelector>
+        <FluentButton OnClick=@(() => {
+          model.SourceAssignments.Add(
+      new Models.Contents.ContentSources() {
+        Index = model.SourceAssignments.Count + 1,
+        Source = new() {
+          Definition = this.sourceDefinition
+        }
+      }
+    );
+        })>
+          Add
+        </FluentButton>
+        <Listmanager @bind-list=@model.SourceAssignments Context="ass">
+          <td><FluentTextField @bind-Value=@ass.Source.Href Style="padding:0px;" /></td>
+          <td>
+            @if (ass.Source.Definition != null)
+            {
+              <Icon DefinitionName=@ass.Source.Definition.Name iconPath=@ass.Source.Definition.Platform.IconPath PlatformName=@ass.Source.Definition.Platform.Name PlatformId=@ass.Source.Definition.PlatformId>
+                ??
+              </Icon>
+            }
+          </td>
+        </Listmanager>
+      </div>
+    </div>
+    @if (ChildContent != null)
+    {
+      <FluentButton Type=@ButtonType.Submit Appearance=@Appearance.Accent>@ChildContent</FluentButton>
+    }
+  </FluentStack>
+</EditForm>
+@code {
+  private void AddGuest()
+  {
+    if (this.guestPersona == null)
+      return;
+    this.model.GuestPersonaAssignments.Add(
+      new() {
+        Index = this.model.GuestPersonaAssignments.Count + 1,
+        Guest = this.guestPersona,
+        Percentage = 100,
+      }
+    );
+  }
+}

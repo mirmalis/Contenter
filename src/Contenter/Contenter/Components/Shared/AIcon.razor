@@ -1,0 +1,22 @@
+﻿@code {
+  [EditorRequired]
+  [Parameter] 
+  public string href { get; set; } = default!;
+  [EditorRequired]
+  [Parameter]
+  public string? iconPath { get; set; }
+  [EditorRequired]
+  [Parameter] 
+  public string? PlatformId { get; set; } 
+  [EditorRequired]
+  [Parameter] 
+  public string? PlatformName { get; set; }
+  [EditorRequired]
+  [Parameter] 
+  public string? DefinitionName { get; set; }
+  [Parameter]
+  public RenderFragment ChildContent { get; set; } =@<text>source</text>;
+}
+<a href="@this.href" target="_blank" style="display: inline;">
+  <Icon ChildContent=@this.ChildContent iconPath=@this.iconPath DefinitionName=@this.DefinitionName PlatformId=@this.PlatformId PlatformName=@this.PlatformName />
+</a>

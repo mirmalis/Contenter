@@ -1,0 +1,63 @@
+﻿@typeparam T where T : class, Models.Contents.ILister
+
+@code {
+  [EditorRequired]
+  [Parameter] public List<T> list { get; set; } = [];
+  [Parameter] public EventCallback<List<T>> listChanged { get; set; }
+
+  [EditorRequired]
+  [Parameter]
+  public RenderFragment<T> ChildContent { get; set; } = default!;
+}
+
+@if (this.list.Any())
+{
+  <table class="bord">
+    @foreach(var ass in list.OrderBy(item => item.Index))
+    {
+      <tr>
+        <td>@ass.Index</td>
+        @ChildContent(ass)
+        <td>
+          <FluentButton IconEnd="@(new Icons.Regular.Size16.ArrowCircleUp())"
+                        OnClick="@(async () => await this.MoveUp(ass))"
+                        Disabled="@(ass.Index == 1)" />
+          <FluentButton IconEnd="@(new Icons.Regular.Size16.ArrowCircleDown())"
+                        OnClick="@(async () => await this.MoveDown(ass))"
+                        Disabled="@(ass.Index == this.list.Count)" />
+          <FluentButton IconEnd="@(new Icons.Regular.Size16.Delete())"
+                        OnClick="@(async () => await this.Remove(ass))"
+                        Disabled="@(ass.Index < this.list.Count)" />
+        </td>
+      </tr>
+    }
+  </table>
+}
+
+@code {
+  private async Task MoveUp(T ass)
+  {
+    var prev = this.list.Where(item => item.Index == ass.Index - 1).FirstOrDefault();
+    if (prev != null)
+    {
+      prev.Index += 1;
+    }
+    ass.Index -= 1;
+    await this.listChanged.InvokeAsync(this.list);
+  }
+  private async Task MoveDown(T ass)
+  {
+    var next = this.list.Where(item => item.Index == ass.Index + 1).FirstOrDefault();
+    if (next != null)
+    {
+      next.Index -= 1;
+    }
+    ass.Index += 1;
+    await this.listChanged.InvokeAsync(this.list);
+  }
+  private async Task Remove(T ass)
+  {
+    this.list.Remove(ass);
+    await this.listChanged.InvokeAsync(this.list);
+  }
+}

@@ -1,0 +1,15 @@
+﻿@page "/s/sources/{id:guid}"
+@code {
+  [Parameter]
+  public Guid Id { get; set; }
+}
+<FluentLabel Typo=@Typography.H5>
+  Source
+</FluentLabel>
+<_Display Id=@this.Id />
+
+<div>
+  <a href="/s/sources/@this.Id/e">Edit</a>
+  |
+  <a href="/s/sources/@this.Id/d">Delete</a>
+</div>

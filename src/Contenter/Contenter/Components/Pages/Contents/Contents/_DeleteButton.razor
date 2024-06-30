@@ -1,0 +1,14 @@
+﻿@inherits Deletor<Contenter.Models.Contents.Content, Guid>
+@rendermode InteractiveServer
+
+<FluentButton Color="#FFF" BackgroundColor="#C00" OnClick=@DoDelete>
+  Delete
+</FluentButton>
+@inject NavigationManager navigationManager;
+@code {
+  protected override Task OnAfterSave()
+  {
+    this.navigationManager.NavigateTo("/");
+    return Task.CompletedTask;
+  }
+}

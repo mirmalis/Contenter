@@ -1,0 +1,13 @@
+﻿@page "/c/contents/c"
+@rendermode InteractiveServer
+@code
+{
+}
+<h3>Create Content</h3>
+@inject NavigationManager navigationManager
+<_Create
+  OnAfterSave=@(async (Contenter.Models.Contents.Content model) => {
+    this.navigationManager.NavigateTo($"/c/contents/{model.Id}");
+  })>
+  Create
+</_Create>

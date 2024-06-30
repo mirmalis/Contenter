@@ -4,10 +4,49 @@
 
 @attribute [Authorize]
 
-<PageTitle>Auth</PageTitle>
-
-<h1>You are authenticated</h1>
-
 <AuthorizeView>
-    Hello @context.User.Identity?.Name!
+  <table class="bord">
+    @foreach (var a in dict)
+    {
+      @foreach (var b in a.Value)
+      {
+        <tr>
+          @if(b.Key == a.Value.First().Key)
+          {
+            <td rowspan="@a.Value.Count">@a.Key</td>
+          }
+          <td>@b.Key</td>
+          <td><a href="@b.Value/c">Create</a></td>
+          <td><a href="@b.Value">Index</a></td>
+        </tr>
+      }
+    }
+  </table>
 </AuthorizeView>
+@code {
+  private readonly Dictionary<string, Dictionary<string, string>> dict = new()
+  {
+    {
+      "Contents",
+      new() {
+        { "Content", "c/contents" },
+        { "ContentFam", "c/fam" }
+      }
+    },
+    { 
+      "Persons",
+      new() {
+        { "Persona", "p/personas" },
+        { "Person", "p/people" },
+      } 
+    },
+    {
+      "Sources",
+      new() {
+        { "Source", "s/sources" },
+        { "SourceDefinition", "s/sourcesdefinitions" },
+        { "SourcePlatform", "s/sourcesplatforms" },
+      }
+    }
+  };
+}

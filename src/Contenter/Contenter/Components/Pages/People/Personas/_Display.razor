@@ -1,0 +1,36 @@
+﻿@inherits _Displayer<Contenter.Models.Persons.Persona, Guid>
+
+<ExpList
+  ParamExpectedCount="1"
+  ParamSource=@(
+    this.Source.Select(item => new {
+      item.Name,
+      Contents = item.ContentAssignments
+      .OrderByDescending(ass => ass.Content.PublishedAt)
+      .Select(ass => new {
+        ass.Content.Id,
+        ass.Content.Name,
+        Fam = ass.Content.FamId == null ? null : new {
+          Id = ass.Content.FamId,
+          ass.Content.Fam!.Name,
+        }
+      })
+    })
+  )
+>
+  <IfSome Context="model">
+    <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
+      @model.Name
+    </FluentStack>
+    @Before
+    <OneOrMany ParamList=@model.Contents Context="ct">
+      @if (ct.Fam != null)
+      {
+        <a href="/c/fam/@ct.Fam.Id">@ct.Fam.Name</a>
+        <text> &raquo; </text>
+      }
+      <a href="/c/contents/@ct.Id">@ct.Name</a>
+    </OneOrMany>
+    @After
+  </IfSome>
+</ExpList>

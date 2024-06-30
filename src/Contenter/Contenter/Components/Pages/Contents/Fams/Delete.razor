@@ -1,0 +1,14 @@
+﻿@page "/c/fam/{id:guid}/d"
+@rendermode InteractiveServer
+@code 
+{
+  [Parameter]
+  public Guid Id { get; set; } = default!;
+}
+
+<h3>Delete ContentFam ?</h3>
+<_Display Id=@this.Id>
+  <After>
+    <_DeleteButton Id=@this.Id />
+  </After>
+</_Display>

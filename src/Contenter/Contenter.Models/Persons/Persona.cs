@@ -5,6 +5,7 @@ using Contenter.Models.Contents;
 namespace Contenter.Models.Persons;
 public class Persona: IIded<Guid>
 {
+  public override string ToString() => this.Name;
   public Guid Id { get; set; }
 
   [Required]

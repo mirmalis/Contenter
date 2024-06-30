@@ -1,0 +1,13 @@
+﻿@page "/c/fam/c"
+@rendermode InteractiveServer
+@code
+{
+}
+<h3>Create ContentFam</h3>
+@inject NavigationManager navigationManager
+<_Create
+  OnAfterSave=@(async (Contenter.Models.Contents.ContentFam model) => {
+    this.navigationManager.NavigateTo($"/c/fam/{model.Id}");
+  })>
+  Create
+</_Create>

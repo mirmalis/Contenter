@@ -1,0 +1,44 @@
+﻿@typeparam T
+@namespace SDP
+@code {
+  [EditorRequired]
+  [Parameter]
+  public IEnumerable<T> ParamList { get; set; } = [];
+
+  [Parameter]
+  public RenderFragment<T> ChildContent { get; set; } = item => @<text>@item!.ToString()</text>;
+
+  [Parameter]
+  public RenderFragment? IfNone { get; set; }
+
+  [Parameter]
+  public RenderFragment? Before { get; set; }
+  
+  [Parameter]
+  public RenderFragment? After { get; set; }
+}
+
+@if (this.ParamList.Any())
+{
+  @Before
+  @if (this.ParamList.Count() == 1)
+  {
+    @ChildContent(this.ParamList.First())
+  }
+  else
+  {
+    <ul>
+      @foreach (var item in this.ParamList)
+      {
+        <li>
+          @ChildContent(item)
+        </li>
+      }
+    </ul>
+  }
+  @After
+}
+else
+{
+  @this.IfNone
+}

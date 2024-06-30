@@ -175,3 +175,46 @@ code {
         border: none;
     }
 }
+
+a[href^="/"] {
+}
+
+a[href^="http"],
+a[target="_blank"]
+{
+  font-family: Georgia;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.grid-container {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1px;
+}
+
+.bord td,
+.bord th {
+  border: solid black 1px;
+  text-align: center;
+}
+.bord th {
+  text-align: center;
+}
+
+.good {
+  color: darkgreen;
+}
+.bad {
+  color: red;
+}
+.no-name {
+  background-color: #e8b2;
+  padding: 0 2px;
+  border-radius: 2px;
+  border: solid grey 1px;
+}
+img {
+  vertical-align: text-top;
+}

@@ -1,0 +1,110 @@
+﻿@typeparam T where T : class
+@inject Contenter.Data.Database db
+@code {
+  [Parameter] public T? value { get; set; }
+  [Parameter] public EventCallback<T?> valueChanged { get; set; }
+
+  private bool DatasourceChanged { get; set; } = true;
+
+  private System.Linq.Expressions.Expression<Func<T, bool>> filterExpression = item => true;
+  [Parameter]
+  public System.Linq.Expressions.Expression<Func<T, bool>> FilterExpression
+  {
+    get => this.filterExpression;
+    set
+    {
+      this.filterExpression = value;
+      this.DatasourceChanged = true;
+    }
+  }
+
+  private Func<Contenter.Data.Database, IQueryable<T>>? paramSource;
+  [Parameter]
+  public Func<Contenter.Data.Database, IQueryable<T>> ParamSource
+  {
+    get
+    {
+      if (this.paramSource != null)
+        return this.paramSource;
+      return db => this.db.Set<T>().Where(this.FilterExpression);
+    }
+    set
+    {
+      this.paramSource = value;
+      this.DatasourceChanged = true;
+    }
+  }
+  [Parameter] public bool Disabled { get; set; }
+  [Parameter] public string? Label { get; set; }
+  [Parameter] public bool Required { get; set; } = false;
+  /// <summary>
+  /// Kartais reikia nunulling nors ir required
+  /// </summary>
+  [Parameter] public bool Nullable { get; set; } = false;
+
+  [Parameter]
+  public Func<T, string> valueCalculator { get; set; } = item => item!.ToString()!;
+  [Parameter]
+  public RenderFragment<T> ItemTemplate { get; set; } = item => @<text>@item.ToString()</text>;
+
+  private List<T>? list { get; set; }
+  override protected async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+    if (this.value == null)
+    {
+      await this.GetListIfNeeded();
+    }
+  }
+  private async Task GetListIfNeeded()
+  {
+    if (this.DatasourceChanged)
+    {
+      this.list = await this.ParamSource(this.db).ToListAsync();
+      this.DatasourceChanged = false;
+    }
+  }
+}
+@if (this.list != null)
+{
+  <FluentCombobox Disabled=@this.Disabled
+                  Autocomplete="ComboboxAutocomplete.List"
+                  Label=@this.Label
+                  Required=@this.Required
+                  TOption=@(T)
+                  SelectedOption=@this.value
+                  OptionValue=@(x => x == null ? "" : this.valueCalculator(x))>
+    @if (!this.Required || this.Nullable || this.value == null)
+    {
+      <FluentOption TOption=@(T) Value="" OnSelect=@(async () => await this.valueChanged.InvokeAsync(null))>
+      </FluentOption>
+    }
+    @foreach (var item in this.list)
+    {
+      <FluentOption TOption=@(T)
+                    Selected="@(this.value == item)"
+                    Value=@(this.valueCalculator(item))
+                    OnSelect=@(async () => await this.valueChanged.InvokeAsync(item))>
+        @ItemTemplate(item)
+      </FluentOption>
+    }
+  </FluentCombobox>
+}
+else if (this.value != null)
+{
+  <FluentInputLabel Label="@this.Label" Required="@this.Required" ForId="@(this.valueCalculator(this.value))">
+  </FluentInputLabel>
+  @if (this.Disabled)
+  {
+    <FluentButton Id="@(this.valueCalculator(this.value))">
+      @ItemTemplate(this.value)
+    </FluentButton>
+  }
+  else
+  {
+    <FluentButton Id="@(this.valueCalculator(this.value))"
+                  OnClick=@GetListIfNeeded>
+      @ItemTemplate(this.value)
+    </FluentButton>
+  }
+}
