@@ -1,7 +1,81 @@
 ﻿@page "/"
-
+@inject Data.Database db
 <PageTitle>Home</PageTitle>
-
-<h1>Hello, world!</h1>
-
-Welcome to your new Fluent Blazor app.
+@{
+  var famName = Helpers.NameRetrievalExpression(16).Compile();
+  var contentName = Helpers.NameRetrievalExpression(80).Compile();
+}
+<ExpList 
+  ParamSource=@(
+    this.db.Set<Contenter.Models.Contents.Content>()
+    .Where(ct => ct.SourceAssignments.Any())
+    .OrderByDescending(item => item.CreatedAt)
+    .Select(ct => new {
+      ct.Id,
+      Name = ct.Name == null ? null : contentName(ct.Name),
+      Fam = ct.FamId == null ? null : new {
+        Id = ct.FamId!.Value,
+        Name = famName(ct.Fam!.Name),
+        //ct.Fam!.Name.Length > 4 ? ct.Fam!.Name.Substring(0, 4) + ".." : ct.Fam!.Name,
+      },
+      Sources = ct.SourceAssignments
+      .OrderBy(item => item.Index)
+      .Select(
+        ass => new {
+          ass.Source.Href,
+          Definition = ass.Source.DefinitionUid == null ? null : new {
+            ass.Source.Definition!.Name,
+            Platform = new {
+              Id = ass.Source.PlatformId,
+              ass.Source.Platform!.Name,
+              ass.Source.Platform!.IconPath,
+            }
+          }
+        }
+      ),
+      Guests = ct.GuestPersonaAssignments
+      .OrderBy(item => item.Index)
+      .Select(ass => new {
+        Id = ass.GuestId,
+        ass.Guest!.Name
+      })
+    })
+  )
+>
+  <Wrapper Context="rows">
+    <table class="bord">
+      @rows
+    </table>
+  </Wrapper>
+  <IfSome Context="ct">
+    <tr>
+      <td>
+        @if(ct.Fam != null)
+        {
+          <a href="/c/fam/@ct.Fam.Id">@ct.Fam.Name</a>
+        } else {
+          <text>-</text>
+        }
+      </td>
+      <td>
+        <Name ParamHref="@($"/c/contents/{ct.Id}")" ParamName="@ct.Name"/>
+      </td>
+      <td>
+        <OneOrMany ParamList=@ct.Sources>
+          <ChildContent Context="source">
+            <AIcon href=@source.Href DefinitionName=@source.Definition?.Name iconPath=@source.Definition?.Platform.IconPath PlatformId=@source.Definition?.Platform.Id PlatformName=@source.Definition?.Platform.Name>
+              source
+            </AIcon>
+          </ChildContent>
+        </OneOrMany>
+      </td>
+      <td>
+        <OneOrMany ParamList=@ct.Guests>
+          <ChildContent Context="guest">
+            <a href="/p/personas/@guest.Id">@guest.Name</a>
+          </ChildContent>
+        </OneOrMany>
+      </td>
+    </tr>
+  </IfSome>
+</ExpList>

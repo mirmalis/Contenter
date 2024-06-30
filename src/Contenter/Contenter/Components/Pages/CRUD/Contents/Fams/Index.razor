@@ -1,6 +1,5 @@
 ﻿@page "/c/fam"
 @inject Contenter.Data.Database db
-<h3>Index</h3>
 
 @code {
   private PaginationState paginationState = new();
@@ -11,7 +10,6 @@
   )
 >
   <TemplateColumn Context="model">
-    @model
     <a href="/c/fam/@model.Id">@model</a>
   </TemplateColumn>
 </FluentDataGrid>

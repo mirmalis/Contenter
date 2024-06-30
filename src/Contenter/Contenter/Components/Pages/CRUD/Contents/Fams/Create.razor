@@ -3,11 +3,10 @@
 @code
 {
 }
-<h3>Create ContentFam</h3>
 @inject NavigationManager navigationManager
 <_Create
   OnAfterSave=@(async (Contenter.Models.Contents.ContentFam model) => {
     this.navigationManager.NavigateTo($"/c/fam/{model.Id}");
   })>
-  Create
+  Create ContentFam
 </_Create>

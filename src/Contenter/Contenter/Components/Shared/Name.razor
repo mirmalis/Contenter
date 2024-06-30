@@ -1,0 +1,31 @@
+﻿@code {
+  [Parameter] public string? ParamHref { get; set; }
+  [EditorRequired]
+  [Parameter] public string? ParamName { get; set; }
+}
+@if(this.ParamHref == null)
+{
+  @if (this.ParamName != null)
+  {
+    @this.ParamName
+  } else
+  {
+    <span class="no-name">
+      no-name
+    </span>
+  }
+} else
+{
+  @if (this.ParamName != null)
+  {
+    <a href=@ParamHref>
+      @this.ParamName
+    </a>
+  }
+  else
+  {
+    <a href=@ParamHref class="no-name">
+      no-name
+    </a>
+  }
+}

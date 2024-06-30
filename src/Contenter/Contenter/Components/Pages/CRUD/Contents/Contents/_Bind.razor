@@ -17,7 +17,11 @@
 
   <FluentStack Orientation="@Orientation.Vertical">
     <div>
-      <FluentTextField @bind-Value=@model.Name Label="Name" Required />
+      <FluentTextField @bind-Value=@model.Name Label="Name" />
+      <div>
+        <FluentInputLabel Label="PublishedAt" Required />
+        <InputDate @bind-Value=@model.PublishedAt />
+      </div>
     </div>
     <div>
       <EFSelect @bind-value=@this.model.Fam Label="Fam" Required="false" />

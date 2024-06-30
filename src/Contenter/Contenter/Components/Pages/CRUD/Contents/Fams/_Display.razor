@@ -10,6 +10,7 @@
       .Select(ct => new {
         ct.Id,
         ct.Name,
+        ct.PublishedAt,
         Guests = ct.GuestPersonaAssignments
         .OrderBy(ass => ass.Index)
         .Select(ass => new {
@@ -39,24 +40,28 @@
       @model.Name
     </FluentStack>
     @Before
-    <OneOrMany ParamList=@(model.Contents) Context="ct">
-      <ChildContent>
-        <a href="/c/contents/@ct.Id">@ct.Name</a>
-        @if (ct.Guests.Any())
-        {
-          <text>
-            (@foreach (var guest in ct.Guests)
-            {
-              <a href="/p/personas/@guest.Id">@guest.Name</a>
-              @if (guest != ct.Guests.Last())
-              {
-                <text>, </text>
-              }
-            })
-          </text>
-        }
-      </ChildContent>
-    </OneOrMany>
+    <div>
+      Contents (<a href="/c/contents/c?FamId=@this.Id">add</a>):
+      @if (model.Contents.Any())
+      {
+        <table class="bord">
+          @foreach(var ct in model.Contents)
+          {
+            <tr>
+              <td><Name ParamHref=@($"/c/contents/{ct.Id}") ParamName="@ct.Name" /></td>
+              <td>
+                <OneOrMany ParamList=@ct.Guests>
+                  <ChildContent Context="guest">
+                    <a href="/p/personas/@guest.Id">@guest.Name</a>
+                  </ChildContent>
+                </OneOrMany>
+              </td>
+              <td>@ct.PublishedAt</td>
+            </tr>
+          }
+        </table>
+      }
+    </div>
     @After
   </IfSome>
 </ExpList>

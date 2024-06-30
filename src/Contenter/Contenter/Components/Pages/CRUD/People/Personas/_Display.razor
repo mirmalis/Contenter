@@ -10,6 +10,7 @@
       .Select(ass => new {
         ass.Content.Id,
         ass.Content.Name,
+        ass.Content.PublishedAt,
         Fam = ass.Content.FamId == null ? null : new {
           Id = ass.Content.FamId,
           ass.Content.Fam!.Name,
@@ -20,17 +21,32 @@
 >
   <IfSome Context="model">
     <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
-      @model.Name
+      <FluentLabel Typo=@Typography.H5>
+        @model.Name
+      </FluentLabel>
     </FluentStack>
     @Before
-    <OneOrMany ParamList=@model.Contents Context="ct">
-      @if (ct.Fam != null)
-      {
-        <a href="/c/fam/@ct.Fam.Id">@ct.Fam.Name</a>
-        <text> &raquo; </text>
-      }
-      <a href="/c/contents/@ct.Id">@ct.Name</a>
-    </OneOrMany>
+    @if (model.Contents.Any())
+    {
+      
+      <table class="bord">
+        @foreach(var ct in model.Contents)
+        {
+          <tr>
+            <td>
+              <Name ParamHref=@($"/c/contents/{ct.Id}") ParamName="@ct.Name" />
+            </td>
+            <td>
+              @if (ct.Fam != null)
+              {
+                <a href="/c/fam/@ct.Fam.Id">@ct.Fam.Name</a>
+              }
+            </td>
+            <td>@ct.PublishedAt</td>
+          </tr>
+        }
+      </table>
+    }
     @After
   </IfSome>
 </ExpList>

@@ -38,19 +38,25 @@
       @if (model.Fam != null)
       {
         <a href="/c/fam/@model.Fam.Id">@model.Fam.Name</a>
-        <text>&raquo; </text>
+        <text> &raquo; </text>
       }
-      @model.Name
+      <Name ParamName=@model.Name />
     </FluentStack>
     @Before
+    @if (model.PublishedAt != null)
+    {
+      <div>
+        Published: @model.PublishedAt
+      </div>
+    }
     <div>
-      Guests
+      Guests: 
       <OneOrMany ParamList=@(model.Guests) Context="guest">
         <a href="/p/personas/@guest.Id">@guest.Name</a>
       </OneOrMany>
     </div>
     <div>
-      Sources (<a href="/s/sources/c?ContentId=@this.Id">add</a>)
+      Sources: 
       <OneOrMany ParamList=@(model.Sources) Context="source">
         <ChildContent>
           <AIcon href=@source.Href DefinitionName=@source.Definition?.Name iconPath=@source.Definition?.Platform.IconPath PlatformId=@source.Definition?.Platform.Id PlatformName=@source.Definition?.Platform.Name>
