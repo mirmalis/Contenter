@@ -1,0 +1,123 @@
+﻿@typeparam TSelected
+@using Microsoft.EntityFrameworkCore
+@code {
+  [Parameter] public EventCallback<List<TSelected>> WithList { get; set; }
+  [Parameter] public int? ParamExpectedCount { get; set; }
+  [Parameter] public RenderFragment<RenderFragment>? ParamTextElement { get; set; }
+  [Parameter] public string? ParamText { get; set; }
+  [Parameter] public bool? ParamIsExpandable { get; set; }
+  [Parameter] public bool? ParamIsExpanded { get; set; }
+  [Parameter] public EventCallback<bool> ParamIsExpandedChanged { get; set; }
+
+  [Parameter] public IQueryable<TSelected>? ParamSource { get; set; }
+
+  [Parameter] public RenderFragment<RenderFragment>? Wrapper { get; set; }
+  [Parameter] public RenderFragment<TSelected>? IfSome { get; set; }
+  [Parameter] public RenderFragment? IfNone { get; set; }
+}
+@code {
+  private bool IsExpandable { get; set; } = false;
+  private bool IsExpanded { get; set; } = true;
+  override protected async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+    this.IsExpandable = this.ParamIsExpandable ?? this.IsExpandable;
+    this.IsExpanded = this.ParamIsExpanded ?? this.IsExpanded;
+    if (this.IsExpanded)
+    {
+      await this.LoadData();
+    }
+    else
+    {
+      this.list = null;
+    }
+  }
+}
+@if(this.ParamSource != null && this.IfSome != null){
+  @if (this.IsExpandable || !this.IsExpanded)
+  {
+    @if (this.ParamTextElement == null)
+    {
+      <label>
+        <input type="checkbox" checked=@this.IsExpanded @onchange=@this.ToggleExpand />
+        @(this.ParamText ?? "expand")
+      </label>
+    } 
+    else 
+    {
+      @if(this.ParamText == null){
+        @ParamTextElement(
+          @:@{
+            <input type="checkbox" checked=@this.IsExpanded @onchange=@this.ToggleExpand />
+          }
+        )
+      } else {
+        @ParamTextElement(
+          @:@{
+            <label>
+            <input type="checkbox" checked=@this.IsExpanded @onchange=@this.ToggleExpand />
+            @this.ParamText
+            </label>
+          }
+        )
+      }
+    }
+  }
+  @if (this.IsExpanded)
+  {
+    @if (this.list == null)
+    {
+      <Loading />
+    }
+    else if (!this.list.Any() && this.IfNone != null)
+    {
+      @IfNone
+    }
+    else if(this.ParamExpectedCount != null && list.Count != this.ParamExpectedCount)
+    {
+      <Error> Unexpected count of @list.Count</Error>
+    }
+    else
+    {
+      @if (this.Wrapper != null && this.IfSome != null)
+      {
+        @Wrapper(
+        @:@{
+          @foreach (var item in this.list)
+          {
+            @IfSome(item)
+          }
+        }
+        )
+      }
+      else
+      {
+        @if (IfSome != null)
+        {
+          @foreach (var item in list)
+          {
+            @IfSome(item)
+          }
+        }
+      }
+    }
+  }
+}
+@code
+{
+  private async Task ToggleExpand()
+  {
+    this.IsExpanded = !this.IsExpanded;
+    if (this.IsExpanded && this.list == null)
+    {
+      await this.LoadData();
+    }
+    await this.ParamIsExpandedChanged.InvokeAsync(this.IsExpanded);
+  }
+  private async Task LoadData()
+  {
+    this.list = await this.ParamSource!.ToListAsync();
+    await WithList.InvokeAsync(list);
+  }
+  private List<TSelected>? list { get; set; }
+}
