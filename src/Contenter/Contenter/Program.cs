@@ -24,6 +24,11 @@ public class Program
       options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
     })
         .AddIdentityCookies();
+    builder.Services.AddAuthorization(options => {
+      options.AddPolicy("AdminSuper", policy => {
+        policy.RequireClaim("admin", "super");
+      });
+    });
 
     var minus_folder = Environment.GetEnvironmentVariable("minus_folder");
     builder.Services.AddDbContext<Contenter.Data.Database>(options => options.UseSqlite($"Data Source={minus_folder}\\dbs\\Contenter.db3", b => b.MigrationsAssembly("Contenter")));

@@ -17,19 +17,19 @@
 
   <FluentStack Orientation="@Orientation.Vertical">
     <div>
-      <FluentTextField @bind-Value=@model.Name Label="Name" />
+      <FluentTextField @bind-Value=@model.Name Label="Pavadinimas" />
       <div>
-        <FluentInputLabel Label="PublishedAt" Required />
+        <FluentInputLabel Label="Paskelbimo data" Required />
         <InputDate @bind-Value=@model.PublishedAt />
       </div>
     </div>
     <div>
-      <EFSelect @bind-value=@this.model.Fam Label="Fam" Required="false" />
+      <EFSelect @bind-value=@this.model.Fam Label="Laida" Required="false" />
     </div>
     <div>
-      Guests:
+      Svečiai (<a href="/p/personas/c?BackToContentCreation=true">create</a>):
       <div>
-        <EFSelect @bind-value=@this.guestPersona />
+        <EFSelect @bind-value=@this.guestPersona Nullable />
         <FluentButton OnClick=@AddGuest Disabled=@(this.guestPersona == null || model.GuestPersonaAssignments.Any(ass => ass.Guest == this.guestPersona))>Add</FluentButton>
       </div>
       <Listmanager @bind-list=@model.GuestPersonaAssignments Context="ass">
@@ -40,7 +40,7 @@
       </Listmanager>
     </div>
     <div>
-      Sources:
+      Nuorodos:
       <div>
         <EFSelect T=@(Contenter.Models.Sources.SourceDefinition)
                   ParamSource=@(db => db.Set<Contenter.Models.Sources.SourceDefinition>().Include(item => item.Platform))
@@ -85,7 +85,7 @@
     </div>
     @if (ChildContent != null)
     {
-      <FluentButton Type=@ButtonType.Submit Appearance=@Appearance.Accent>@ChildContent</FluentButton>
+      <FluentButton Disabled="@(this.guestPersona != null && !model.GuestPersonaAssignments.Any(item => item.Guest == this.guestPersona))" Type=@ButtonType.Submit Appearance=@Appearance.Accent>@ChildContent</FluentButton>
     }
   </FluentStack>
 </EditForm>

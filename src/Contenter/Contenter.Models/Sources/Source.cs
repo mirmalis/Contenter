@@ -14,4 +14,6 @@ public class Source: IIded<Guid>
   public SourcePlatform? Platform { get; set; }
   public string? PlatformId { get; set; }
   public string? DefinitionUid { get; set; }
+
+  public List<Contents.ContentSources> ContentAssignments { get; set; } = [];
 }

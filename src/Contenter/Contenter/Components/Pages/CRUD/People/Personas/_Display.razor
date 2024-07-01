@@ -33,6 +33,7 @@
         @foreach(var ct in model.Contents)
         {
           <tr>
+            <td>@ct.PublishedAt</td>
             <td>
               <Name ParamHref=@($"/c/contents/{ct.Id}") ParamName="@ct.Name" />
             </td>
@@ -42,7 +43,6 @@
                 <a href="/c/fam/@ct.Fam.Id">@ct.Fam.Name</a>
               }
             </td>
-            <td>@ct.PublishedAt</td>
           </tr>
         }
       </table>

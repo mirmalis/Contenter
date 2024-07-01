@@ -3,17 +3,30 @@
 @code {
   //[Parameter]
   //public Guid? XId { get; set; }
-  //[Parameter]
-  //public Guid? YId { get; set; }
+  [Parameter]
+  public Guid? ContentId { get; set; }
   override protected async Task OnParametersSetAsync()
   {
     await base.OnParametersSetAsync();
     //if (this.XId != null)
     //{
     //}
-    //if (this.YId != null)
-    //{
-    //}
+    if (this.ContentId != null)
+    {
+      var content = await this.db.Set<Contenter.Models.Contents.Content>()
+        .Include(item => item.SourceAssignments)
+        .FirstOrDefaultAsync(item => item.Id == this.ContentId);
+      if (content != null)
+      {
+        this.model.ContentAssignments = [
+          new()
+          {
+            Content = content,
+            Index = content.SourceAssignments.Count + 1,
+          }
+        ];
+      }
+    }
   }
 }
 <_Bind model=@this.model OnValidSubmitCallback=@(async (model) => await this.DoCreate(this.model))>

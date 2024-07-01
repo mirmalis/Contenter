@@ -33,7 +33,6 @@ public class Database(DbContextOptions<Database> options): DbContext(options)
     });
     mb.Entity<Contenter.Models.Sources.Source>(source => {
       source.Property(item => item.CreatedAt).HasDefaultValueSql(SQL_DATETIME_NOW);
-      source.HasAlternateKey(item => item.Href);
       source.HasOne(item => item.Definition).WithMany(item => item.Instances)
         .HasForeignKey(item => new { item.PlatformId, item.DefinitionUid });
       source.HasOne(item => item.Platform).WithMany().HasForeignKey(item => item.PlatformId);

@@ -11,10 +11,49 @@
   <FluentValidationSummary />
 
   <FluentStack Orientation="@Orientation.Vertical">
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
+    <div>
+      <EFSelect Label="Definition"
+                ParamSource=@(db => db.Set<Contenter.Models.Sources.SourceDefinition>().Include(item => item.Platform))
+                @bind-value=@this.model.Definition>
+        <ItemTemplate Context="sd">
+          @if (sd != null)
+          {
+            <Icon ShowPlatformName DefinitionName=@sd.Name iconPath=@sd.Platform.IconPath PlatformName=@sd.Platform.Name PlatformId=@sd.PlatformId>
+              ??
+            </Icon>
+          }
+          else
+          {
+            <text>null</text>
+          }
+        </ItemTemplate>
+      </EFSelect>
+      <FluentTextField @bind-Value=@this.model.Href  Label="Href" Required />
+    </div>
+    <div>
+      Contents:
+      @if (model.ContentAssignments.Any())
+      {
+        <table class="bord">
+          <tr>
+            <th>Index</th>
+            <th>Content</th>
+          </tr>
+          @foreach (var ass in model.ContentAssignments)
+          {
+            <tr>
+              <td>@ass.Index</td>
+              <td>
+                <Name ParamName=@ass.Content.Name />
+              </td>
+            </tr>
+          }
+        </table>
+      }
+    </div>
+    <div>
+
+    </div>
     @if (ChildContent != null)
     {
       <FluentButton Type=@ButtonType.Submit Appearance=@Appearance.Accent>@ChildContent</FluentButton>

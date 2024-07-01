@@ -56,7 +56,7 @@
       </OneOrMany>
     </div>
     <div>
-      Sources: 
+      Sources (<a href="/s/sources/c?ContentId=@this.Id">add</a>): 
       <OneOrMany ParamList=@(model.Sources) Context="source">
         <ChildContent>
           <AIcon href=@source.Href DefinitionName=@source.Definition?.Name iconPath=@source.Definition?.Platform.IconPath PlatformId=@source.Definition?.Platform.Id PlatformName=@source.Definition?.Platform.Name>

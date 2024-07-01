@@ -5,6 +5,7 @@
   var famName = Helpers.NameRetrievalExpression(16).Compile();
   var contentName = Helpers.NameRetrievalExpression(80).Compile();
 }
+Sukurti naują <a href="/c/contents/c">turinį</a> | <a href="/p/personas/c">asmenį</a>
 <ExpList 
   ParamSource=@(
     this.db.Set<Contenter.Models.Contents.Content>()
@@ -52,7 +53,8 @@
       <td>
         @if(ct.Fam != null)
         {
-          <a href="/c/fam/@ct.Fam.Id">@ct.Fam.Name</a>
+          @* <a href="/c/fam/@ct.Fam.Id">@ct.Fam.Name</a> *@
+          @ct.Fam.Name
         } else {
           <text>-</text>
         }
