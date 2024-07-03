@@ -1,0 +1,12 @@
+version: '3'
+services:
+  container:
+    image: mirmalis/contenter
+    pull_policy: always
+    volumes:
+      - /mnt/configs/projects/Contenter/data/sqlite:/dbs
+      - /mnt/configs/projects/Contenter/data/keys:/root/.aspnet/DataProtection-Keys
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Release
