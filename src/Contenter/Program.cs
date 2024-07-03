@@ -31,8 +31,10 @@ public class Program
     });
 
     var minus_folder = Environment.GetEnvironmentVariable("minus_folder");
-    builder.Services.AddDbContext<Contenter.Data.Database>(options => options.UseSqlite($"Data Source={minus_folder}\\dbs\\Contenter.db3", b => b.MigrationsAssembly("Contenter")));
-    builder.Services.AddDbContext<Contenter.Data.ApplicationDbContext>(options => options.UseSqlite($"Data Source={minus_folder}\\dbs\\Contenter-auth.db3", b => b.MigrationsAssembly("Contenter")));
+    var dbConntectionString = builder.Configuration.GetConnectionString("Database");
+    var authDbConnectionString = builder.Configuration.GetConnectionString("ApplicationDbContext");
+    builder.Services.AddDbContext<Contenter.Data.Database>(options => options.UseSqlite(dbConntectionString, b => b.MigrationsAssembly("Contenter")));
+    builder.Services.AddDbContext<Contenter.Data.ApplicationDbContext>(options => options.UseSqlite(authDbConnectionString, b => b.MigrationsAssembly("Contenter")));
 
     builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

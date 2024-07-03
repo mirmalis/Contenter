@@ -1,9 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Contenter.Models.Contents;
+﻿namespace Contenter.Models.Contents;
 public class Content: IIded<Guid>
 {
-  public override string ToString() => this.Name;
+  public override string? ToString() => this.Name;
   public Guid Id { get; set; }
   public DateTime CreatedAt { get; set; }
   public DateOnly? PublishedAt { get; set; }
