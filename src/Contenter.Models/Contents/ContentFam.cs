@@ -13,5 +13,6 @@ public class ContentFam: IIded<Guid>
   [Required]
   public string Name { get; set; } = default!;
 
+  public List<string> PayLinks { get; set; } = [];
   public List<Content> Contents { get; set; } = [];
 }

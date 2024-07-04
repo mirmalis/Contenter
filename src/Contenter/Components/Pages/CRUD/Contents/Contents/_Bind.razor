@@ -1,5 +1,8 @@
 ﻿@inherits _Binder<Contenter.Models.Contents.Content>
 @rendermode InteractiveServer
+@{
+    var cultureInfo = new System.Globalization.CultureInfo("lt-LT");
+}
 @inject IDialogService dialoger
 <EditForm Model=@this.model OnValidSubmit=@this.OnValidSubmit FormName="createContent">
   <DataAnnotationsValidator />
@@ -9,7 +12,18 @@
       <FluentTextField @bind-Value=@model.Name Label="Pavadinimas" />
       <div>
         <FluentInputLabel Label="Paskelbimo data" Required />
-        <InputDate @bind-Value=@model.PublishedAt />
+        <FluentDatePicker Culture="@cultureInfo" 
+          Value=@(this.model.PublishedAt)
+          ValueChanged=@(val => model.PublishedAt = val)
+          ValueExpression=@(() => model.PublishedAt)
+          OnCalendarOpen=@(() => {
+            if(this.model.PublishedAt == null){
+              var now = DateTime.Now;
+              this.model.PublishedAt = new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0);
+            }
+          })
+        />
+        <FluentTimePicker  @bind-Value=@model.PublishedAt @bind-Value:format="MM:hh" />
       </div>
     </div>
     <div>
@@ -73,15 +87,41 @@
           </ItemTemplate>
         </EFSelect>
         <Listmanager @bind-list=@model.SourceAssignments Context="ass">
-          <td><FluentTextField @bind-Value=@ass.Source.Href Style="padding:0px;" /></td>
-          <td>
-            @if (ass.Source.Definition != null)
-            {
-              <Icon DefinitionName=@ass.Source.Definition.Name iconPath=@ass.Source.Definition.Platform.IconPath PlatformName=@ass.Source.Definition.Platform.Name PlatformId=@ass.Source.Definition.PlatformId>
-                ??
-              </Icon>
-            }
-          </td>
+          <TableHeader>
+            <tr>
+              <th>#</th>
+              <th>Href</th>
+              <th>Def</th>
+              <th>IsPreview</th>
+              <th>IsPaid</th>
+              <th>Actions</th>
+            </tr>
+          </TableHeader>
+          <ChildContent>
+            <td><FluentTextField @bind-Value=@ass.Source.Href Style="padding:0px;" /></td>
+            <td>
+              @if (ass.Source.Definition != null)
+              {
+                <Icon DefinitionName=@ass.Source.Definition.Name iconPath=@ass.Source.Definition.Platform.IconPath PlatformName=@ass.Source.Definition.Platform.Name PlatformId=@ass.Source.Definition.PlatformId>
+                  ??
+                </Icon>
+              }
+            </td>
+            <td style="text-align:center;">
+              <FluentCheckbox
+                Value="@ass.Source.IsFlag(Models.Sources.SourceFlags.Preview)"
+                ValueChanged=@(val => ass.Source.SetFlag(Models.Sources.SourceFlags.Preview, val))
+                
+                />
+            </td>
+            <td style="text-align:center;">
+              <FluentCheckbox 
+                Value="@ass.Source.IsFlag(Models.Sources.SourceFlags.Paid)"
+                ValueChanged=@(val => ass.Source.SetFlag(Models.Sources.SourceFlags.Paid, val))
+                
+                />
+            </td>
+          </ChildContent>
         </Listmanager>
       </div>
     </div>

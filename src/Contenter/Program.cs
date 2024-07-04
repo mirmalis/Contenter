@@ -10,6 +10,9 @@ public class Program
   {
     var builder = WebApplication.CreateBuilder(args);
 
+    var cultureInfo = new System.Globalization.CultureInfo("lt-LT");
+    System.Globalization.CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+    System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
     // Add services to the container.
     builder.Services.AddRazorComponents()
         .AddInteractiveServerComponents();

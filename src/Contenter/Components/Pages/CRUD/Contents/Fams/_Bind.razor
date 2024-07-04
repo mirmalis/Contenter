@@ -14,8 +14,38 @@
     <div>
       <FluentTextField @bind-Value=@model.Name Label="Name" Required />
     </div>
-    <div></div>
-    <div></div>
+    <div>
+      <EFSelect @bind-value=@model.Parent Label="Parent" />
+    </div>
+    <div>
+      PayLinks:
+      <div>
+
+        <InputText @bind-Value=@this.nextPayLink />
+        <button  type="button"
+          Disabled="@(string.IsNullOrWhiteSpace(this.nextPayLink))"
+          @onclick=@(() => {
+            model.PayLinks.Add(this.nextPayLink);
+            this.nextPayLink = string.Empty;
+          })
+        >
+          Add
+        </button>
+      </div>
+      @if (model.PayLinks.Any())
+      {
+        <ul>
+          @foreach(var paylink in model.PayLinks)
+          {
+            <li @onclick=@(() => model.PayLinks.Remove(paylink))>
+              @paylink
+
+              <span class="muted">(click to remove)</span>
+            </li>
+          }
+        </ul>
+      }
+    </div>
     <div></div>
     @if (ChildContent != null)
     {
@@ -23,3 +53,7 @@
     }
   </FluentStack>
 </EditForm>
+
+@code {
+  private string nextPayLink { get; set; } = string.Empty;
+}

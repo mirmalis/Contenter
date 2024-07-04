@@ -28,20 +28,19 @@
     @Before
     @if (model.Contents.Any())
     {
-      
       <table class="bord">
         @foreach(var ct in model.Contents)
         {
           <tr>
-            <td>@ct.PublishedAt</td>
-            <td>
-              <Name ParamHref=@($"/c/contents/{ct.Id}") ParamName="@ct.Name" />
-            </td>
+            <td>@ct.PublishedAt?.ToShortDateString()</td>
             <td>
               @if (ct.Fam != null)
               {
                 <a href="/c/fam/@ct.Fam.Id">@ct.Fam.Name</a>
               }
+            </td>
+            <td>
+              <Name ParamHref=@($"/c/contents/{ct.Id}") ParamName="@ct.Name" />
             </td>
           </tr>
         }

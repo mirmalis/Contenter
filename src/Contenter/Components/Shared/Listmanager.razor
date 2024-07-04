@@ -8,11 +8,15 @@
   [EditorRequired]
   [Parameter]
   public RenderFragment<T> ChildContent { get; set; } = default!;
+
+  [Parameter]
+  public RenderFragment? TableHeader { get; set; }
 }
 
 @if (this.list.Any())
 {
   <table class="bord">
+    @this.TableHeader
     @foreach(var ass in list.OrderBy(item => item.Index))
     {
       <tr>

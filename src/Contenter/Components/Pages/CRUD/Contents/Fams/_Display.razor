@@ -5,6 +5,14 @@
   ParamSource=@(
     this.Source.Select(item => new {
       item.Name,
+      Parent = item.ParentId == null ? null : new {
+        Id = item.ParentId.Value,
+        item.Parent!.Name,
+      },
+      Children = item.Children.Select(child => new {
+        child.Id,
+        child.Name,
+      }),
       Contents = item.Contents
       .OrderByDescending(item => item.PublishedAt)
       .Select(ct => new {
@@ -37,9 +45,20 @@
 >
   <IfSome Context="model">
     <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
+      @if (model.Parent != null)
+      {
+        <a href="/c/fam/@model.Parent.Id">@model.Parent.Name</a>
+        <text>&raquo;</text>
+      }
       @model.Name
     </FluentStack>
     @Before
+    <div>
+      Children (<a href="/c/fam/c?ParentId=@this.Id">add</a>):
+      <OneOrMany ParamList=@model.Children Context="child">
+        <a href="/c/fam/@child.Id">@child.Name</a>
+      </OneOrMany>
+    </div>
     <div>
       Contents (<a href="/c/contents/c?FamId=@this.Id">add</a>):
       @if (model.Contents.Any())
@@ -48,7 +67,7 @@
           @foreach(var ct in model.Contents)
           {
             <tr>
-              <td><Name ParamHref=@($"/c/contents/{ct.Id}") ParamName="@ct.Name" /></td>
+              <td>@ct.PublishedAt?.ToShortDateString()</td>
               <td>
                 <OneOrMany ParamList=@ct.Guests>
                   <ChildContent Context="guest">
@@ -56,10 +75,14 @@
                   </ChildContent>
                 </OneOrMany>
               </td>
-              <td>@ct.PublishedAt</td>
+              <td><Name ParamHref=@($"/c/contents/{ct.Id}") ParamName="@ct.Name" /></td>
             </tr>
           }
         </table>
+      }
+      else
+      {
+        <span class="muted">none</span>
       }
     </div>
     @After

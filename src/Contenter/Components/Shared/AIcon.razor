@@ -16,7 +16,18 @@
   public string? DefinitionName { get; set; }
   [Parameter]
   public RenderFragment ChildContent { get; set; } =@<text>source</text>;
+  [Parameter]
+  public Contenter.Models.Sources.SourceFlags Flags { get; set; } = Models.Sources.SourceFlags.None;
+}
+@code {
+  private string name =>
+    (this.Flags.HasFlag(Models.Sources.SourceFlags.Preview), this.Flags.HasFlag(Models.Sources.SourceFlags.Paid)) switch
+    {
+      (true, _) => "preview",
+      // (_, true) => "paid",
+      _ => this.DefinitionName ?? "source"
+    };
 }
 <a href="@this.href" target="_blank" style="display: inline;">
-  <Icon ChildContent=@this.ChildContent iconPath=@this.iconPath DefinitionName=@this.DefinitionName PlatformId=@this.PlatformId PlatformName=@this.PlatformName />
+  <Icon ChildContent=@this.ChildContent iconPath=@this.iconPath DefinitionName=@this.name PlatformId=@this.PlatformId PlatformName=@this.PlatformName />
 </a>

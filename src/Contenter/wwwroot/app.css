@@ -225,3 +225,6 @@ ul,
 ol {
   margin-bottom: 0px;
 }
+.muted {
+  color: #878787;
+}

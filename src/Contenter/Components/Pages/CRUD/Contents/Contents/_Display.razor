@@ -9,6 +9,10 @@
       Fam = item.FamId == null ? null : new {
         Id = item.FamId!.Value,
         item.Fam!.Name,
+        Parent = item.Fam.ParentId == null ? null : new {
+          Id = item.Fam.ParentId!.Value,
+          item.Fam.Parent!.Name,
+        }
       },
       Guests =  item.GuestPersonaAssignments
       .OrderBy(item => item.Index)
@@ -21,6 +25,7 @@
       .Select(ass => new {
         Id = ass.SourceId,
         ass.Source.Href,
+        ass.Source.Flags,
         Definition = ass.Source.Definition == null ? null : new {
           ass.Source.Definition.Name,
           Platform = new {
@@ -37,6 +42,11 @@
     <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
       @if (model.Fam != null)
       {
+        @if (model.Fam.Parent != null)
+        {
+          <a href="/c/fam/@model.Fam.Parent.Id">@model.Fam.Parent.Name</a>
+          <text> &raquo; </text>
+        }
         <a href="/c/fam/@model.Fam.Id">@model.Fam.Name</a>
         <text> &raquo; </text>
       }
@@ -46,7 +56,7 @@
     @if (model.PublishedAt != null)
     {
       <div>
-        Published: @model.PublishedAt
+        Published: @model.PublishedAt.Value.ToShortDateString()
       </div>
     }
     <div>
@@ -59,7 +69,7 @@
       Sources (<a href="/s/sources/c?ContentId=@this.Id">add</a>): 
       <OneOrMany ParamList=@(model.Sources) Context="source">
         <ChildContent>
-          <AIcon href=@source.Href DefinitionName=@source.Definition?.Name iconPath=@source.Definition?.Platform.IconPath PlatformId=@source.Definition?.Platform.Id PlatformName=@source.Definition?.Platform.Name>
+          <AIcon href=@source.Href DefinitionName=@source.Definition?.Name iconPath=@source.Definition?.Platform.IconPath PlatformId=@source.Definition?.Platform.Id PlatformName=@source.Definition?.Platform.Name Flags=@source.Flags>
             source
           </AIcon>
         </ChildContent>

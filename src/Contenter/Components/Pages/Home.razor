@@ -26,9 +26,11 @@ Sukurti naują <a href="/c/contents/c">turinį</a>
       .OrderBy(item => item.Index)
       .Select(
         ass => new {
+          Id = ass.Source.Id,
           ass.Source.Href,
+          ass.Source.Flags,
           Definition = ass.Source.DefinitionUid == null ? null : new {
-            ass.Source.Definition!.Name,
+            Name = ass.Source.Definition!.Name,
             Platform = new {
               Id = ass.Source.PlatformId,
               ass.Source.Platform!.Name,
@@ -51,30 +53,32 @@ Sukurti naują <a href="/c/contents/c">turinį</a>
       @rows
     </table>
   </Wrapper>
-  <IfSome Context="ct">
+  <IfSome Context="model">
     <tr>
       <td>
-        @if(ct.Fam != null)
+        @if(model.Fam != null)
         {
-          <a href="/c/fam/@ct.Fam.Id">@ct.Fam.Name</a>
-        } else {
+          <a href="/c/fam/@model.Fam.Id">@model.Fam.Name</a>
+        }
+        else
+        {
           <text>-</text>
         }
       </td>
       <td>
-        <Name ParamHref="@($"/c/contents/{ct.Id}")" ParamName="@ct.Name"/>
+        <Name ParamHref="@($"/c/contents/{model.Id}")" ParamName="@model.Name"/>
       </td>
       <td>
-        <OneOrMany ParamList=@ct.Sources>
+        <OneOrMany ParamList=@model.Sources>
           <ChildContent Context="source">
-            <AIcon href=@source.Href DefinitionName=@source.Definition?.Name iconPath=@source.Definition?.Platform.IconPath PlatformId=@source.Definition?.Platform.Id PlatformName=@source.Definition?.Platform.Name>
+            <AIcon href=@source.Href DefinitionName=@source.Definition?.Name iconPath=@source.Definition?.Platform.IconPath PlatformId=@source.Definition?.Platform.Id PlatformName=@source.Definition?.Platform.Name Flags=source.Flags>
               source
             </AIcon>
           </ChildContent>
         </OneOrMany>
       </td>
       <td>
-        <OneOrMany ParamList=@ct.Guests>
+        <OneOrMany ParamList=@model.Guests>
           <ChildContent Context="guest">
             <a href="/p/personas/@guest.Id">@guest.Name</a>
           </ChildContent>

@@ -15,16 +15,16 @@
       <AuthorizeView>
         <Authorized>
           <FluentNavLink Href="auth" Icon="@(new Icons.Regular.Size20.LockClosedKey())" IconColor="Color.Accent">Auth Required</FluentNavLink>
-          <FluentNavLink Href="Account/Manage">@context.User.Identity?.Name</FluentNavLink>
+          <FluentNavLink Icon="new Icons.Regular.Size16.PersonSettings()" Href="Account/Manage">@context.User.Identity?.Name</FluentNavLink>
           <form action="Account/Logout" method="post">
             <AntiforgeryToken />
             <input type="hidden" name="ReturnUrl" value="@currentUrl" />
-            <FluentButton Type="ButtonType.Submit" Style="width: 100%;">Logout</FluentButton>
+            <FluentButton IconStart="@(new Icons.Regular.Size16.PersonArrowLeft())" Type="ButtonType.Submit" Style="width: 100%;"></FluentButton>
           </form>
         </Authorized>
         <NotAuthorized>
-          <FluentNavLink Href="Account/Register">Register</FluentNavLink>
-          <FluentNavLink Href="Account/Login">Login</FluentNavLink>
+          <FluentNavLink Icon="@(new Icons.Regular.Size16.PersonAdd())" Href="Account/Register">Register</FluentNavLink>
+          <FluentNavLink Icon="@(new Icons.Regular.Size16.PersonArrowRight())" Href="Account/Login">Login</FluentNavLink>
         </NotAuthorized>
       </AuthorizeView>
     </FluentNavMenu>
@@ -32,7 +32,7 @@
 </div>
 
 @code {
-  private bool expanded = true;
+  private bool expanded = false;
   private string? currentUrl;
 
   protected override void OnInitialized()

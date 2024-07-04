@@ -1,0 +1,93 @@
+﻿@page "/c/fam/{id:guid}/pay"
+@attribute [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+@code {
+  [SupplyParameterFromQuery]
+  public Guid SourceId{ get; set; }
+  [Parameter]
+  public Guid Id { get; set; }
+}
+
+
+@inject Contenter.Data.Database db
+<AuthorizeView Policy="AdminSuper">
+  <Authorized>
+    <ExpList 
+      ParamSource=@(
+        this.db.Set<Contenter.Models.Sources.Source>()
+          .Where(item => item.Id == this.SourceId)
+          .Select(source => new {
+            source.Href
+          })
+      )
+    >
+      <Wrapper Context="rows">
+        <ul>
+          @rows
+        </ul>
+      </Wrapper>
+      <IfSome Context="source">
+        <li>
+          <a target="_blank" href="@source.Href">@source.Href</a>
+        </li>
+      </IfSome>
+      <IfNone></IfNone>
+    </ExpList>
+  </Authorized>
+</AuthorizeView>
+<ExpList
+  ParamSource=@(
+    this.db.Set<Contenter.Models.Contents.ContentFam>()
+      .Where(item => item.Id == this.Id)
+      .Select(fam => new {
+        fam.Id,
+        fam.Name,
+        PayLinks = fam.PayLinks,
+      })
+  )
+>
+  <IfSome Context="model">
+    @if (model.PayLinks.Any())
+    {
+      <p>
+        Susimokėti galite čia:
+        <ol>
+          @foreach(var paylink in model.PayLinks)
+          {
+            <li>
+              <a target="_blank" href="@paylink">@paylink</a>
+            </li>
+          }
+        </ol>
+      </p>
+    } else
+    {
+      <p>
+        Nėra nurodytų apmokėjimo būdų.
+        <ExpList 
+          ParamSource=@(
+            this.db.Set<Contenter.Models.Sources.Source>()
+              .Where(item => item.Id == this.SourceId && item.ContentAssignments.Any(ass => ass.Content.FamId == this.Id))
+              .Select(source => new {
+                source.Href
+              })
+          )
+        >
+          <Wrapper Context="rows">
+            <ul>
+              @rows
+            </ul>
+          </Wrapper>
+          <IfSome Context="source">
+            <li>
+              <a target="_blank" href="@source.Href">@source.Href</a>
+            </li>
+          </IfSome>
+          <IfNone></IfNone>
+        </ExpList>
+      </p>
+    }
+  </IfSome>
+</ExpList>
+<div>
+  <a href="/c/fam/@this.Id">Details</a> 
+</div>
