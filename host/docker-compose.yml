@@ -1,6 +1,7 @@
 version: '3'
 services:
   container:
+    container_name: contenter
     image: mirmalis/contenter
     pull_policy: always
     volumes:
@@ -10,3 +11,9 @@ services:
       - "8080:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Release
+    networks:
+      - objectify-internal-network
+networks:
+  objectify-internal-network:
+    name: nginx_objectify-internal-network
+    external: true
