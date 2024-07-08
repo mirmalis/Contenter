@@ -71,9 +71,25 @@ Sukurti naują <a href="/c/contents/c">turinį</a>
       <td>
         <OneOrMany ParamList=@model.Sources>
           <ChildContent Context="source">
-            <AIcon href=@source.Href DefinitionName=@source.Definition?.Name iconPath=@source.Definition?.Platform.IconPath PlatformId=@source.Definition?.Platform.Id PlatformName=@source.Definition?.Platform.Name Flags=source.Flags>
-              source
-            </AIcon>
+            <AuthorizeView>
+              <Authorized>
+                <AIcon href=@source.Href DefinitionName=@source.Definition?.Name iconPath=@source.Definition?.Platform.IconPath PlatformId=@source.Definition?.Platform.Id PlatformName=@source.Definition?.Platform.Name Flags=source.Flags>
+                    source
+                  </AIcon>
+              </Authorized>
+              <NotAuthorized>
+                @if(model.Fam != null && source.Flags.HasFlag(Models.Sources.SourceFlags.Paid)){
+                  <a href="/c/fam/@model.Fam.Id/pay">
+                    Mokamas
+                  </a>
+                } else
+                {
+                  <AIcon href=@source.Href DefinitionName=@source.Definition?.Name iconPath=@source.Definition?.Platform.IconPath PlatformId=@source.Definition?.Platform.Id PlatformName=@source.Definition?.Platform.Name Flags=source.Flags>
+                    source
+                  </AIcon>
+                }
+              </NotAuthorized>
+            </AuthorizeView>
           </ChildContent>
         </OneOrMany>
       </td>

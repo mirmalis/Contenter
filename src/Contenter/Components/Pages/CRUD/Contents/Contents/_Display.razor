@@ -69,9 +69,27 @@
       Sources (<a href="/s/sources/c?ContentId=@this.Id">add</a>): 
       <OneOrMany ParamList=@(model.Sources) Context="source">
         <ChildContent>
-          <AIcon href=@source.Href DefinitionName=@source.Definition?.Name iconPath=@source.Definition?.Platform.IconPath PlatformId=@source.Definition?.Platform.Id PlatformName=@source.Definition?.Platform.Name Flags=@source.Flags>
-            source
-          </AIcon>
+          <AuthorizeView>
+            <Authorized>
+              <AIcon href=@source.Href DefinitionName=@source.Definition?.Name iconPath=@source.Definition?.Platform.IconPath PlatformId=@source.Definition?.Platform.Id PlatformName=@source.Definition?.Platform.Name Flags=source.Flags>
+                source
+              </AIcon>
+            </Authorized>
+            <NotAuthorized>
+              @if (model.Fam != null && source.Flags.HasFlag(Models.Sources.SourceFlags.Paid))
+                {
+                  <a href="/c/fam/@model.Fam.Id/pay">
+                    Mokamas
+                  </a>
+                }
+                else
+                {
+                  <AIcon href=@source.Href DefinitionName=@source.Definition?.Name iconPath=@source.Definition?.Platform.IconPath PlatformId=@source.Definition?.Platform.Id PlatformName=@source.Definition?.Platform.Name Flags=source.Flags>
+                    source
+                  </AIcon>
+                }
+              </NotAuthorized>
+            </AuthorizeView>
         </ChildContent>
       </OneOrMany>
     </div>
