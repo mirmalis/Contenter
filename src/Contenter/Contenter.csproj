@@ -20,6 +20,7 @@
 	  <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.8.1" />
     <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.8.0" />
 		<PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.DataGrid.EntityFrameworkAdapter" Version="4.8.0" />
+		<PackageReference Include="System.Net.Http.Json" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Contenter.Data\Contenter.Data.csproj" />

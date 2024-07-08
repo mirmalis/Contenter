@@ -14,10 +14,15 @@ public class Program
     System.Globalization.CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
     System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
     // Add services to the container.
+    builder.Services.AddControllers();
     builder.Services.AddRazorComponents()
         .AddInteractiveServerComponents();
     builder.Services.AddFluentUIComponents();
-
+    builder.Services.AddSingleton<Aper>(sp => new Aper(
+      new HttpClient {
+        BaseAddress = new Uri(builder.Configuration["AperUrl"] ?? "http://localhost:5215")
+      }
+      ));
     builder.Services.AddCascadingAuthenticationState();
     builder.Services.AddScoped<Contenter.Components.Account.IdentityUserAccessor>();
     builder.Services.AddScoped<Contenter.Components.Account.IdentityRedirectManager>();
@@ -50,9 +55,10 @@ public class Program
 
     builder.Services.AddSingleton<IEmailSender<Contenter.Data.ApplicationUser>, Contenter.Components.Account.IdentityNoOpEmailSender>();
     builder.Services.AddDataGridEntityFrameworkAdapter();
-
+    builder.Services.AddCors(options => options.AddPolicy("AllowYoutube", 
+      builder => builder.WithOrigins("https://www.youtube.com", "www.youtube.com", "youtube.com").AllowAnyMethod().AllowAnyHeader()));
     var app = builder.Build();
-
+    app.UseCors("AllowYoutube");
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
     {
@@ -75,7 +81,8 @@ public class Program
 
     // Add additional endpoints required by the Identity /Account Razor components.
     app.MapAdditionalIdentityEndpoints();
-
+    app.MapControllers();
+    
     app.Run();
   }
 }
