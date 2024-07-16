@@ -1,3 +1,4 @@
+using Contenter.Brokers.Youtube;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -18,11 +19,8 @@ public class Program
     builder.Services.AddRazorComponents()
         .AddInteractiveServerComponents();
     builder.Services.AddFluentUIComponents();
-    builder.Services.AddSingleton<Aper>(sp => new Aper(
-      new HttpClient {
-        BaseAddress = new Uri(builder.Configuration["AperUrl"] ?? "http://localhost:5215")
-      }
-      ));
+    builder.Services.AddHttpClient();
+    builder.Services.AddScoped<IYoutubeApiInteractor, AperYoutubeApiInteractor>();
     builder.Services.AddCascadingAuthenticationState();
     builder.Services.AddScoped<Contenter.Components.Account.IdentityUserAccessor>();
     builder.Services.AddScoped<Contenter.Components.Account.IdentityRedirectManager>();
