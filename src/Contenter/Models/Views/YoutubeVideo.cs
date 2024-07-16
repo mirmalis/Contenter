@@ -1,6 +1,6 @@
-﻿namespace Contenter.Brokers.Youtube;
+﻿namespace Contenter.Models.Views;
 
-public class VideoModel
+public class YoutubeVideo
 {
   public class ChannelIdentifier
   {
@@ -12,8 +12,8 @@ public class VideoModel
   public string Title { get; set; } = default!;
   public override string ToString()
   {
-    return $"Video id={this.Id} (Author: {this.Author.Id}) {this.PublishedAt} - {this.Title}";
+    return $"Video id={Id} (Author: {Author.Id}) {PublishedAt} - {Title}";
   }
-  public string Href => HrefFormat(this.Id);
+  public string Href => HrefFormat(Id);
   public static string HrefFormat(string v) => $"https://www.youtube.com/watch?v={v}";
 }

@@ -1,4 +1,4 @@
-using Contenter.Brokers.Youtube;
+using Contenter.Services.Views.Youtube;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +20,7 @@ public class Program
         .AddInteractiveServerComponents();
     builder.Services.AddFluentUIComponents();
     builder.Services.AddHttpClient();
-    builder.Services.AddScoped<IYoutubeApiInteractor, AperYoutubeApiInteractor>();
+    builder.Services.AddScoped<IYoutubeService, YoutubeService>();
     builder.Services.AddCascadingAuthenticationState();
     builder.Services.AddScoped<Contenter.Components.Account.IdentityUserAccessor>();
     builder.Services.AddScoped<Contenter.Components.Account.IdentityRedirectManager>();
