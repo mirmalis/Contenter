@@ -1,4 +1,10 @@
 ﻿namespace Contenter.Models.Contents;
+[Flags]
+public enum ContentFlags
+{
+  Everywhere = 0,
+  NotAtMain = 1,
+}
 public class Content: IIded<Guid>
 {
   public override string? ToString() => this.Name;
@@ -10,6 +16,8 @@ public class Content: IIded<Guid>
   public Guid? FamId { get; set; }
 
   public string? Name { get; set; } = default!;
+
+  public ContentFlags Flags { get; set; }
 
   public List<ContentGuests<Contenter.Models.Persons.Persona>> GuestPersonaAssignments { get; set; } = [];
   public List<ContentSources> SourceAssignments { get; set; } = [];

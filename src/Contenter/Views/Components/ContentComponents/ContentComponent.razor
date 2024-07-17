@@ -35,6 +35,15 @@
             }
           </div>
         }
+        <Microsoft.AspNetCore.Components.Authorization.AuthorizeView Policy="AdminSuper">
+          <Authorized>
+            <div>
+              <a href="/c/contents/@this.Data.Id/e">edit</a> |
+              <a href="/c/contents/@this.Data.Id/d">delete</a> |
+              <button class="a-button" @onclick=@unlist>unlist</button>
+            </div>
+          </Authorized>
+        </Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
       </CardBase>
     }
   </Content>

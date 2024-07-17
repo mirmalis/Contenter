@@ -228,3 +228,22 @@ ol {
 .muted {
   color: #878787;
 }
+.a-button {
+  color: var(--accent-foreground-rest);
+  background-color: #0000;
+  border: none;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 0px;
+  text-decoration: underline;
+}
+
+  .a-button:hover {
+    background-color: white;
+  }
+
+  .a-button:active {
+    background-color: white;
+  }
+

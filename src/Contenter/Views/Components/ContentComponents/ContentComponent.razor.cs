@@ -1,4 +1,5 @@
 ﻿using Contenter.Models.Components.ComponentStates;
+using Contenter.Brokers.Contents;
 using Contenter.Models.Views.Contents;
 using Contenter.Views.Bases;
 
@@ -16,6 +17,12 @@ public partial class ContentComponent: ComponentBase
 
   public LabelBase NameLabel { get; set; }
 
+  [Inject]
+  public IContentBroker ContentBroker { get;  set; } = default!;
+  private async Task<bool> unlist()
+  {
+    return await this.ContentBroker.ChangeMainPageListingStatus(this.Data.Id, true);
+  }
 
   protected override void OnInitialized()
   {
