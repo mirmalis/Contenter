@@ -1,0 +1,41 @@
+﻿@using Contenter.Models.Components.LabelBaseTypographies
+@using Contenter.Views.Components.ContainerComponents;
+@using Contenter.Views.Components.PersonaComponents;
+@using Contenter.Views.Components.ContentFamComponents;
+@using Contenter.Views.Components.SourceComponents;
+
+<ContainerComponent State=@this.State>
+  <Content>
+    @if (this.Data != null)
+    {
+      <CardBase>
+        @if (this.Data.Fam != null)
+        {
+          <ContentFamComponent Data=@this.Data.Fam />
+          <text>: </text>
+        }
+        <a href="/c/contents/@this.Data.Id">
+          <LabelBase @ref=@this.NameLabel Text="@Data.Name" />
+        </a>
+        @if (Data.Guests.Any())
+        {
+          <div>
+            @foreach(var guest in Data.Guests)
+            {
+              <PersonaComponent Data=@guest />
+            }
+          </div>
+        }
+        @if (this.Data.Sources.Any())
+        {
+          <div>
+            @foreach (var source in Data.Sources)
+            {
+              <SourceComponent Data=@source />
+            }
+          </div>
+        }
+      </CardBase>
+    }
+  </Content>
+</ContainerComponent>

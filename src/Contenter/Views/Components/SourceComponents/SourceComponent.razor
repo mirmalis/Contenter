@@ -1,0 +1,7 @@
+﻿<a href="@this.Data.Href" target="_blank">
+  @if (this.Data.IconPath != null)
+  {
+    <ImageBase Height="16px;" Width="16px;" Source=@this.Data.IconPath Alt="youtube" />
+  }
+  @(this.Data.Name ?? "source")
+</a>

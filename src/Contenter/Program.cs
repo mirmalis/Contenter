@@ -1,8 +1,13 @@
 using Contenter.Services.Views.Youtube;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.FluentUI.AspNetCore.Components;
+using Microsoft.AspNetCore.Authentication;
+using Contenter.Brokers.Contents;
+using Contenter.Services.Views.ContentViews;
+
 
 namespace Contenter;
 public class Program
@@ -20,16 +25,19 @@ public class Program
         .AddInteractiveServerComponents();
     builder.Services.AddFluentUIComponents();
     builder.Services.AddHttpClient();
-    builder.Services.AddScoped<IYoutubeService, YoutubeService>();
+    builder.Services.AddScoped<IYoutubeBroker, YoutubeBroker>();
+    builder.Services.AddScoped<IContentBroker, ContentBroker>();
+    builder.Services.AddScoped<IContentViewService, ContentViewService>();
     builder.Services.AddCascadingAuthenticationState();
     builder.Services.AddScoped<Contenter.Components.Account.IdentityUserAccessor>();
     builder.Services.AddScoped<Contenter.Components.Account.IdentityRedirectManager>();
     builder.Services.AddScoped<AuthenticationStateProvider, Contenter.Components.Account.IdentityRevalidatingAuthenticationStateProvider>();
-    builder.Services.AddAuthentication(options => {
-      options.DefaultScheme = IdentityConstants.ApplicationScheme;
-      options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-    })
-        .AddIdentityCookies();
+    builder.Services
+      .AddAuthentication(options => {
+        options.DefaultScheme = IdentityConstants.ApplicationScheme;
+        options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+      })
+      .AddIdentityCookies();
     builder.Services.AddAuthorization(options => {
       options.AddPolicy("AdminSuper", policy => {
         policy.RequireClaim("admin", "super");
