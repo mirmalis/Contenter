@@ -3,7 +3,8 @@
 namespace Contenter.Views.Bases;
 public partial class NavMenuBase: ComponentBase
 {
-  private bool expanded = true;
+  private bool expanded = false;
+
 
   [Parameter]
   public RenderFragment ChildContent { get; set; }
