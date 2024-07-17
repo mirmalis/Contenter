@@ -1,0 +1,8 @@
+﻿@using Microsoft.FluentUI.AspNetCore.Components
+@rendermode Microsoft.AspNetCore.Components.Web.RenderMode.InteractiveServer
+
+<Microsoft.FluentUI.AspNetCore.Components.FluentButton OnClick=@Click
+              Disabled=@IsDisabled
+              Appearance=@Appearance.Accent>
+  @Text
+</Microsoft.FluentUI.AspNetCore.Components.FluentButton>
