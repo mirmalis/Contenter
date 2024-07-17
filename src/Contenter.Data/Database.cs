@@ -4,21 +4,26 @@ namespace Contenter.Data;
 
 public class Database(DbContextOptions<Database> options): DbContext(options)
 {
+  public DbSet<Contenter.Models.Contents.Content> Contents => this.Set<Contenter.Models.Contents.Content>();
+  public DbSet<Contenter.Models.Contents.ContentFam> ContentFams => this.Set<Contenter.Models.Contents.ContentFam>();
   protected override void OnModelCreating(ModelBuilder mb)
   {
     base.OnModelCreating(mb);
     #region Contents
     mb.Entity<Contenter.Models.Contents.Content>(content => {
+      content.ToTable("Content");
       content.Property(item => item.CreatedAt).HasDefaultValueSql(SQL_DATETIME_NOW);
 
     });
     mb.Entity<Contenter.Models.Contents.ContentGuests<Models.Persons.Persona>>(personaGuestAss => {
+
       personaGuestAss.HasKey(item => new { item.ContentId, item.GuestId });
     });
     mb.Entity<Contenter.Models.Contents.ContentSources>(sourceAss => {
       sourceAss.HasKey(item => new { item.ContentId, item.SourceId });
     });
     mb.Entity<Contenter.Models.Contents.ContentFam>(contentFam => {
+      contentFam.ToTable("ContentFam");
       contentFam.Property(item => item.PayLinks).HasDefaultValue(new List<string>());
     });
     #endregion
