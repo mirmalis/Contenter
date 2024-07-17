@@ -1,6 +1,6 @@
 ﻿using Contenter.Data;
 using Contenter.Models.Sources;
-
+using Contenter.Services.Views.Youtube;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,19 +11,19 @@ namespace Contenter.Controllers;
 public class ContentController: ControllerBase
 {
   private readonly Database db;
-  private readonly Aper aper;
+  private readonly IYoutubeBroker yt;
 
   #region Constructors
-  public ContentController(Contenter.Data.Database db, Aper aper)
+  public ContentController(Contenter.Data.Database db, IYoutubeBroker aper)
   {
     this.db = db;
-    this.aper = aper;
+    this.yt = aper;
   }
   #endregion
   [HttpPost]
   public async Task<ActionResult<Guid?>> Post(string identifier)
   {
-    var obj = await this.aper.GetVideo(identifier);
+    var obj = await this.yt.GetVideoInfo(identifier);
     if(obj == null) {
       return NotFound(null);
     }
@@ -64,7 +64,7 @@ public class ContentController: ControllerBase
     return Ok(content.Id);
   }
   [HttpGet]
-  public async Task<ActionResult<string>> Test()
+  public ActionResult<string> Test()
   {
     return "api works";
   }

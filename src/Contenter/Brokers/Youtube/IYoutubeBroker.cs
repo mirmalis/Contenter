@@ -2,7 +2,7 @@
 
 namespace Contenter.Services.Views.Youtube;
 
-public interface IYoutubeService
+public interface IYoutubeBroker
 {
   Task<YoutubeVideo?> GetVideoInfo(string identifier);
 }

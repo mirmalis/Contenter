@@ -3,11 +3,11 @@ using Contenter.Models.Views;
 
 namespace Contenter.Services.Views.Youtube;
 
-public class YoutubeService: IYoutubeService
+public class YoutubeBroker: IYoutubeBroker
 {
   #region Constructors
   public HttpClient httpClient { get; }
-  public YoutubeService(HttpClient httpClient, IConfiguration configuration)
+  public YoutubeBroker(HttpClient httpClient, IConfiguration configuration)
   {
     this.httpClient = httpClient;
     var apiConfiguration =

@@ -4,7 +4,9 @@
 @code
 {
   [SupplyParameterFromQuery]
-  public Guid? ContentId { get; set;  }
+  public Guid? ContentId { get; set; }
+  [SupplyParameterFromQuery]
+  public string? YoutubeVideoIdentifier { get; set; }
 }
 <h3>Create Source</h3>
 @inject NavigationManager navigationManager
