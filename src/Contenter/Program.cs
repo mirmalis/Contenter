@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authentication;
 using Contenter.Brokers.Contents;
 using Contenter.Services.Views.ContentViews;
 
-
 namespace Contenter;
 public class Program
 {
