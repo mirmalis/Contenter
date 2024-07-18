@@ -6,17 +6,16 @@ using Contenter.Models.Components.IconNames;
 namespace Contenter.Views.Bases;
 public partial class NavLinkBase: ComponentBase
 {
+  [EditorRequired]
   [Parameter]
-  public string Href { get; set; }
-
-  [Parameter]
-  public RenderFragment ChildContent { get; set; }
+  public string Href { get; set; } = default!;
 
   [Parameter]
   public IconName Icon { get; set; }
 
+  [EditorRequired]
   [Parameter]
-  public string Text { get; set; }
+  public string Text { get; set; } = default!;
 
   [Parameter]
   public bool MatchAll { get; set; }

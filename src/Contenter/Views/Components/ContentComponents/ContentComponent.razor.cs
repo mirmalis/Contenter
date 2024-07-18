@@ -14,8 +14,8 @@ public partial class ContentComponent: ComponentBase
   public ContentView Data { get; set; } = default!;
 
   public ComponentState State { get; set; }
-
-  public LabelBase NameLabel { get; set; }
+  
+  LabelBase NameLabel { get; set; } = default!;
 
   [Inject]
   public IContentBroker ContentBroker { get;  set; } = default!;

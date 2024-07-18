@@ -3,8 +3,9 @@
 namespace Contenter.Views.Bases;
 public partial class SkeletonBase: ComponentBase
 {
+  [EditorRequired]
   [Parameter]
-  public RenderFragment ChildContent { get; set; }
+  public RenderFragment ChildContent { get; set; } = default!;
 
   [Parameter]
   public string Height { get; set; } = "100%";

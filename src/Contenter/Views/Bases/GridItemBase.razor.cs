@@ -10,6 +10,7 @@ public partial class GridItemBase: ComponentBase
   [Parameter]
   public int SM { get; set; } = 3;
 
+  [EditorRequired]
   [Parameter]
-  public RenderFragment ChildContent { get; set; }
+  public RenderFragment ChildContent { get; set; } = default!;
 }

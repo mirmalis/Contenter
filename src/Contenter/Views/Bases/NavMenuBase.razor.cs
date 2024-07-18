@@ -5,7 +5,7 @@ public partial class NavMenuBase: ComponentBase
 {
   private bool expanded = false;
 
-
+  [EditorRequired]
   [Parameter]
-  public RenderFragment ChildContent { get; set; }
+  public RenderFragment ChildContent { get; set; } = default!;
 }

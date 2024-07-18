@@ -3,15 +3,17 @@
 namespace Contenter.Views.Bases;
 public partial class LayoutBase: ComponentBase
 {
-  [Parameter]
-  public RenderFragment Header { get; set; }
 
   [Parameter]
-  public RenderFragment Main { get; set; }
+  public RenderFragment? Header { get; set; }
+
+  [EditorRequired]
+  [Parameter]
+  public RenderFragment Main { get; set; } = default!;
 
   [Parameter]
-  public RenderFragment NavigationMenu { get; set; }
+  public RenderFragment? NavigationMenu { get; set; }
 
   [Parameter]
-  public RenderFragment Footer { get; set; }
+  public RenderFragment? Footer { get; set; }
 }

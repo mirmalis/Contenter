@@ -5,8 +5,9 @@ using Contenter.Models.Components.LabelBaseTypographies;
 namespace Contenter.Views.Bases;
 public partial class LabelBase: ComponentBase
 {
+  [EditorRequired]
   [Parameter]
-  public string Text { get; set; }
+  public string Text { get; set; } = default!;
 
   [Parameter]
   public LabelBaseTypography Typo { get; set; }
