@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /create
+Disallow: /edit
+Disallow: /delete
+Disallow: /auth
+Disallow: /Account
+Allow: /Account/Register
+Allow: /Account/Login

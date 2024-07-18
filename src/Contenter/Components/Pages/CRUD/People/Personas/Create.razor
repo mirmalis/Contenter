@@ -1,4 +1,4 @@
-﻿@page "/p/personas/c"
+﻿@page "/create/p/personas"
 @attribute [Microsoft.AspNetCore.Authorization.AllowAnonymous]
 @rendermode InteractiveServer
 @code
@@ -10,7 +10,7 @@
 <_Create
   OnAfterSave=@(async (Contenter.Models.Persons.Persona model) => {
     if(this.BackToContentCreation){
-      this.navigationManager.NavigateTo($"/c/contents/c");
+         this.navigationManager.NavigateTo($"/create/c/contents");
     } else {
       this.navigationManager.NavigateTo($"/p/personas/{model.Id}");
     }

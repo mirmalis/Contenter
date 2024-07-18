@@ -54,13 +54,13 @@
     </FluentStack>
     @Before
     <div>
-      Children (<a href="/c/fam/c?ParentId=@this.Id">add</a>):
+      Children (<a href="/create/c/fam?ParentId=@this.Id">add</a>):
       <OneOrMany ParamList=@model.Children Context="child">
         <a href="/c/fam/@child.Id">@child.Name</a>
       </OneOrMany>
     </div>
     <div>
-      Contents (<a href="/c/contents/c?FamId=@this.Id">add</a>):
+      Contents (<a href="/create/c/contents?FamId=@this.Id">add</a>):
       @if (model.Contents.Any())
       {
         <table class="bord">
