@@ -5,6 +5,7 @@ public class YoutubeVideo
   public class ChannelIdentifier
   {
     public string Id { get; set; } = default!;
+    public string Title { get; set; } = default!;
   }
   public string Id { get; set; } = default!;
   public ChannelIdentifier Author { get; set; } = default!;

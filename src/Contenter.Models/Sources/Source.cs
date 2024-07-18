@@ -17,7 +17,8 @@ public class Source: IIded<Guid>
 
   [Required]
   public string Href { get; set; } = default!;
-
+  public string? Name { get; set; }
+  public DateTime? PublishedAt { get; set; }
 
   public SourceFlags Flags { get; set; } = SourceFlags.None;
   public bool IsFlag(SourceFlags flag) => this.Flags.HasFlag(flag);
@@ -28,18 +29,19 @@ public class Source: IIded<Guid>
     if (value)
     {
       this.Flags = this.Flags | flag;
-      
     } else
     {
       this.Flags = this.Flags ^ flag;
     }
   }
   
-
   public SourceDefinition? Definition { get; set; }
   public SourcePlatform? Platform { get; set; }
   public string? PlatformId { get; set; }
   public string? DefinitionUid { get; set; }
+
+  public Channel? Channel { get; set; } 
+  public string? ChannelUid { get; set; }
 
   public List<Contents.ContentSources> ContentAssignments { get; set; } = [];
 }

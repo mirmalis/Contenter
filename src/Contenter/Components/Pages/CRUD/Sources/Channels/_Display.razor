@@ -1,0 +1,45 @@
+﻿@inherits _Displayer<Contenter.Models.Sources.Channel, Guid>
+
+<ExpList
+  ParamExpectedCount="1"
+  ParamSource=@(
+    this.Source.Select(item => new {
+      item.Id,
+      item.Title,
+      item.Name,
+      item.Handle,
+      item.Uid,
+      Platform = new {
+        Id = item.PlatformId,
+        item.Platform.IconPath,
+      },
+      Sources = item.Sources.OrderByDescending(item => item.PublishedAt).Select(s => new {
+        s.Name,
+        s.Id,
+
+        s.Href,
+        s.DefinitionUid,
+      })
+    })
+  )
+>
+  <IfSome Context="model">
+    <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
+      <Contenter.Views.Bases.ImageBase Source="@model.Platform.IconPath" />
+      <a href="https://www.youtube.com/channel/@model.Uid" target="_blank">
+        @(model.Title ?? model.Name ?? model.Handle ?? "no-name")
+      </a>
+    </FluentStack>
+    @Before
+    <OneOrMany ParamList=@(model.Sources) >
+      <Before>Sources: </Before>
+      <ChildContent>
+        <a href="/s/sources/@context.Id">Details</a>
+        | 
+        <Contenter.Views.Bases.ImageBase Source="@model.Platform.IconPath" />
+        <a href="@context.Href" target="_blank">@(context.Name ?? "source")</a>
+      </ChildContent>
+    </OneOrMany>
+    @After
+  </IfSome>
+</ExpList>

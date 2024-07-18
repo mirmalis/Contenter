@@ -1,17 +1,15 @@
 ﻿@inherits _Creator<Contenter.Models.Sources.Source>
 @rendermode InteractiveServer
+@inject Contenter.Services.Views.Youtube.IYoutubeBroker yt
+@inject NavigationManager navigationManager
 @code {
   [Parameter]
-  public Guid? YoutubeVideoIdentifier { get; set; }
+  public string? Href { get; set; }
   [Parameter]
   public Guid? ContentId { get; set; }
   override protected async Task OnParametersSetAsync()
   {
     await base.OnParametersSetAsync();
-    if (this.YoutubeVideoIdentifier != null)
-    {
-      
-    }
     if (this.ContentId != null)
     {
       var content = await this.db.Set<Contenter.Models.Contents.Content>()
@@ -30,6 +28,6 @@
     }
   }
 }
-<_Bind model=@this.model OnValidSubmitCallback=@(async (model) => await this.DoCreate(this.model))>
+<_Bind model=@this.model OnValidSubmitCallback=@(async (model) => await this.DoCreate(this.model)) Href=@this.Href>
   @ChildContent
 </_Bind>

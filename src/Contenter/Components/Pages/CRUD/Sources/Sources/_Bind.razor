@@ -1,34 +1,33 @@
 ﻿@inherits _Binder<Contenter.Models.Sources.Source>
 @rendermode InteractiveServer
-@code {
-  override protected async Task OnParametersSetAsync()
-  {
-    await base.OnParametersSetAsync();
-  }
-}
 <EditForm Model=@this.model OnValidSubmit=@this.OnValidSubmit FormName="create">
   <DataAnnotationsValidator />
   <FluentValidationSummary />
 
   <FluentStack Orientation="@Orientation.Vertical">
     <div>
-      <EFSelect Label="Definition"
-                ParamSource=@(db => db.Set<Contenter.Models.Sources.SourceDefinition>().Include(item => item.Platform))
-                @bind-value=@this.model.Definition>
-        <ItemTemplate Context="sd">
-          @if (sd != null)
-          {
-            <Icon ShowPlatformName DefinitionName=@sd.Name iconPath=@sd.Platform.IconPath PlatformName=@sd.Platform.Name PlatformId=@sd.PlatformId>
-              ??
-            </Icon>
-          }
-          else
-          {
-            <text>null</text>
-          }
-        </ItemTemplate>
-      </EFSelect>
-      <FluentTextField @bind-Value=@this.model.Href  Label="Href" Required />
+      <FluentTextField Value=@this.model.Href ValueChanged="@(async href => await this.SetHref(href))" Label="Href" Required Style="width:100%;" />
+      @if (this.model.Href != null)
+      {
+        <EFSelect Label="Platform" value=@this.model.Platform valueChanged=@((Models.Sources.SourcePlatform val) => {
+          this.model.Platform = val;
+          this.model.Channel = null;
+          this.model.Definition = null;
+        }) />
+        @if (this.model.Platform != null)
+        {
+          <EFSelect Label="Definition"
+                    ParamSource=@(db => this.db.Entry(this.model.Platform).Collection(pl => pl.Definitions).Query())
+                    @bind-value=@this.model.Definition/>
+          <EFSelect Label="Channel"
+                    ParamSource=@(db => this.db.Entry(this.model.Platform).Collection(pl => pl.Channels).Query())
+                    @bind-value=@this.model.Channel 
+          />
+        }
+        <FluentTextField @bind-Value=@this.model.Name Label="Name" Style="width:100%;" />
+        <FluentDatePicker @bind-Value=@this.model.PublishedAt Label="Published at" />
+        <FluentTimePicker @bind-Value=@this.model.PublishedAt />
+      }
     </div>
     <div>
       Contents:
@@ -44,19 +43,38 @@
             <tr>
               <td>@ass.Index</td>
               <td>
-                <Name ParamName=@ass.Content.Name />
+                <Contenter.Components.Pages.CRUD.Contents.Contents._Bind 
+                model=@ass.Content OnValidSubmitCallback=@((val) => ass.Content = val) 
+                ShowSources="false"
+                />
+                @* <Name ParamName=@ass.Content.Name /> *@
               </td>
             </tr>
           }
         </table>
+      } else
+      {
+        <FluentButton  Appearance="@Appearance.Accent"
+          OnClick="@(() => {
+            this.model.ContentAssignments = [
+              new(){
+                Index = 1,
+                Content = new(){
+                  Name = this.model.Name,
+                  PublishedAt = this.model.PublishedAt,
+                }
+              }
+            ];
+          })" >
+          Form new Content
+          </FluentButton>
       }
-    </div>
-    <div>
-
-    </div>
+      </div>
     @if (ChildContent != null)
     {
-      <FluentButton Type=@ButtonType.Submit Appearance=@Appearance.Accent>@ChildContent</FluentButton>
+      <div>
+        <FluentButton Type=@ButtonType.Submit Appearance=@Appearance.Accent>@ChildContent</FluentButton>
+      </div>
     }
   </FluentStack>
 </EditForm>

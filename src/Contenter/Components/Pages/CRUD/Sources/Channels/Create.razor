@@ -1,0 +1,13 @@
+﻿@page "/create/s/channels"
+@rendermode InteractiveServer
+@code
+{
+}
+<h3>Create Channel</h3>
+@inject NavigationManager navigationManager
+<_Create
+  OnAfterSave=@(async (Contenter.Models.Sources.Channel model) => {
+    this.navigationManager.NavigateTo($"/s/channels/{model.Id}");
+  })>
+  Create
+</_Create>

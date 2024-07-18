@@ -1,6 +1,5 @@
-﻿@* @page "/c/contents" *@
+﻿@page "/s/channels"
 @inject Contenter.Data.Database db
-@rendermode InteractiveServer
 <h3>Index</h3>
 
 @code {
@@ -8,12 +7,12 @@
 }
 <FluentDataGrid Pagination=@this.paginationState
   Items=@(
-    this.db.Set<Contenter.Models.Contents.Content>()
+    this.db.Set<Contenter.Models.Sources.Channel>()
   )
 >
   <TemplateColumn Context="model">
     @model
-    <a href="/c/contents/@model.Id">@model</a>
+    <a href="/s/channels/@model.Id">@model</a>
   </TemplateColumn>
 </FluentDataGrid>
 <FluentPaginator State=@this.paginationState />

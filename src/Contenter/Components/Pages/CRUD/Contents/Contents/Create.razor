@@ -1,12 +1,16 @@
 ﻿@page "/create/c/contents"
 @attribute [Microsoft.AspNetCore.Authorization.AllowAnonymous]
 @rendermode InteractiveServer
+
 @code
 {
+  [SupplyParameterFromQuery]
+  public string? YoutubeVideoIdentifier { get; set; }
 }
 <h3>Create Content</h3>
 @inject NavigationManager navigationManager
 <_Create
+  YoutubeVideoIdentifier=@this.YoutubeVideoIdentifier
   OnAfterSave=@(async (Contenter.Models.Contents.Content model) => {
     this.navigationManager.NavigateTo($"/c/contents/{model.Id}");
   })>

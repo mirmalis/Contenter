@@ -1,0 +1,14 @@
+﻿@page "/delete/s/channels/{id:guid}"
+@rendermode InteractiveServer
+@code 
+{
+  [Parameter]
+  public Guid Id { get; set; } = default!;
+}
+
+<h3>Delete Channel ?</h3>
+<_Display Id=@this.Id>
+  <After>
+    <_DeleteButton Id=@this.Id />
+  </After>
+</_Display>

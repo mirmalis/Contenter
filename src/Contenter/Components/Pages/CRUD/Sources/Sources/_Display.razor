@@ -3,17 +3,36 @@
 <ExpList
   ParamExpectedCount="1"
   ParamSource=@(
-    this.Source.Select(item => new {
-
+    this.Source
+    .Select(item => new {
+      item.Name,
+      item.Href,
+      Platform = item.PlatformId == null ? null : new {
+        IconPath = item.Platform!.IconPath,
+        Channel = item.ChannelUid == null ? null : new {
+          Id = item.Channel!.Id,
+          Uid = item.ChannelUid,
+          Title = item.Channel!.Title
+        },
+        item.DefinitionUid,
+      },
     })
   )
 >
   <IfSome Context="model">
     <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
-      &raquo;
+      @if(model.Platform != null)
+      {
+        @if(model.Platform.Channel != null)
+        {
+          <a href="/s/channels/@model.Platform.Channel.Id">@model.Platform.Channel.Title</a>
+          <text> &raquo; </text>
+        }
+      }
+        <Contenter.Views.Bases.ImageBase Source=@model.Platform.IconPath />
+      <a href="@model.Href" target="_blank">@(model.Name ?? model.Platform?.DefinitionUid ?? "source")</a>
     </FluentStack>
     @Before
-    @model
     @After
   </IfSome>
 </ExpList>

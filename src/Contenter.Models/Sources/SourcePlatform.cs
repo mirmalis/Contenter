@@ -11,5 +11,6 @@ public class SourcePlatform: IIded<string>
   [Required]
   public string IconPath { get; set; } = default!;
 
+  public List<Channel> Channels { get; set; } = [];
   public List<SourceDefinition> Definitions { get; set; } = [];
 }

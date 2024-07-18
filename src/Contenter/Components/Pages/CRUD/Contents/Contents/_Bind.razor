@@ -1,7 +1,11 @@
 ﻿@inherits _Binder<Contenter.Models.Contents.Content>
 @rendermode InteractiveServer
 @{
-    var cultureInfo = new System.Globalization.CultureInfo("lt-LT");
+  var cultureInfo = new System.Globalization.CultureInfo("lt-LT");
+}
+@code {
+  [Parameter] 
+  public bool ShowSources { get; set; } = true;
 }
 @inject IDialogService dialoger
 <EditForm Model=@this.model OnValidSubmit=@this.OnValidSubmit FormName="createContent">
@@ -9,7 +13,7 @@
   <FluentValidationSummary />
   <FluentStack Orientation="@Orientation.Vertical">
     <div>
-      <FluentTextField @bind-Value=@model.Name Label="Pavadinimas" />
+      <FluentTextField @bind-Value=@model.Name Label="Pavadinimas" Style="width:100%;" />
       <div>
         <FluentInputLabel Label="Paskelbimo data" Required />
         <FluentDatePicker Culture="@cultureInfo" 
@@ -57,74 +61,77 @@
         </td>
       </Listmanager>
     </div>
-    <div>
-      Nuorodos:
+    @if (this.ShowSources)
+    {
       <div>
-        <EFSelect T=@(Contenter.Models.Sources.SourceDefinition)
-                  ParamSource=@(db => db.Set<Contenter.Models.Sources.SourceDefinition>().Include(item => item.Platform))
-                  value="@null"
-                  valueChanged=@(val => {
-                    model.SourceAssignments.Add(
-                      new Models.Contents.ContentSources() {
-                        Index = model.SourceAssignments.Count + 1,
-                        Source = new() {
-                          Definition = val
-                        }
-                      });
-                  })
-                  >
-          <ItemTemplate Context="sd">
-            @if (sd != null)
-            {
-              <Icon ShowPlatformName DefinitionName=@sd.Name iconPath=@sd.Platform.IconPath PlatformName=@sd.Platform.Name PlatformId=@sd.PlatformId>
-                ??
-              </Icon>
-            }
-            else
-            {
-              <text>null</text>
-            }
-          </ItemTemplate>
-        </EFSelect>
-        <Listmanager @bind-list=@model.SourceAssignments Context="ass">
-          <TableHeader>
-            <tr>
-              <th>#</th>
-              <th>Href</th>
-              <th>Def</th>
-              <th>IsPreview</th>
-              <th>IsPaid</th>
-              <th>Actions</th>
-            </tr>
-          </TableHeader>
-          <ChildContent>
-            <td><FluentTextField @bind-Value=@ass.Source.Href Style="padding:0px;" /></td>
-            <td>
-              @if (ass.Source.Definition != null)
+        Nuorodos:
+        <div>
+          <EFSelect T=@(Contenter.Models.Sources.SourceDefinition)
+                    ParamSource=@(db => db.Set<Contenter.Models.Sources.SourceDefinition>().Include(item => item.Platform))
+                    value="@null"
+                    valueChanged=@(val => {
+                      model.SourceAssignments.Add(
+                        new Models.Contents.ContentSources() {
+                          Index = model.SourceAssignments.Count + 1,
+                          Source = new() {
+                            Definition = val
+                          }
+                        });
+                    })
+                    >
+            <ItemTemplate Context="sd">
+              @if (sd != null)
               {
-                <Icon DefinitionName=@ass.Source.Definition.Name iconPath=@ass.Source.Definition.Platform.IconPath PlatformName=@ass.Source.Definition.Platform.Name PlatformId=@ass.Source.Definition.PlatformId>
+                <Icon ShowPlatformName DefinitionName=@sd.Name iconPath=@sd.Platform.IconPath PlatformName=@sd.Platform.Name PlatformId=@sd.PlatformId>
                   ??
                 </Icon>
               }
-            </td>
-            <td style="text-align:center;">
-              <FluentCheckbox
-                Value="@ass.Source.IsFlag(Models.Sources.SourceFlags.Preview)"
-                ValueChanged=@(val => ass.Source.SetFlag(Models.Sources.SourceFlags.Preview, val))
+              else
+              {
+                <text>null</text>
+              }
+            </ItemTemplate>
+          </EFSelect>
+          <Listmanager @bind-list=@model.SourceAssignments Context="ass">
+            <TableHeader>
+              <tr>
+                <th>#</th>
+                <th>Href</th>
+                <th>Def</th>
+                <th>IsPreview</th>
+                <th>IsPaid</th>
+                <th>Actions</th>
+              </tr>
+            </TableHeader>
+            <ChildContent>
+              <td><FluentTextField @bind-Value=@ass.Source.Href Style="padding:0px;" /></td>
+              <td>
+                @if (ass.Source.Definition != null)
+                {
+                  <Icon DefinitionName=@ass.Source.Definition.Name iconPath=@ass.Source.Definition.Platform.IconPath PlatformName=@ass.Source.Definition.Platform.Name PlatformId=@ass.Source.Definition.PlatformId>
+                    ??
+                  </Icon>
+                }
+              </td>
+              <td style="text-align:center;">
+                <FluentCheckbox
+                  Value="@ass.Source.IsFlag(Models.Sources.SourceFlags.Preview)"
+                  ValueChanged=@(val => ass.Source.SetFlag(Models.Sources.SourceFlags.Preview, val))
                 
-                />
-            </td>
-            <td style="text-align:center;">
-              <FluentCheckbox 
-                Value="@ass.Source.IsFlag(Models.Sources.SourceFlags.Paid)"
-                ValueChanged=@(val => ass.Source.SetFlag(Models.Sources.SourceFlags.Paid, val))
+                  />
+              </td>
+              <td style="text-align:center;">
+                <FluentCheckbox 
+                  Value="@ass.Source.IsFlag(Models.Sources.SourceFlags.Paid)"
+                  ValueChanged=@(val => ass.Source.SetFlag(Models.Sources.SourceFlags.Paid, val))
                 
-                />
-            </td>
-          </ChildContent>
-        </Listmanager>
+                  />
+              </td>
+            </ChildContent>
+          </Listmanager>
+        </div>
       </div>
-    </div>
+    }
     @if (ChildContent != null)
     {
       <FluentButton Type=@ButtonType.Submit Appearance=@Appearance.Accent>@ChildContent</FluentButton>

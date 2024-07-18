@@ -1,20 +1,54 @@
-﻿@inherits _Creator<Contenter.Models.Contents.Content>
+﻿@using Contenter.Models.Contents
+@inherits _Creator<Contenter.Models.Contents.Content>
 @rendermode InteractiveServer
+@inject Contenter.Services.Views.Youtube.IYoutubeBroker yt
+@inject NavigationManager navigationManager
 @code {
   [Parameter]
   public Guid? FamId { get; set; }
-  //[Parameter]
-  //public Guid? YId { get; set; }
+  [Parameter]
+  public string? YoutubeVideoIdentifier { get; set; }
   override protected async Task OnParametersSetAsync()
   {
     await base.OnParametersSetAsync();
+    if (this.YoutubeVideoIdentifier != null)
+    {
+      var videoInfo = await this.yt.GetVideoInfo(this.YoutubeVideoIdentifier);
+      if (videoInfo != null)
+      {
+        var existingSource = await this.db.Sources.FirstOrDefaultAsync(item => item.Href == videoInfo.Href);
+        if(existingSource != null)
+        {
+          this.navigationManager.NavigateTo($"/s/sources/{existingSource.Id}");
+          return;
+        }
+        var channel = 
+          await this.db.Channels.FirstOrDefaultAsync(item => item.PlatformId == "yt" && item.Uid == videoInfo.Author.Id)
+          ??
+          new Models.Sources.Channel() {
+            Uid = videoInfo.Id,
+            Title = videoInfo.Title,
+          };
+        this.model.Name = videoInfo.Title;
+        this.model.PublishedAt = videoInfo.PublishedAt;
+        this.model.SourceAssignments = [
+          new ContentSources(){
+            Index = 1,
+            Source = new(){
+              Channel = channel,
+              PublishedAt = videoInfo.PublishedAt,
+              Href = videoInfo.Href,
+              Name = videoInfo.Title,
+              Definition = await this.db.Set<Contenter.Models.Sources.SourceDefinition>().FirstOrDefaultAsync(item => item.PlatformId == "yt" && item.Uid == "video"),
+            }
+          }
+        ];
+      }
+    }
     if (this.FamId != null)
     {
       this.model.Fam = await this.db.Set<Contenter.Models.Contents.ContentFam>().FirstOrDefaultAsync(item => item.Id == this.FamId);
     }
-    //if (this.YId != null)
-    //{
-    //}
   }
 }
 <_Bind model=@this.model OnValidSubmitCallback=@(async (model) => await this.DoCreate(this.model))>
