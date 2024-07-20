@@ -12,7 +12,7 @@
         ass.Content.Name,
         ass.Content.PublishedAt,
         Fam = ass.Content.FamId == null ? null : new {
-          Id = ass.Content.FamId,
+          Id = ass.Content.Fam!.Id,
           ass.Content.Fam!.Name,
         }
       })

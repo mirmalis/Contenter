@@ -8,7 +8,7 @@ public class ContentBroker(Contenter.Data.Database db): IContentBroker
 {
   private readonly Database db = db;
 
-  public async Task<List<T>> GetLatestContents<T>(System.Linq.Expressions.Expression<Func<Contenter.Models.Contents.Content, T>> expression, int max = 100, int skip = 0)
+  public async Task<List<T>> GetLatestContentsSelection<T>(System.Linq.Expressions.Expression<Func<Contenter.Models.Contents.Content, T>> expression, int max = 100, int skip = 0)
   {
     return await this.db
       .Contents
@@ -40,5 +40,11 @@ public class ContentBroker(Contenter.Data.Database db): IContentBroker
     }
     await this.db.SaveChangesAsync();
     return true;
+  }
+
+  public async Task<T?> GetContentsByIdSelection<T>(System.Linq.Expressions.Expression<Func<Contenter.Models.Contents.Content, T>> core_to_view_expression, Guid id){
+    return await this.db.Contents.Where(item => item.Id == id)
+      .Select(core_to_view_expression)
+      .FirstOrDefaultAsync();
   }
 }

@@ -6,24 +6,25 @@
   [Parameter]
   public string? Href { get; set; }
   [Parameter]
+  public string? PlatformId { get; set; }
+  [Parameter]
   public Guid? ContentId { get; set; }
   override protected async Task OnParametersSetAsync()
   {
     await base.OnParametersSetAsync();
+    if (this.PlatformId != null)
+    {
+      this.model.PlatformId = this.PlatformId;
+    }
     if (this.ContentId != null)
     {
+
       var content = await this.db.Set<Contenter.Models.Contents.Content>()
-        .Include(item => item.SourceAssignments)
+        .Include(item => item.Sources)
         .FirstOrDefaultAsync(item => item.Id == this.ContentId);
       if (content != null)
       {
-        this.model.ContentAssignments = [
-          new()
-          {
-            Content = content,
-            Index = content.SourceAssignments.Count + 1,
-          }
-        ];
+        this.model.Content = content;
       }
     }
   }

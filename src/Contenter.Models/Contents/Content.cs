@@ -20,5 +20,5 @@ public class Content: IIded<Guid>
   public ContentFlags Flags { get; set; }
 
   public List<ContentGuests<Contenter.Models.Persons.Persona>> GuestPersonaAssignments { get; set; } = [];
-  public List<ContentSources> SourceAssignments { get; set; } = [];
+  public List<Sources.Source> Sources { get; set; } = [];
 }

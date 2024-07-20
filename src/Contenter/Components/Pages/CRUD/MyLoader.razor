@@ -1,0 +1,53 @@
+﻿@typeparam T
+@code {
+  [Parameter]
+  public int Take { get; set; } = 20;
+  [Parameter]
+  public int Skip { get; set; } = 0;
+
+  [EditorRequired]
+  [Parameter]
+  public IQueryable<T> ParamSource { get; set; } = default!;
+  private List<T> List { get; set; } = default!;
+  protected override async Task OnInitializedAsync()
+  {
+    await More();
+  }
+  private bool HasMore { get; set; } = true;
+  private async Task More()
+  {
+    this.List ??= [];
+    var items = await this.ParamSource
+      .Skip(this.Skip)
+      .Take(this.Take)
+      .ToListAsync();
+    this.List.AddRange(items);
+    this.Skip += this.Take;
+
+    if(items.Count() < this.Take)
+    {
+      this.HasMore = false;
+    }
+  }
+  [Parameter]
+  public RenderFragment<RenderFragment> Wrapper { get; set; } = rows => rows;
+  [Parameter]
+  public RenderFragment<T> IfSome { get; set; } = item =>  @<text>@item!.ToString()</text>;
+}
+@if (this.List.Any())
+{
+  @Wrapper(
+  @:@{
+    @foreach(var item in this.List)
+    {
+      @IfSome(item)
+    }
+  }
+  )
+  @if (this.HasMore)
+  {
+    <FluentButton Appearance="Appearance.Accent" OnClick=@More>
+      More
+    </FluentButton>
+  }
+}

@@ -2,7 +2,7 @@
 @code {
   [EditorRequired]
   [Parameter]
-  public IEnumerable<T> ParamList { get; set; } = [];
+  public IEnumerable<T>? ParamList { get; set; }
 
   [Parameter]
   public RenderFragment<T> ChildContent { get; set; } = item => @<text>@item!.ToString()</text>;
@@ -17,7 +17,7 @@
   public RenderFragment? After { get; set; }
 }
 
-@if (this.ParamList.Any())
+@if (this.ParamList != null && this.ParamList.Any())
 {
   @Before
   @if (this.ParamList.Count() == 1)

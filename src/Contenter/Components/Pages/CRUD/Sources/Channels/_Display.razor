@@ -1,5 +1,4 @@
 ﻿@inherits _Displayer<Contenter.Models.Sources.Channel, Guid>
-
 <ExpList
   ParamExpectedCount="1"
   ParamSource=@(
@@ -9,37 +8,80 @@
       item.Name,
       item.Handle,
       item.Uid,
+      item.Href,
       Platform = new {
         Id = item.PlatformId,
+        item.Platform.Name,
         item.Platform.IconPath,
+        item.Platform.ChannelName,
       },
-      Sources = item.Sources.OrderByDescending(item => item.PublishedAt).Select(s => new {
-        s.Name,
-        s.Id,
-
-        s.Href,
-        s.DefinitionUid,
+      ContentFams = item.CotentFamsAssignments.OrderBy(item => item.IndexB).Select(ass => new {
+        ass.ContentFam.Id,
+        ass.ContentFam.Name,
       })
     })
   )
 >
   <IfSome Context="model">
     <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
-      <Contenter.Views.Bases.ImageBase Source="@model.Platform.IconPath" />
-      <a href="https://www.youtube.com/channel/@model.Uid" target="_blank">
-        @(model.Title ?? model.Name ?? model.Handle ?? "no-name")
-      </a>
+      @{
+        var name = model.Title ?? model.Name ?? model.Handle;
+      }
+      @if (string.IsNullOrEmpty(model.Href))
+      {
+        <text>
+          @model.Platform.Name
+          @model.Platform.ChannelName
+          @if(!string.IsNullOrWhiteSpace(name))
+          {
+            <u>@name</u>
+          }
+        </text>
+      }
+      else
+      {
+        <a href="@model.Href" target="_blank">
+          <Contenter.Views.Bases.ImageBase Source="@model.Platform.IconPath" />
+          @(name ?? "no-name")
+        </a>
+      }
+      
     </FluentStack>
     @Before
-    <OneOrMany ParamList=@(model.Sources) >
-      <Before>Sources: </Before>
-      <ChildContent>
-        <a href="/s/sources/@context.Id">Details</a>
-        | 
-        <Contenter.Views.Bases.ImageBase Source="@model.Platform.IconPath" />
-        <a href="@context.Href" target="_blank">@(context.Name ?? "source")</a>
-      </ChildContent>
-    </OneOrMany>
+    <div>
+      <OneOrMany ParamList=@(model.ContentFams) Context="fam">
+        <a href="/c/fam/@fam.Id">@fam.Name</a>
+      </OneOrMany>
+    </div>
+
+    <MyLoader ParamSource=@(this.db.Sources.OrderByDescending(item => item.PublishedAt).Where(item => item.Channel != null && item.Channel.Id == this.Id))>
+      <Wrapper Context="rows">
+        <table class="bord">@rows</table>
+      </Wrapper>
+      <IfSome Context="source">
+        <tr>
+          <td>@source.PublishedAt?.ToShortDateString()</td>
+          <td>
+            <a href="@source.Href" target="_blank">
+              @if (model.Platform.IconPath != null)
+              {
+                <Contenter.Views.Bases.ImageBase Source="@model.Platform.IconPath" />
+              }
+              @source.Name
+            </a>
+          </td>
+          <td>
+            <a href="/s/sources/@source.Id">Details</a>
+            <AuthorizeView Policy="AdminSuper">
+              <Authorized>
+                | <a href="/edit/s/sources/@source.Id">Edit</a>
+                | <a href="/delete/s/sources/@source.Id">Delete</a>
+              </Authorized>
+            </AuthorizeView>
+          </td>
+        </tr>
+      </IfSome>
+    </MyLoader>
     @After
   </IfSome>
 </ExpList>

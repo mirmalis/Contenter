@@ -14,10 +14,18 @@ public class ContentViewService(IContentBroker contentBroker): IContentViewServi
         Id = content.FamId!.Value,
         Name = content.Fam!.Name,
       },
-      Sources = content.SourceAssignments.OrderBy(item => item.Index).Select(ass => new SourceView() {
-        Href = ass.Source.Href,
-        Name = ass.Source.DefinitionUid ?? null,
-        IconPath = ass.Source.PlatformId == null ? null : ass.Source.Platform!.IconPath,
+
+      Sources = content.Sources.Select(source => new SourceView() {
+        Id = source.Id,
+        PublishedAt = source.PublishedAt,
+        Href = source.Href,
+        Name = source.DefinitionUid ?? null,
+        IconPath = source.PlatformId == null ? null : source.Platform!.IconPath,
+        Channel = source.ChannelUid == null ? null : new SourceChannelView {
+          Id = source.Channel!.Id,
+          Href = $"https://www.youtube.com/channel/{source.Channel!.Uid}",
+          Name = source.Channel!.Title ?? source.Channel!.Name,
+        }
       }),
       Guests = content.GuestPersonaAssignments.Select(ass => new PersonaView() {
         Id = ass.GuestId,
@@ -28,6 +36,11 @@ public class ContentViewService(IContentBroker contentBroker): IContentViewServi
 
   public async Task<List<ContentView>> GetLatestVideos(int max, int skip = 0)
   {
-    return await this.contentBroker.GetLatestContents(core_to_view_expression, max: max, skip: skip);
+    return await this.contentBroker.GetLatestContentsSelection(core_to_view_expression, max: max, skip: skip);
+  }
+
+  public async Task<ContentView?> GetContentViewById(Guid id)
+  {
+    return await this.contentBroker.GetContentsByIdSelection(core_to_view_expression, id);
   }
 }

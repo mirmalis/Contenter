@@ -12,7 +12,8 @@ public class ContentGuests<TGuest>: ILister
 	public TGuest Guest { get; set; } = default!;
 	public Guid GuestId { get; set; }
 
-	public int Index { get; set; }
+	public int IndexA { get; set; }
+	public int IndexB { get; set; }
 	[Required]
 	[Range(0, 100)]
 	public int? Percentage { get; set; }

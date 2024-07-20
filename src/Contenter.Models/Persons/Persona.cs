@@ -12,5 +12,7 @@ public class Persona: IIded<Guid>
   public string Name { get; set; } = default!;
   public string? Description { get; set; }
 
+  public List<string>? Links { get; set; }
+
   public List<ContentGuests<Contenter.Models.Persons.Persona>> ContentAssignments { get; set; } = [];
 }

@@ -5,13 +5,9 @@
   ParamSource=@(
     this.Source.Select(item => new {
       item.Name,
-      Parent = item.ParentId == null ? null : new {
-        Id = item.ParentId.Value,
-        item.Parent!.Name,
-      },
-      Children = item.Children.Select(child => new {
-        child.Id,
-        child.Name,
+      Channels = item.SourceChannelsAssignments.OrderBy(item => item.IndexA).Select(ass => new {
+        ass.Channel.Id,
+        Name = ass.Channel.Title ?? ass.Channel.Name,
       }),
       Contents = item.Contents
       .OrderByDescending(item => item.PublishedAt)
@@ -19,23 +15,21 @@
         ct.Id,
         ct.Name,
         ct.PublishedAt,
-        Guests = ct.GuestPersonaAssignments
-        .OrderBy(ass => ass.Index)
+        Guests = ct.GuestPersonaAssignments.OrderBy(ass => ass.IndexB)
         .Select(ass => new {
           ass.Guest.Id,
           ass.Guest.Name,
         })
         ,
-        Sources = ct.SourceAssignments
-        .OrderBy(item => item.Index)
-        .Select(ass => new {
-          ass.Source.Href,
-          Definition = ass.Source.Definition == null ? null : new {
-            ass.Source.Definition.Name,
+        Sources = ct.Sources
+        .Select(source => new {
+          source.Href,
+          Definition = source.Definition == null ? null : new {
+            source.Definition.Name,
             Platform = new {
-              ass.Source.Definition.Platform.Id,
-              ass.Source.Definition.Platform.Name,
-              ass.Source.Definition.Platform.IconPath,
+              source.Definition.Platform.Id,
+              source.Definition.Platform.Name,
+              source.Definition.Platform.IconPath,
             }
           }
         })
@@ -46,18 +40,15 @@
   <IfSome Context="model">
     <PageTitle>@model.Name - sars.lt</PageTitle>
     <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
-      @if (model.Parent != null)
-      {
-        <a href="/c/fam/@model.Parent.Id">@model.Parent.Name</a>
-        <text> &raquo; </text>
-      }
       @model.Name
     </FluentStack>
     @Before
     <div>
-      Children (<a href="/create/c/fam?ParentId=@this.Id">add</a>):
-      <OneOrMany ParamList=@model.Children Context="child">
-        <a href="/c/fam/@child.Id">@child.Name</a>
+      Channels: 
+      <OneOrMany ParamList=@(model.Channels) Context="ch">
+        <ChildContent>
+          <a href="/s/channels/@ch.Id">@ch.Name</a>
+        </ChildContent>
       </OneOrMany>
     </div>
     <div>
@@ -69,6 +60,7 @@
           {
             <tr>
               <td>@ct.PublishedAt?.ToShortDateString()</td>
+              <td><Name ParamHref=@($"/c/contents/{ct.Id}") ParamName="@ct.Name" /></td>
               <td>
                 <OneOrMany ParamList=@ct.Guests>
                   <ChildContent Context="guest">
@@ -76,7 +68,6 @@
                   </ChildContent>
                 </OneOrMany>
               </td>
-              <td><Name ParamHref=@($"/c/contents/{ct.Id}") ParamName="@ct.Name" /></td>
             </tr>
           }
         </table>

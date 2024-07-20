@@ -4,10 +4,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Contenter.Models.Sources;
 public enum SourceFlags
 {
-  None,
-  Preview,
-  Paid,
-  Unlisted,
+  None = 0,
+  Preview = 1,
+  Paid = 2,
+  Unlisted = 4,
+  
+  DoesntHaveContentIntentionally = 8,
+  DoesntHaveContentForNow = DoesntHaveContentIntentionally | 16
 }
 public class Source: IIded<Guid>
 {
@@ -43,5 +46,6 @@ public class Source: IIded<Guid>
   public Channel? Channel { get; set; } 
   public string? ChannelUid { get; set; }
 
-  public List<Contents.ContentSources> ContentAssignments { get; set; } = [];
+  public Contents.Content? Content { get; set; } 
+  public Guid? ContentId { get; set; }
 }

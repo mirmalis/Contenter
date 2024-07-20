@@ -9,8 +9,12 @@
 </FluentLabel>
 <_Display Id=@this.Id />
 
-<div>
-  <a href="/edit/s/sources/@this.Id">Edit</a>
-  |
-  <a href="/delete/s/sources/@this.Id">Delete</a>
-</div>
+<AuthorizeView Policy="AdminSuper">
+  <Authorized>
+    <div>
+      <a href="/edit/s/sources/@this.Id">Edit</a>
+      |
+      <a href="/delete/s/sources/@this.Id">Delete</a>
+    </div>
+  </Authorized>
+</AuthorizeView>

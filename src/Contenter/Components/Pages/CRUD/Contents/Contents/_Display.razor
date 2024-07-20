@@ -9,29 +9,22 @@
       Fam = item.FamId == null ? null : new {
         Id = item.FamId!.Value,
         item.Fam!.Name,
-        Parent = item.Fam.ParentId == null ? null : new {
-          Id = item.Fam.ParentId!.Value,
-          item.Fam.Parent!.Name,
-        }
       },
-      Guests =  item.GuestPersonaAssignments
-      .OrderBy(item => item.Index)
+      Guests =  item.GuestPersonaAssignments.OrderBy(item => item.IndexB)
       .Select(ass => new {
         Id = ass.GuestId,
         ass.Guest.Name,
       }),
-      Sources = item.SourceAssignments
-      .OrderBy(item => item.Index)
-      .Select(ass => new {
-        Id = ass.SourceId,
-        ass.Source.Href,
-        ass.Source.Flags,
-        Definition = ass.Source.Definition == null ? null : new {
-          ass.Source.Definition.Name,
+      Sources = item.Sources.Select(source => new {
+        Id = source.Id,
+        source.Href,
+        source.Flags,
+        Definition = source.Definition == null ? null : new {
+          source.Definition.Name,
           Platform = new {
-            ass.Source.Definition.Platform.Id,
-            ass.Source.Definition.Platform.Name,
-            ass.Source.Definition.Platform.IconPath,
+            source.Definition.Platform.Id,
+            source.Definition.Platform.Name,
+            source.Definition.Platform.IconPath,
           }
         }
       })
@@ -43,11 +36,6 @@
     <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
       @if (model.Fam != null)
       {
-        @if (model.Fam.Parent != null)
-        {
-          <a href="/c/fam/@model.Fam.Parent.Id">@model.Fam.Parent.Name</a>
-          <text> &raquo; </text>
-        }
         <a href="/c/fam/@model.Fam.Id">@model.Fam.Name</a>
         <text> &raquo; </text>
       }

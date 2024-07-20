@@ -10,6 +10,7 @@ public class SourcePlatform: IIded<string>
   public string Name { get; set; } = default!;
   [Required]
   public string IconPath { get; set; } = default!;
+  public string? ChannelName { get; set; } = "channel";
 
   public List<Channel> Channels { get; set; } = [];
   public List<SourceDefinition> Definitions { get; set; } = [];

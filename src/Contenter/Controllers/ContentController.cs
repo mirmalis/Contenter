@@ -30,29 +30,26 @@ public class ContentController: ControllerBase
     // todo: būtų galima prieš aper krepinį padaryt. Tik v kaip ištraukt iš identifier (reiktų aper logiką dubliuot).
     var sources = await this.db.Set<Contenter.Models.Sources.Source>()
       .Where(item => item.Href == obj.Href)
-      .Include(item => item.ContentAssignments)
+      .Include(item => item.Content)
       .ToListAsync()
     ;
     if(sources != null)
     {
-      var ids = sources.SelectMany(s => s.ContentAssignments);
+      var ids = sources.Select(item => item.ContentId);
       if (ids.Any())
       {
-        return Ok(ids.First().ContentId);
+        return Ok(ids.First());
         // TODO: dadaryt
       }
     }
     var content = new Contenter.Models.Contents.Content() {
       PublishedAt = obj.PublishedAt,
       Name = obj.Title,
-      SourceAssignments = [
-        new Contenter.Models.Contents.ContentSources(){
-          Source = new Source() {
-            Href = obj.Href,
-            PlatformId = "yt",
-            DefinitionUid = "video",
-          },
-          Index = 1,
+      Sources = [
+        new Source() {
+          Href = obj.Href,
+          PlatformId = "yt",
+          DefinitionUid = "video",
         }
       ]
     };

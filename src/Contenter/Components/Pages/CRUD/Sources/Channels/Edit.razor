@@ -6,6 +6,8 @@
   protected override IQueryable<Contenter.Models.Sources.Channel> Includer(IQueryable<Contenter.Models.Sources.Channel> dbset)
   {
     return base.Includer(dbset)
+    .Include(item => item.Platform)
+    .Include(item => item.CotentFamsAssignments).ThenInclude(item => item.ContentFam)
     ;
   }
 }

@@ -1,5 +1,6 @@
 ﻿namespace Contenter.Models.Contents;
 public interface ILister
 {
-  public int Index { get; set; }
+  public int IndexA { get; set; }
+  public int IndexB { get; set; }
 }

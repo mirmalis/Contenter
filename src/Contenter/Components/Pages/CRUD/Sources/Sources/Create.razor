@@ -4,6 +4,8 @@
 @code
 {
   [SupplyParameterFromQuery]
+  public string? PlatformId { get; set; }
+  [SupplyParameterFromQuery]
   public string? Href { get; set; }
   [SupplyParameterFromQuery]
   public Guid? ContentId { get; set; }
@@ -13,6 +15,7 @@
 <h3>Create Source</h3>
 @inject NavigationManager navigationManager
 <_Create 
+  PlatformId=@this.PlatformId
   Href=@this.Href
   ContentId=this.ContentId
   OnAfterSave=@(async (Contenter.Models.Sources.Source model) => {

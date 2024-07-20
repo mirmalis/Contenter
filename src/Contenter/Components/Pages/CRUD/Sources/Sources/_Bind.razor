@@ -1,4 +1,5 @@
 ﻿@inherits _Binder<Contenter.Models.Sources.Source>
+@using Contenter.Views.Components.CreateOrChooseComponents
 @rendermode InteractiveServer
 <EditForm Model=@this.model OnValidSubmit=@this.OnValidSubmit FormName="create">
   <DataAnnotationsValidator />
@@ -6,15 +7,39 @@
 
   <FluentStack Orientation="@Orientation.Vertical">
     <div>
+      <EFSelect Label="Platform" value=@this.model.Platform valueChanged=@((Models.Sources.SourcePlatform val) => {
+        this.model.Platform = val;
+        this.model.Channel = null;
+        this.model.Definition = null;
+      }) />
       <FluentTextField Value=@this.model.Href ValueChanged="@(async href => await this.SetHref(href))" Label="Href" Required Style="width:100%;" />
+      @if(!string.IsNullOrWhiteSpace(this.model.Href))
+      {
+        <FluentButton OnClick=@(async () => {
+          await this.SetHref(this.model.Href);
+          this.StateHasChanged();
+        })>Try get data
+        @(this.model.Platform?.Id ?? this.model.PlatformId)
+        </FluentButton>
+        <ExpList ParamSource=@(this.db.Sources.Where(item => item.Id != this.model.Id && item.Href == this.model.Href).Select(item => new {item.Id, item.Name}))>
+          <Wrapper Context="rows">
+            <div>
+              Sources with same Href:
+              <ul>@rows</ul>
+            </div>
+          </Wrapper>
+          <IfSome Context="s">
+            <li>
+              <a href="/s/sources/@s.Id">@(s.Name ?? "Details")</a>
+            </li>
+          </IfSome>
+          <IfNone></IfNone>
+        </ExpList>
+      }
+        
       @if (this.model.Href != null)
       {
-        <EFSelect Label="Platform" value=@this.model.Platform valueChanged=@((Models.Sources.SourcePlatform val) => {
-          this.model.Platform = val;
-          this.model.Channel = null;
-          this.model.Definition = null;
-        }) />
-        @if (this.model.Platform != null)
+        @if (this.model.Platform != null || this.model.PlatformId != null)
         {
           <EFSelect Label="Definition"
                     ParamSource=@(db => this.db.Entry(this.model.Platform).Collection(pl => pl.Definitions).Query())
@@ -30,46 +55,31 @@
       }
     </div>
     <div>
-      Contents:
-      @if (model.ContentAssignments.Any())
+      Content:
+      @if(this.model.Content == null)
       {
-        <table class="bord">
-          <tr>
-            <th>Index</th>
-            <th>Content</th>
-          </tr>
-          @foreach (var ass in model.ContentAssignments)
-          {
-            <tr>
-              <td>@ass.Index</td>
-              <td>
-                <Contenter.Components.Pages.CRUD.Contents.Contents._Bind 
-                model=@ass.Content OnValidSubmitCallback=@((val) => ass.Content = val) 
-                ShowSources="false"
-                />
-                @* <Name ParamName=@ass.Content.Name /> *@
-              </td>
-            </tr>
-          }
-        </table>
-      } else
-      {
-        <FluentButton  Appearance="@Appearance.Accent"
+        <FluentButton Appearance="@Appearance.Accent"
           OnClick="@(() => {
-            this.model.ContentAssignments = [
-              new(){
-                Index = 1,
-                Content = new(){
-                  Name = this.model.Name,
-                  PublishedAt = this.model.PublishedAt,
-                }
-              }
-            ];
+            this.model.Content = new(){
+              Name = this.model.Name,
+              GuestPersonaAssignments = [],
+              PublishedAt = this.model.PublishedAt,
+            };
           })" >
           Form new Content
-          </FluentButton>
+        </FluentButton>
+      } else
+      {
+        <FluentButton IconStart="@(new Icons.Regular.Size20.Delete())" OnClick=@(() => this.model.Content = null)></FluentButton>
+        <div style="border: solid 1px grey;">
+          <Contenter.Components.Pages.CRUD.Contents.Contents._Bind
+            model=@model.Content
+            OnValidSubmitCallback=@(val => model.Content = val)
+          />
+        </div>
+        
       }
-      </div>
+    </div>
     @if (ChildContent != null)
     {
       <div>

@@ -1,4 +1,6 @@
 ﻿@page "/s/channels/{id:guid}"
+@attribute [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+@rendermode InteractiveServer
 @code {
   [Parameter]
   public Guid Id { get; set; }
@@ -8,8 +10,12 @@
 </FluentLabel>
 <_Display Id=@this.Id />
 
-<div>
-  <a href="/edit/s/channels/@this.Id">Edit</a>
-  |
-  <a href="/delete/s/channels/@this.Id">Delete</a>
-</div>
+<AuthorizeView Policy="AdminSuper">
+  <Authorized>
+    <div>
+      <a href="/edit/s/channels/@this.Id">Edit</a>
+      |
+      <a href="/delete/s/channels/@this.Id">Delete</a>
+    </div>
+  </Authorized>
+</AuthorizeView>

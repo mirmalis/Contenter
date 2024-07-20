@@ -17,8 +17,17 @@
     <div>
       <FluentTextArea @bind-Value=@this.model.Description Label="Description" Required="false" />
     </div>
-    <div></div>
-    <div></div>
+    <div>
+      @if(this.model.Links != null)
+      {
+        <StringListmanager @bind-list=@this.model.Links />
+      }
+      <FluentButton OnClick=@(() => {
+        this.model.Links ??= [];
+        this.model.Links.Add(string.Empty);
+      })> Add link
+      </FluentButton>
+    </div>
     @if (ChildContent != null)
     {
       <FluentButton Type=@ButtonType.Submit Appearance=@Appearance.Accent>@ChildContent</FluentButton>

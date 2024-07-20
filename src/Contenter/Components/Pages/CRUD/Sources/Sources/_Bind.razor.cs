@@ -18,13 +18,11 @@ public partial class _Bind: _Binder<Contenter.Models.Sources.Source>
     {
       await this.SetHref(this.Href);
     }
-
   }
   [Inject] public IYoutubeBroker yt { get; set; } = default!;
   private async Task SetHref(string href)
   {
-
-    if (href.Contains("youtube"))
+    if((this.model.Platform?.Id ?? this.model.PlatformId) == "yt")
     {
       var ytInfo = await this.yt.GetVideoInfo(href);
       if (ytInfo != null)
@@ -38,15 +36,16 @@ public partial class _Bind: _Binder<Contenter.Models.Sources.Source>
             Uid = ytInfo.Author.Id,
             Title = ytInfo.Author.Title,
             PlatformId = "yt",
+            Href = ytInfo.Author.Href,
           };
         this.model.Href = ytInfo.Href;
         this.model.Name = ytInfo.Title;
         this.model.PublishedAt = ytInfo.PublishedAt;
       }
-    } else
+    }
+    else
     {
       this.model.Href = href;
     }
-    
   }
 }

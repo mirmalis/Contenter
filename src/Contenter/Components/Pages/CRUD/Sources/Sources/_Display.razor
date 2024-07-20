@@ -16,6 +16,14 @@
         },
         item.DefinitionUid,
       },
+      Content = item.ContentId == null ? null : new {
+        item.Content!.Id,
+        item.Content.Name,
+        Guests = item.Content.GuestPersonaAssignments.Select(guestAss => new {
+          guestAss.Guest.Id,
+          guestAss.Guest.Name
+        })
+      }
     })
   )
 >
@@ -29,10 +37,30 @@
           <text> &raquo; </text>
         }
       }
+      
+      <a href="@model.Href" target="_blank">
         <Contenter.Views.Bases.ImageBase Source=@model.Platform.IconPath />
-      <a href="@model.Href" target="_blank">@(model.Name ?? model.Platform?.DefinitionUid ?? "source")</a>
+        @(model.Name ?? model.Platform?.DefinitionUid ?? "source")
+      </a>
     </FluentStack>
     @Before
+    @if (model.Content != null)
+    {
+      <div>
+        <a href="/c/contents/@model.Content.Id">@(model.Content.Name ?? "no-name")</a>
+        @if (model.Content.Guests.Any())
+        {
+          <ul>
+            @foreach (var guest in model.Content.Guests)
+            {
+              <li>
+                <a href="/p/personas/@guest.Id">@guest.Name</a>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    }
     @After
   </IfSome>
 </ExpList>

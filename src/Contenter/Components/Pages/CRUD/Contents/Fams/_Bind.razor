@@ -15,38 +15,30 @@
       <FluentTextField @bind-Value=@model.Name Label="Name" Required />
     </div>
     <div>
-      <EFSelect @bind-value=@model.Parent Label="Parent" />
+      Associated Channels:
+      <EFSelect T="@Contenter.Models.Sources.Channel"
+        value=null 
+        valueChanged=@(val => {
+          if(val == null)
+            return;
+          this.model.SourceChannelsAssignments ??= [];
+          var ind = this.model.SourceChannelsAssignments.Any() ? this.model.SourceChannelsAssignments.Select(item => item.IndexA).Max() + 1 : 1;
+          this.model.SourceChannelsAssignments.Add(
+            new() {
+              IndexA = ind,
+              IndexB = 1,
+              Channel = val,
+            }
+          );
+        })
+      />
+      <Listmanager
+        @bind-list=@this.model.SourceChannelsAssignments
+        Context="ass"
+      >
+        <td>@ass.Channel</td>
+      </Listmanager>
     </div>
-    <div>
-      PayLinks:
-      <div>
-
-        <InputText @bind-Value=@this.nextPayLink />
-        <button  type="button"
-          Disabled="@(string.IsNullOrWhiteSpace(this.nextPayLink))"
-          @onclick=@(() => {
-            model.PayLinks.Add(this.nextPayLink);
-            this.nextPayLink = string.Empty;
-          })
-        >
-          Add
-        </button>
-      </div>
-      @if (model.PayLinks.Any())
-      {
-        <ul>
-          @foreach(var paylink in model.PayLinks)
-          {
-            <li @onclick=@(() => model.PayLinks.Remove(paylink))>
-              @paylink
-
-              <span class="muted">(click to remove)</span>
-            </li>
-          }
-        </ul>
-      }
-    </div>
-    <div></div>
     @if (ChildContent != null)
     {
       <FluentButton Type=@ButtonType.Submit Appearance=@Appearance.Accent>@ChildContent</FluentButton>

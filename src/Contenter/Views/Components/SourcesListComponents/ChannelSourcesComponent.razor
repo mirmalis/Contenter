@@ -1,0 +1,57 @@
+﻿@using Contenter.Views.Components.ContainerComponents
+@rendermode Microsoft.AspNetCore.Components.Web.RenderMode.InteractiveServer
+<ContainerComponent State=@this.State>
+  <Content>
+    <table class="bord">
+      @if (this.Datas != null)
+      {
+        @foreach (var source in this.Datas)
+        {
+          <tr>
+            <td>@source.PublishedAt?.ToShortDateString()</td>
+            <td>
+              <a href="@source.Href" target="_blank">@source.Name</a>
+            </td>
+            <td>
+              <a href="/s/sources/@source.Id">Details</a> |
+              <a href="/edit/s/sources/@source.Id">Edit</a> |
+              <a href="/delete/s/sources/@source.Id">Delete</a>
+            </td>
+          </tr>
+        }
+      }
+    </table>
+    @if (this.HasMore)
+    {
+      <Microsoft.FluentUI.AspNetCore.Components.FluentButton OnClick=@(async () => await More()) Style="width:100%; height: 52px;" Appearance="@Microsoft.FluentUI.AspNetCore.Components.Appearance.Accent" Disabled="@(!this.HasMore)">
+        Older
+      </Microsoft.FluentUI.AspNetCore.Components.FluentButton>
+    }
+
+  </Content>
+  <Loading>
+    <GridBase>
+      @foreach (var i in new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 })
+      {
+        <GridItemBase>
+          <CardBase Height="250px">
+            <SkeletonBase>
+              <svg style="position: absolute; left: 0; top: 0;" id="pattern" width="100%" height="100%">
+                <defs>
+                  <mask id="mask" x="0" y="0" width="100%" height="100%">
+                    <rect x="0" y="0" width="100%" height="100%" fill="#ffffff" />
+                    <rect x="0" y="0" width="100%" height="45%" rx="4" />
+                    <rect x="25" y="55%" width="90%" height="15px" rx="4" />
+                    <rect x="25" y="65%" width="70%" height="15px" rx="4" />
+                    <rect x="25" y="80%" width="90px" height="30px" rx="4" />
+                  </mask>
+                </defs>
+                <rect x="0" y="0" width="100%" height="100%" mask="url(#mask)" fill="#ffffff" />
+              </svg>
+            </SkeletonBase>
+          </CardBase>
+        </GridItemBase>
+      }
+    </GridBase>
+  </Loading>
+</ContainerComponent>

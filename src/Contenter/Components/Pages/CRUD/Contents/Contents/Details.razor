@@ -4,10 +4,18 @@
   [Parameter]
   public Guid Id { get; set; }
 }
+
+<FluentLabel Typo=@Typography.H5>
+  Content
+</FluentLabel>
 <_Display Id=@this.Id />
 
 <div>
-  <a href="/edit/c/contents/@this.Id">Edit</a>
-  |
-  <a href="/delete/c/contents/@this.Id">Delete</a>
+  <AuthorizeView Policy="AdminSuper">
+    <Authorized>
+      <a href="/edit/c/contents/@this.Id">Edit</a>
+      |
+      <a href="/delete/c/contents/@this.Id">Delete</a>
+    </Authorized>
+  </AuthorizeView>
 </div>

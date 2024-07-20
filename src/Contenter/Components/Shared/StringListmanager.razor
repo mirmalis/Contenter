@@ -1,0 +1,76 @@
+﻿@code {
+  [Parameter]
+  public RenderFragment? TableHeader { get; set; }
+  [Parameter] public List<string> list { get; set; }
+  [Parameter] public EventCallback<List<string>> listChanged { get; set; }
+  override protected async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+    this.arr = list.ToArray();
+  }
+  private string?[] arr { get; set; } = [];
+}
+@if (this.list.Any())
+{
+
+  <table class="bord">
+    @this.TableHeader
+    @for (var index = 0; index < this.arr.Length; index++)
+    {
+      var i = index;
+      <tr>
+        <td>
+          <FluentTextField Value=@arr[i] ValueChanged=@(async val => {
+            Console.WriteLine($"{i}/{arr.Length}");
+                       arr[i] = val;
+                       await PushArrayAsList();
+            Console.WriteLine(arr[0]);
+          }) />
+        </td>
+        <td>
+          <FluentButton IconEnd="@(new Icons.Regular.Size16.ArrowCircleUp())"
+                        OnClick="@(async () => await this.MoveUp(i))" 
+                        Disabled="@(i == 0)"                        />
+          <FluentButton IconEnd="@(new Icons.Regular.Size16.ArrowCircleDown())"
+                        OnClick="@(async () => await this.MoveDown(i))" 
+                        Disabled="@(i == this.arr.Length - 1)"
+                        />
+          <FluentButton IconEnd="@(new Icons.Regular.Size16.Delete())"
+                        OnClick="@(async () => await this.Remove(i))" />
+        </td>
+      </tr>
+    }
+  </table>
+}
+
+@code {
+  private async Task PushArrayAsList()
+  {
+    await this.listChanged.InvokeAsync(arr.Where(item => item != null).Select(item => item!).ToList());
+  }
+  private async Task MoveUp(int i)
+  {
+    if (i <= 0)
+      return;
+    (arr[i], arr[i - 1]) = (arr[i-1], arr[i]);
+    await PushArrayAsList();
+  }
+  private async Task MoveDown(int i)
+  {
+    if (i < 0)
+      return;
+    if(i >= this.arr.Length - 1)
+      return;
+    (arr[i+1], arr[i]) = (arr[i], arr[i+1]);
+    await this.PushArrayAsList();
+  }
+  private async Task Remove(int i)
+  {
+    if (i < 0)
+      return;
+    if (i > this.arr.Length - 1)
+      return;
+    this.arr[i] = null;
+    await this.PushArrayAsList();
+  }
+}

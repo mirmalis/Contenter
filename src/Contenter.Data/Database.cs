@@ -28,16 +28,18 @@ public class Database(DbContextOptions<Database> options): DbContext(options)
 
       personaGuestAss.HasKey(item => new { item.ContentId, item.GuestId });
     });
-    mb.Entity<Contenter.Models.Contents.ContentSources>(sourceAss => {
-      sourceAss.HasKey(item => new { item.ContentId, item.SourceId });
-    });
     mb.Entity<Contenter.Models.Contents.ContentFam>(contentFam => {
       contentFam.ToTable("ContentFam");
-      contentFam.Property(item => item.PayLinks).HasDefaultValue(new List<string>());
+      contentFam.HasMany(item => item.SourceChannels).WithMany(item => item.CotentFams)
+        .UsingEntity<Models.Contents.ContentFamChannel>(
+          l => l.HasOne(item => item.Channel).WithMany(item => item.CotentFamsAssignments),
+          r => r.HasOne(item => item.ContentFam).WithMany(item => item.SourceChannelsAssignments)
+        );
     });
     #endregion
     #region Persons
     mb.Entity<Contenter.Models.Persons.Persona>(persona => {
+      persona.Property(item => item.Links).HasDefaultValue(new List<string>());
     });
     #endregion
     #region Sources

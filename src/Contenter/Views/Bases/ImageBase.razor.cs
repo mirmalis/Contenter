@@ -5,7 +5,7 @@ public partial class ImageBase: ComponentBase
 {
   [EditorRequired]
   [Parameter]
-  public string Source { get; set; } = default!;
+  public string? Source { get; set; } = default!;
 
   [Parameter]
   public string? Alt { get; set; }
@@ -16,5 +16,5 @@ public partial class ImageBase: ComponentBase
   [Parameter]
   public string? Height { get; set; }
 
-  public string GetImageSource() => this.Source;
+  public string? GetImageSource() => this.Source;
 }

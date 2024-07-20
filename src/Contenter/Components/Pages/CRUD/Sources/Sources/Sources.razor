@@ -1,0 +1,112 @@
+﻿@rendermode InteractiveServer
+@inject Contenter.Brokers.Sources.ISourceBroker sourcebroker
+@using Contenter.Views.Bases
+@code {
+  [Parameter]
+  public int Skip { get; set; } = 0;
+  [Parameter]
+  public int Take { get; set; } = 20;
+
+  [Parameter]
+  public Func<Contenter.Models.Sources.Source, bool> FilterExpression { get; set; } = source => true;
+
+  [Parameter]
+  public bool ParamNoContent { get; set; } = false;
+  private System.Linq.Expressions.Expression<Func<Contenter.Models.Sources.Source, bool>> filterFunc()
+  {
+    if (ParamNoContent)
+      return s => s.ContentId == null && !s.Flags.HasFlag(Models.Sources.SourceFlags.DoesntHaveContentIntentionally);
+    return s => true;
+  }
+}
+@inject Contenter.Data.Database db
+<MyLoader 
+  Skip=@this.Skip
+  Take=@this.Take
+  ParamSource=@(
+    this.db.Sources
+    .Where(filterFunc())
+    .OrderByDescending(item => item.CreatedAt)
+    .Select(s => new {
+      s.Id,
+      s.Href,
+      Channel = s.ChannelUid == null ? null : new {
+        s.Channel!.Id,
+        Name = s.Channel.Title ?? s.Channel.Name ?? s.Channel.Handle,
+      },
+      Platform = s.PlatformId == null ? null : new {
+        s.Platform!.IconPath,
+      },
+      Name = s.Name,
+      Content = s.ContentId == null ? null : new {
+        Id = s.ContentId!.Value,
+        s.Content!.Name,
+        Fam = s.Content.FamId == null ? null : new {
+          s.Content.Fam!.Id,
+          s.Content.Fam.Name,
+        },
+        Guests = s.Content.GuestPersonaAssignments.OrderBy(item => item.IndexA).Select(gass => new {
+          Id = gass.GuestId,
+          gass.Guest.Name,
+        })
+      }
+    })
+  )>
+  <Wrapper Context="rows">
+    <table class="bord">@rows</table>
+  </Wrapper>
+  <IfSome Context="model">
+    <tr>
+      <td>
+        @if(model.Channel != null)
+        {
+          <AnchorBase MaxLength="16" href=@($"/s/channels/{model.Channel.Id}") Text="@model.Channel.Name"></AnchorBase>
+        }
+        @if (model.Channel != null && model.Content?.Fam != null)
+        {
+          <text>&raquo;</text>
+        }
+        @if (model.Content?.Fam != null)
+        {
+          <AnchorBase MaxLength="20" Text="@model.Content.Fam.Name" href=@($"/c/fam/{model.Content.Fam.Id}") />
+        }
+        @if (model.Content?.Guests?.Any() == true)
+        {
+          <ul>
+            @foreach(var guest in model.Content.Guests)
+            {
+              <li>
+                <a href="/p/personas/@guest.Id">@guest.Name</a>
+              </li>
+            }
+          </ul>
+        }
+      </td>
+      <td>
+        <AnchorBase MaxLength="40" href=@model.Href NewTab IconStart=@model.Platform?.IconPath Text="@(model.Content?.Name ?? model.Name)" />
+      </td>
+      <td>
+        <a href="/s/sources/@model.Id">Details</a>
+        @if (model.Content != null)
+        {
+          <text>
+            | <a href="/c/contents/@model.Content.Id">ct</a>
+          </text>
+        }
+        <AuthorizeView Policy="AdminSuper">
+          <Authorized>
+            | <a href="/edit/s/sources/@model.Id">Edit</a>
+            | <a href="/delete/s/sources/@model.Id">Delete</a>
+            @if (model.Content == null)
+            {
+              <text>
+            | <button @onclick=@(async () => await this.sourcebroker.Mark_as_WontHaveContent_ById(model.Id))>no content</button>
+
+              </text> 
+            }
+          </Authorized>
+        </AuthorizeView>
+      </td>
+    </tr>
+  </IfSome>
+</MyLoader>

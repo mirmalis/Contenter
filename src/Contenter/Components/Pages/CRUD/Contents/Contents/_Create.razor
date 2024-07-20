@@ -31,18 +31,16 @@
           };
         this.model.Name = videoInfo.Title;
         this.model.PublishedAt = videoInfo.PublishedAt;
-        this.model.SourceAssignments = [
-          new ContentSources(){
-            Index = 1,
-            Source = new(){
-              Channel = channel,
-              PublishedAt = videoInfo.PublishedAt,
-              Href = videoInfo.Href,
-              Name = videoInfo.Title,
-              Definition = await this.db.Set<Contenter.Models.Sources.SourceDefinition>().FirstOrDefaultAsync(item => item.PlatformId == "yt" && item.Uid == "video"),
-            }
+        this.model.Sources = [
+          new(){
+            Channel = channel,
+            PublishedAt = videoInfo.PublishedAt,
+            Href = videoInfo.Href,
+            Name = videoInfo.Title,
+            Definition = await this.db.Set<Contenter.Models.Sources.SourceDefinition>().FirstOrDefaultAsync(item => item.PlatformId == "yt" && item.Uid == "video"),
           }
-        ];
+        ]
+        ;
       }
     }
     if (this.FamId != null)

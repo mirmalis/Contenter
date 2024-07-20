@@ -11,10 +11,34 @@
   <FluentValidationSummary />
 
   <FluentStack Orientation="@Orientation.Vertical">
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
+    <div>
+      <FluentTextField @bind-Value=@this.model.Title Label="Title" Style="width:100%;" />
+      <FluentTextField @bind-Value=@this.model.Uid Label="Uid" Style="width:100%;" />
+      <FluentTextField @bind-Value=@this.model.Name Label="Name" Style="width:100%;" />
+      <FluentTextField @bind-Value=@this.model.Handle Label="Handle" Style="width:100%;" />
+      <FluentTextField @bind-Value=@this.model.Href Label="Href" Style="width:100%;" />
+    </div>
+    <div>
+      ContentFams:
+      <div>
+        <EFSelect T="@Contenter.Models.Contents.ContentFam"
+          value=null 
+          valueChanged=@(val => {
+            if(val == null)
+              return;
+            this.model.CotentFamsAssignments.Add(
+              new() {
+                IndexB = this.model.CotentFamsAssignments.Any() ? this.model.CotentFamsAssignments.Select(item => item.IndexB).Max() + 1 : 1,
+                ContentFam = val,
+              }
+            );
+          })
+        />
+        <Listmanager @bind-list=@this.model.CotentFamsAssignments Context="ass" Backwards>
+          <td>@ass.ContentFam</td>
+        </Listmanager>
+      </div>
+    </div>
     @if (ChildContent != null)
     {
       <FluentButton Type=@ButtonType.Submit Appearance=@Appearance.Accent>@ChildContent</FluentButton>

@@ -13,6 +13,13 @@
         }
       }
     </GridBase>
+    @if (this.HasMore)
+    {
+      <Microsoft.FluentUI.AspNetCore.Components.FluentButton OnClick=@More Style="width:100%; height: 52px;" Appearance="@Microsoft.FluentUI.AspNetCore.Components.Appearance.Accent" Disabled="@(!this.HasMore)">
+        Older
+      </Microsoft.FluentUI.AspNetCore.Components.FluentButton>
+    }
+
   </Content>
   <Loading>
     <GridBase>
@@ -40,9 +47,3 @@
     </GridBase>
   </Loading>
 </ContainerComponent>
-@if (this.HasMore)
-{
-  <Microsoft.FluentUI.AspNetCore.Components.FluentButton OnClick=@More Style="width:100%; height: 52px;" Appearance="@Microsoft.FluentUI.AspNetCore.Components.Appearance.Accent" Disabled="@(!this.HasMore)">
-    Older
-  </Microsoft.FluentUI.AspNetCore.Components.FluentButton>
-}
