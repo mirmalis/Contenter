@@ -22,3 +22,7 @@ open:
 clean:
 	for /d %%d in (*) do if exist %%d\bin (rmdir /s /q %%d\bin)
 	for /d %%d in (*) do if exist %%d\obj (rmdir /s /q %%d\obj)
+tar:
+	dotnet publish Contenter --os linux -a arm64 -o publish
+	docker build -f Dockerfile.rpi.justcopy -t contenter .
+	docker save -o //pi401/configs/projects/Contenter/dockerimage.tar contenter:latest
