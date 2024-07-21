@@ -1,5 +1,6 @@
 ﻿@page "/s/sources/{id:guid}"
 @attribute [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+@rendermode InteractiveServer
 @code {
   [Parameter]
   public Guid Id { get; set; }

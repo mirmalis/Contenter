@@ -1,5 +1,6 @@
 ﻿@inherits _Displayer<Contenter.Models.Sources.Source, Guid>
-
+@inject Contenter.Brokers.Sources.ISourceBroker sourceBroker
+@rendermode InteractiveServer
 <ExpList
   ParamExpectedCount="1"
   ParamSource=@(
@@ -7,6 +8,7 @@
     .Select(item => new {
       item.Name,
       item.Href,
+      item.Flags,
       Platform = item.PlatformId == null ? null : new {
         IconPath = item.Platform!.IconPath,
         Channel = item.ChannelUid == null ? null : new {
@@ -19,6 +21,10 @@
       Content = item.ContentId == null ? null : new {
         item.Content!.Id,
         item.Content.Name,
+        Fam = item.Content.FamId == null ? null : new {
+          item.Content.Fam!.Id,
+          item.Content.Fam.Name,
+        },
         Guests = item.Content.GuestPersonaAssignments.Select(guestAss => new {
           guestAss.Guest.Id,
           guestAss.Guest.Name
@@ -47,6 +53,11 @@
     @if (model.Content != null)
     {
       <div>
+        @if (model.Content.Fam != null)
+        {
+          <a href="/c/fam/@model.Content.Fam.Id">@model.Content.Fam.Name</a>
+          <text> &raquo; </text>
+        }
         <a href="/c/contents/@model.Content.Id">@(model.Content.Name ?? "no-name")</a>
         @if (model.Content.Guests.Any())
         {
@@ -60,6 +71,14 @@
           </ul>
         }
       </div>
+    }
+    @if (model.Flags.HasFlag(Models.Sources.SourceFlags.HiddenFromMain))
+    {
+      <button @onclick=@(async () => await this.sourceBroker.Shown_at_MainPage(this.Id, true))>show in main</button>
+      
+    } else
+    {
+      <button @onclick=@(async () => await this.sourceBroker.Shown_at_MainPage(this.Id, false))>hide from main</button>
     }
     @After
   </IfSome>

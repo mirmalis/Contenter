@@ -3,12 +3,9 @@
 @rendermode InteractiveServer
 @code
 {
-  [SupplyParameterFromQuery]
-  public Guid? ParentId { get; set; }
 }
 @inject NavigationManager navigationManager
 <_Create
-  ParentId=@this.ParentId
   OnAfterSave=@(async (Contenter.Models.Contents.ContentFam model) => {
     this.navigationManager.NavigateTo($"/c/fam/{model.Id}");
   })>

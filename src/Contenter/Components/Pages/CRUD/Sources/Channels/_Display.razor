@@ -1,4 +1,5 @@
 ﻿@inherits _Displayer<Contenter.Models.Sources.Channel, Guid>
+@rendermode InteractiveServer
 <ExpList
   ParamExpectedCount="1"
   ParamSource=@(
@@ -40,48 +41,113 @@
       }
       else
       {
-        <a href="@model.Href" target="_blank">
-          <Contenter.Views.Bases.ImageBase Source="@model.Platform.IconPath" />
-          @(name ?? "no-name")
-        </a>
+        <Contenter.Views.Bases.AnchorBase IconStart=@model.Platform.IconPath href=@model.Href NewTab Text=@name  />
       }
       
     </FluentStack>
     @Before
     <div>
-      <OneOrMany ParamList=@(model.ContentFams) Context="fam">
-        <a href="/c/fam/@fam.Id">@fam.Name</a>
-      </OneOrMany>
+      <FluentSelect TOption=@((XX, Guid?))>
+        <FluentOption OnSelect=@(() => this.ChangeFilter(XX.All, null))>All</FluentOption>
+        <FluentOption OnSelect=@(() => this.ChangeFilter(XX.NoContentOrNoFam, null))>Nepriskirti</FluentOption>
+        @foreach (var fam in model.ContentFams)
+        {
+          <FluentOption OnSelect=@(() => this.ChangeFilter(XX.SpecificFam, fam.Id))>
+            @fam.Name
+          </FluentOption>
+        }
+        <FluentOption OnSelect=@(() => this.ChangeFilter(XX.BeContent, null))>Nesutvarkyti</FluentOption>
+        <FluentOption OnSelect=@(() => this.ChangeFilter(XX.NepriskirtiFamai, null))>Klaidos</FluentOption>
+      </FluentSelect>
+      @if (this.X == XX.SpecificFam && this.FamId != null)
+      {
+        <a href="/c/fam/@this.FamId">open</a>
+      }
     </div>
-
-    <MyLoader ParamSource=@(this.db.Sources.OrderByDescending(item => item.PublishedAt).Where(item => item.Channel != null && item.Channel.Id == this.Id))>
-      <Wrapper Context="rows">
-        <table class="bord">@rows</table>
-      </Wrapper>
-      <IfSome Context="source">
-        <tr>
-          <td>@source.PublishedAt?.ToShortDateString()</td>
-          <td>
-            <a href="@source.Href" target="_blank">
-              @if (model.Platform.IconPath != null)
+    @if (this.ShowAll)
+    {
+      <MyLoader @ref=@this.SourcesLoader
+        ParamSource=@(
+          this.db.Sources
+          .Where(item => item.Channel != null && item.Channel.Id == this.Id)
+          .Where(this.ChannelContentFilter(model.ContentFams.Select(item => item.Id).ToList()))
+          .OrderByDescending(item => item.PublishedAt)
+          .Select(s => new {
+            s.Id,
+            PublishedAt = s.PublishedAt == null ? null : s.PublishedAt.Value.ToShortDateString(),
+            s.Href,
+            s.Name,
+            Content = s.ContentId == null ? null : new {
+              s.Content!.Id,
+              s.Content.Name,
+              Fam = s.Content.FamId == null ? null : new {
+                s.Content.Fam!.Id,
+                s.Content.Fam.Name,
+              },
+              Guests = s.Content.GuestPersonaAssignments.OrderBy(item => item.IndexA).Select(ass => new {
+                ass.Guest.Id,
+                ass.Guest.Name,
+              })
+            }
+          })
+        )>
+        <Wrapper Context="rows">
+          <table class="bord">@rows</table>
+        </Wrapper>
+        <IfSome Context="source">
+          <tr>
+            <td>
+              <a href="/s/sources/@source.Id">Details</a>
+              <AuthorizeView Policy="AdminSuper">
+                <Authorized>
+                  | <a href="/edit/s/sources/@source.Id">Edit</a>
+                  | <a href="/delete/s/sources/@source.Id">Delete</a>
+                </Authorized>
+              </AuthorizeView>
+            </td>
+            <td>@source.PublishedAt</td>
+            <td>
+              <a href="@source.Href" target="_blank">
+                @if (model.Platform.IconPath != null)
+                {
+                  <Contenter.Views.Bases.ImageBase Source="@model.Platform.IconPath" />
+                }
+                @source.Name
+              </a>
+            </td>
+            @if (this.X != XX.BeContent)
+            {
+            <td>
+              @if(source.Content != null)
               {
-                <Contenter.Views.Bases.ImageBase Source="@model.Platform.IconPath" />
+                @if(source.Content.Fam != null){
+                  <a href="/c/contents/@source.Content.Id">
+                    @source.Content.Fam.Name
+                  </a>
+                }
+                else
+                {
+                  <a href="/c/contents/@source.Content.Id" class="no-name">
+                    no-show
+                  </a>
+                }
+              
+                <OneOrMany ParamList=@source.Content.Guests Context="guest">
+                  <Before>
+                      &raquo;
+                  </Before>
+                  <ChildContent>
+                    <a href="/p/personas/@guest.Id">@guest.Name</a>
+                  </ChildContent>
+                  <IfNone></IfNone>
+                </OneOrMany>
               }
-              @source.Name
-            </a>
-          </td>
-          <td>
-            <a href="/s/sources/@source.Id">Details</a>
-            <AuthorizeView Policy="AdminSuper">
-              <Authorized>
-                | <a href="/edit/s/sources/@source.Id">Edit</a>
-                | <a href="/delete/s/sources/@source.Id">Delete</a>
-              </Authorized>
-            </AuthorizeView>
-          </td>
-        </tr>
-      </IfSome>
-    </MyLoader>
+            </td>
+            }
+          </tr>
+        </IfSome>
+      </MyLoader>
+    }
     @After
   </IfSome>
 </ExpList>

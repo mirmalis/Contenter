@@ -12,10 +12,14 @@
 
   [Parameter]
   public bool ParamNoContent { get; set; } = false;
+  [Parameter]
+  public bool ParamForMainPage { get; set; } = false;
   private System.Linq.Expressions.Expression<Func<Contenter.Models.Sources.Source, bool>> filterFunc()
   {
     if (ParamNoContent)
       return s => s.ContentId == null && !s.Flags.HasFlag(Models.Sources.SourceFlags.DoesntHaveContentIntentionally);
+    if (ParamForMainPage)
+      return s => !s.Flags.HasFlag(Models.Sources.SourceFlags.HiddenFromMain);
     return s => true;
   }
 }
@@ -25,6 +29,7 @@
   Take=@this.Take
   ParamSource=@(
     this.db.Sources
+    
     .Where(filterFunc())
     .OrderByDescending(item => item.CreatedAt)
     .Select(s => new {
@@ -58,52 +63,44 @@
   <IfSome Context="model">
     <tr>
       <td>
-        @if(model.Channel != null)
+        @if (model.Channel != null)
         {
           <AnchorBase MaxLength="16" href=@($"/s/channels/{model.Channel.Id}") Text="@model.Channel.Name"></AnchorBase>
         }
-        @if (model.Channel != null && model.Content?.Fam != null)
-        {
-          <text>&raquo;</text>
-        }
-        @if (model.Content?.Fam != null)
-        {
-          <AnchorBase MaxLength="20" Text="@model.Content.Fam.Name" href=@($"/c/fam/{model.Content.Fam.Id}") />
-        }
-        @if (model.Content?.Guests?.Any() == true)
-        {
-          <ul>
-            @foreach(var guest in model.Content.Guests)
-            {
-              <li>
-                <a href="/p/personas/@guest.Id">@guest.Name</a>
-              </li>
-            }
-          </ul>
-        }
       </td>
       <td>
-        <AnchorBase MaxLength="40" href=@model.Href NewTab IconStart=@model.Platform?.IconPath Text="@(model.Content?.Name ?? model.Name)" />
+        <AnchorBase MaxLength="35" href=@model.Href NewTab IconStart=@model.Platform?.IconPath Text="@(model.Content?.Name ?? model.Name)" />
+      </td>
+      <td>
+        @if (model.Content != null)
+        {
+          @if (model.Content.Fam != null)
+          {
+            <AnchorBase MaxLength="20" Text="@model.Content.Fam.Name" href=@($"/c/contents/{model.Content.Id}") />
+          } else
+          {
+            <a href="/c/contents/@model.Content.Id" class="no-name">no-show</a>
+            
+          }
+          @if (model.Content.Guests.Any())
+          {
+            <ul>
+              @foreach(var guest in model.Content.Guests)
+              {
+                <li>
+                  <a href="/p/personas/@guest.Id">@guest.Name</a>
+                </li>
+              }
+            </ul>
+          }
+        }
       </td>
       <td>
         <a href="/s/sources/@model.Id">Details</a>
-        @if (model.Content != null)
-        {
-          <text>
-            | <a href="/c/contents/@model.Content.Id">ct</a>
-          </text>
-        }
         <AuthorizeView Policy="AdminSuper">
           <Authorized>
             | <a href="/edit/s/sources/@model.Id">Edit</a>
             | <a href="/delete/s/sources/@model.Id">Delete</a>
-            @if (model.Content == null)
-            {
-              <text>
-            | <button @onclick=@(async () => await this.sourcebroker.Mark_as_WontHaveContent_ById(model.Id))>no content</button>
-
-              </text> 
-            }
           </Authorized>
         </AuthorizeView>
       </td>

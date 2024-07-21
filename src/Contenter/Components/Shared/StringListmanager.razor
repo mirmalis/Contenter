@@ -21,10 +21,8 @@
       <tr>
         <td>
           <FluentTextField Value=@arr[i] ValueChanged=@(async val => {
-            Console.WriteLine($"{i}/{arr.Length}");
                        arr[i] = val;
                        await PushArrayAsList();
-            Console.WriteLine(arr[0]);
           }) />
         </td>
         <td>

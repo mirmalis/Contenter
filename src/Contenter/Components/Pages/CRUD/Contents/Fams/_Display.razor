@@ -8,6 +8,11 @@
       Channels = item.SourceChannelsAssignments.OrderBy(item => item.IndexA).Select(ass => new {
         ass.Channel.Id,
         Name = ass.Channel.Title ?? ass.Channel.Name,
+        Platform = new {
+          ass.Channel.Platform.IconPath,
+          ass.Channel.Platform.Name,
+        },
+        ass.Channel.Href,
       }),
       Contents = item.Contents
       .OrderByDescending(item => item.PublishedAt)
@@ -43,14 +48,21 @@
       @model.Name
     </FluentStack>
     @Before
-    <div>
-      Channels: 
-      <OneOrMany ParamList=@(model.Channels) Context="ch">
-        <ChildContent>
-          <a href="/s/channels/@ch.Id">@ch.Name</a>
-        </ChildContent>
-      </OneOrMany>
-    </div>
+      @if (model.Channels.Any())
+      {
+        <div>
+          Channels: 
+          <table>
+            @foreach(var ch in model.Channels)
+            {
+              <tr>
+                <td><a href="/s/channels/@ch.Id">@ch.Name</a></td>
+                <td><Contenter.Views.Bases.AnchorBase IconStart=@ch.Platform.IconPath href=@ch.Href Text=@(ch.Platform.Name) NoText="" NewTab /></td>
+              </tr>
+            }
+          </table>
+        </div>
+      }
     <div>
       Contents (<a href="/create/c/contents?FamId=@this.Id">add</a>):
       @if (model.Contents.Any())

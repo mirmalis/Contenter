@@ -48,4 +48,18 @@ public partial class _Bind: _Binder<Contenter.Models.Sources.Source>
       this.model.Href = href;
     }
   }
+
+
+  private async Task InitializeContent(Guid? famId)
+  {
+    if(this.model.Content != null)
+      return;
+    var fam = famId == null ? null : await this.db.ContentFams.FirstOrDefaultAsync(item => item.Id == famId);
+    this.model.Content = new() {
+      Name = this.model.Name,
+      Fam = fam,
+      GuestPersonaAssignments = [],
+      PublishedAt = this.model.PublishedAt,
+    };
+  }
 }

@@ -18,7 +18,12 @@
       Sources = item.Sources.Select(source => new {
         Id = source.Id,
         source.Href,
+        source.Name,
         source.Flags,
+        Channel = source.ChannelUid == null ? null : new {
+          source.Channel!.Id,
+          Name = source.Channel.Title ?? source.Channel.Name,
+        },
         Definition = source.Definition == null ? null : new {
           source.Definition.Name,
           Platform = new {
@@ -58,6 +63,12 @@
       Sources (<a href="/create/s/sources?ContentId=@this.Id">add</a>): 
       <OneOrMany ParamList=@(model.Sources) Context="source">
         <ChildContent>
+          @if (source.Channel != null)
+          {
+            <a href="/s/channels/@source.Channel.Id">@source.Channel.Name</a> 
+            <text> &raquo; </text>
+          }
+          <a href="/s/sources/@source.Id">@source.Name</a>
           <AuthorizeView>
             <Authorized>
               <AIcon href=@source.Href DefinitionName=@source.Definition?.Name iconPath=@source.Definition?.Platform.IconPath PlatformId=@source.Definition?.Platform.Id PlatformName=@source.Definition?.Platform.Name Flags=source.Flags>
@@ -66,19 +77,19 @@
             </Authorized>
             <NotAuthorized>
               @if (model.Fam != null && source.Flags.HasFlag(Models.Sources.SourceFlags.Paid))
-                {
-                  <a href="/c/fam/@model.Fam.Id/pay">
-                    Mokamas
-                  </a>
-                }
-                else
-                {
-                  <AIcon href=@source.Href DefinitionName=@source.Definition?.Name iconPath=@source.Definition?.Platform.IconPath PlatformId=@source.Definition?.Platform.Id PlatformName=@source.Definition?.Platform.Name Flags=source.Flags>
-                    source
-                  </AIcon>
-                }
-              </NotAuthorized>
-            </AuthorizeView>
+              {
+                <a href="/c/fam/@model.Fam.Id/pay">
+                  Mokamas
+                </a>
+              }
+              else
+              {
+                <AIcon href=@source.Href DefinitionName=@source.Definition?.Name iconPath=@source.Definition?.Platform.IconPath PlatformId=@source.Definition?.Platform.Id PlatformName=@source.Definition?.Platform.Name Flags=source.Flags>
+                  source
+                </AIcon>
+              }
+            </NotAuthorized>
+          </AuthorizeView>
         </ChildContent>
       </OneOrMany>
     </div>

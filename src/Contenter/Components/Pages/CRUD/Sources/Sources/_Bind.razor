@@ -21,20 +21,6 @@
         })>Try get data
         @(this.model.Platform?.Id ?? this.model.PlatformId)
         </FluentButton>
-        <ExpList ParamSource=@(this.db.Sources.Where(item => item.Id != this.model.Id && item.Href == this.model.Href).Select(item => new {item.Id, item.Name}))>
-          <Wrapper Context="rows">
-            <div>
-              Sources with same Href:
-              <ul>@rows</ul>
-            </div>
-          </Wrapper>
-          <IfSome Context="s">
-            <li>
-              <a href="/s/sources/@s.Id">@(s.Name ?? "Details")</a>
-            </li>
-          </IfSome>
-          <IfNone></IfNone>
-        </ExpList>
       }
         
       @if (this.model.Href != null)
@@ -42,10 +28,10 @@
         @if (this.model.Platform != null || this.model.PlatformId != null)
         {
           <EFSelect Label="Definition"
-                    ParamSource=@(db => this.db.Entry(this.model.Platform).Collection(pl => pl.Definitions).Query())
+                    ParamSource=@(db => this.db.Entry(this.model.Platform!).Collection(pl => pl.Definitions).Query())
                     @bind-value=@this.model.Definition/>
           <EFSelect Label="Channel"
-                    ParamSource=@(db => this.db.Entry(this.model.Platform).Collection(pl => pl.Channels).Query())
+                    ParamSource=@(db => this.db.Entry(this.model.Platform!).Collection(pl => pl.Channels).Query())
                     @bind-value=@this.model.Channel 
           />
         }
@@ -55,21 +41,39 @@
       }
     </div>
     <div>
-      Content:
       @if(this.model.Content == null)
       {
+        <text>Initialize Content: </text>
         <FluentButton Appearance="@Appearance.Accent"
-          OnClick="@(() => {
-            this.model.Content = new(){
-              Name = this.model.Name,
-              GuestPersonaAssignments = [],
-              PublishedAt = this.model.PublishedAt,
-            };
-          })" >
-          Form new Content
+          OnClick="@(async () => await this.InitializeContent(null))" >
+          None
         </FluentButton>
+        @if (model.Channel?.Id  != null)
+        {
+          <ExpList 
+            ParamSource=@(
+              this.db.Channels
+              .Where(item => item.Id == model.Channel.Id)
+              .SelectMany(ch => 
+                ch.CotentFamsAssignments
+                .OrderBy(item => item.IndexB)
+                .Select(ass => new {
+                  ass.ContentFam.Id,
+                  ass.ContentFam.Name,
+                })
+              )
+            )
+          >
+            <IfSome Context="fam">
+              <FluentButton Appearance="@Appearance.Accent" OnClick="@(async () => await this.InitializeContent(fam.Id))">
+                @fam.Name
+              </FluentButton>
+            </IfSome>
+          </ExpList>
+        }
       } else
       {
+        <text>Content: </text>
         <FluentButton IconStart="@(new Icons.Regular.Size20.Delete())" OnClick=@(() => this.model.Content = null)></FluentButton>
         <div style="border: solid 1px grey;">
           <Contenter.Components.Pages.CRUD.Contents.Contents._Bind
@@ -82,9 +86,24 @@
     </div>
     @if (ChildContent != null)
     {
-      <div>
-        <FluentButton Type=@ButtonType.Submit Appearance=@Appearance.Accent>@ChildContent</FluentButton>
-      </div>
+      <ExpList ParamSource=@(this.db.Sources.Where(item => item.Id != this.model.Id && item.Href == this.model.Href).Select(item => new {item.Id, item.Name}))>
+        <Wrapper Context="rows">
+          <div>
+            Sources with same Href:
+            <ul>@rows</ul>
+          </div>
+        </Wrapper>
+        <IfSome Context="s">
+          <li>
+            <a href="/s/sources/@s.Id">@(s.Name ?? "Details")</a>
+          </li>
+        </IfSome>
+        <IfNone>
+          <div>
+            <FluentButton Type=@ButtonType.Submit Appearance=@Appearance.Accent>@ChildContent</FluentButton>
+          </div>
+        </IfNone>
+      </ExpList>
     }
   </FluentStack>
 </EditForm>

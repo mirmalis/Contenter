@@ -9,9 +9,18 @@
   [Parameter]
   public IQueryable<T> ParamSource { get; set; } = default!;
   private List<T> List { get; set; } = default!;
+  override protected async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+    this.List = [];
+    this.HasMore = true;
+    this.Skip = 0;
+
+    await More();
+  }
   protected override async Task OnInitializedAsync()
   {
-    await More();
+    this.List = [];
   }
   private bool HasMore { get; set; } = true;
   private async Task More()
@@ -23,7 +32,6 @@
       .ToListAsync();
     this.List.AddRange(items);
     this.Skip += this.Take;
-
     if(items.Count() < this.Take)
     {
       this.HasMore = false;

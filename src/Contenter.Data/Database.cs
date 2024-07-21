@@ -8,7 +8,7 @@ public class Database(DbContextOptions<Database> options): DbContext(options)
   public DbSet<Contenter.Models.Contents.ContentFam> ContentFams => this.Set<Contenter.Models.Contents.ContentFam>();
   public DbSet<Contenter.Models.Contents.ContentSave> ContentSaves => this.Set<Contenter.Models.Contents.ContentSave>();
   public DbSet<Contenter.Models.Sources.Source> Sources => this.Set<Contenter.Models.Sources.Source>();
-
+  public DbSet<Contenter.Models.Sources.SourcePlatform> Platforms => this.Set<Contenter.Models.Sources.SourcePlatform>();
   public DbSet<Contenter.Models.Sources.Channel> Channels => this.Set<Contenter.Models.Sources.Channel>();
   protected override void OnModelCreating(ModelBuilder mb)
   {
@@ -58,6 +58,7 @@ public class Database(DbContextOptions<Database> options): DbContext(options)
       channel.HasAlternateKey(item => new { item.PlatformId, item.Uid });
     });
     mb.Entity<Contenter.Models.Sources.SourcePlatform>(platform => {
+      platform.ToTable($"SourcePlatform");
     });
     mb.Entity<Contenter.Models.Sources.SourceDefinition>(sdefinition => {
       sdefinition.HasKey(sd => new { sd.PlatformId, sd.Uid });

@@ -10,7 +10,8 @@ public enum SourceFlags
   Unlisted = 4,
   
   DoesntHaveContentIntentionally = 8,
-  DoesntHaveContentForNow = DoesntHaveContentIntentionally | 16
+  DoesntHaveContentForNow = DoesntHaveContentIntentionally | 16,
+  HiddenFromMain = 32,
 }
 public class Source: IIded<Guid>
 {

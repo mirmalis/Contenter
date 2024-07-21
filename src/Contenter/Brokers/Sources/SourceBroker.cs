@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
+using System.Net.Sockets;
 
-using Contenter.Brokers.Data;
 using Contenter.Data;
 using Contenter.Models.Sources;
 
@@ -30,17 +30,31 @@ public class SourceBroker(Database db): ISourceBroker
       .Select(expression)
       .FirstOrDefaultAsync();
   }
-  public async Task<bool> Mark_as_WontHaveContent_ById(Guid sourceId)
+  public async Task<bool> Mark_as_WontHaveContent_ById(Guid sourceId) 
+    => await AddFlag(sourceId, SourceFlags.DoesntHaveContentIntentionally, true);
+  public async Task<bool> Shown_at_MainPage(Guid sourceId, bool state)
+    => await AddFlag(sourceId, SourceFlags.HiddenFromMain, !state);
+
+  private async Task<bool> AddFlag(Guid sourceId, SourceFlags flag, bool state)
   {
     var existing = await this.db.Sources.FirstOrDefaultAsync(item => item.Id == sourceId);
-    if(existing == null)
+    if (existing == null)
     {
       // Bad request
       return false;
     }
-    if(existing.Flags.HasFlag(SourceFlags.DoesntHaveContentIntentionally))
-      return true;
-    existing.Flags ^= SourceFlags.DoesntHaveContentIntentionally;
+    if (state)
+    {
+      if (existing.Flags.HasFlag(flag))
+        return true;
+      existing.Flags ^= flag;
+    }
+    else
+    {
+      if (!existing.Flags.HasFlag(flag))
+        return true;
+      existing.Flags &= ~flag;
+    }
     await this.db.SaveChangesAsync();
     return true;
   }
