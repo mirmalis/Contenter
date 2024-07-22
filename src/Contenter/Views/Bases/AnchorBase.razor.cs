@@ -18,6 +18,8 @@ public partial class AnchorBase: ComponentBase
   [EditorRequired]
   [Parameter]
   public string? Text { get; set; } = default!;
+  [Parameter]
+  public bool NewTab { get; set; }
   private string GetText()
   {
     if(string.IsNullOrWhiteSpace(this.Text))
@@ -29,13 +31,17 @@ public partial class AnchorBase: ComponentBase
     }
     return this.Text[..this.MaxLength!.Value] + "..";
   }
-  [Parameter]
-  public bool NewTab { get; set; }
   private string? GetTarget()
   {
     return this.NewTab switch {
       true => "_blank",
       _ => null,
     };
+  }
+  private string? GetClass()
+  {
+    if(string.IsNullOrWhiteSpace(this.Text))
+      return "no-name";
+    return null;
   }
 }

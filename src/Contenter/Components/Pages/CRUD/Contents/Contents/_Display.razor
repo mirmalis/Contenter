@@ -3,47 +3,41 @@
 <ExpList
   ParamExpectedCount="1"
   ParamSource=@(
-    this.Source.Select(item => new {
+    this.Source
+    .Select(item => new {
       item.Name,
       item.PublishedAt,
-      Fam = item.FamId == null ? null : new {
+      Fam = item.FamId == null ? null : new FamView {
         Id = item.FamId!.Value,
-        item.Fam!.Name,
+        Name = item.Fam!.Name,
       },
       Guests =  item.GuestPersonaAssignments.OrderBy(item => item.IndexB)
-      .Select(ass => new {
+      .Select(ass => new GuestView {
         Id = ass.GuestId,
-        ass.Guest.Name,
+        Name = ass.Guest.Name,
       }),
-      Sources = item.Sources.Select(source => new {
+      Sources = item.Sources
+      .Select(source => new SourceView () {
         Id = source.Id,
-        source.Href,
-        source.Name,
-        source.Flags,
-        Channel = source.ChannelUid == null ? null : new {
-          source.Channel!.Id,
+        Href = source.Href,
+        Name = source.Name,
+        Channel = source.ChannelUid == null ? null : new ChannelView {
+          Id = source.Channel!.Id,
           Name = source.Channel.Title ?? source.Channel.Name,
+          IconPath = source.Channel!.Platform.IconPath,
+          Href = source.Channel.Href,
         },
-        Definition = source.Definition == null ? null : new {
-          source.Definition.Name,
-          Platform = new {
-            source.Definition.Platform.Id,
-            source.Definition.Platform.Name,
-            source.Definition.Platform.IconPath,
-          }
-        }
-      })
+        Content = null,
+        IconPath = source.PlatformId == null ? null : source.Platform!.IconPath,
+        DefinitionUid = source.DefinitionUid,
+      }),
     })
   )
 >
   <IfSome Context="model">
     <PageTitle>Content: @model.Name - sars.lt</PageTitle>
     <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
-      @if (model.Fam != null)
-      {
-        <a href="/c/fam/@model.Fam.Id">@model.Fam.Name</a>
-        <text> &raquo; </text>
-      }
+      <InnerLinkFam Model=@model.Fam After />
       <Name ParamName=@model.Name />
     </FluentStack>
     @Before
@@ -55,41 +49,18 @@
     }
     <div>
       Guests: 
-      <OneOrMany ParamList=@(model.Guests) Context="guest">
-        <a href="/p/personas/@guest.Id">@guest.Name</a>
+      <OneOrMany ParamList=@(model.Guests) Context="guest" Many>
+        <InnerLinkPersona Model=@guest />
       </OneOrMany>
     </div>
     <div>
       Sources (<a href="/create/s/sources?ContentId=@this.Id">add</a>): 
-      <OneOrMany ParamList=@(model.Sources) Context="source">
+      <OneOrMany ParamList=@(model.Sources) Context="source" Many>
         <ChildContent>
-          @if (source.Channel != null)
-          {
-            <a href="/s/channels/@source.Channel.Id">@source.Channel.Name</a> 
-            <text> &raquo; </text>
-          }
-          <a href="/s/sources/@source.Id">@source.Name</a>
-          <AuthorizeView>
-            <Authorized>
-              <AIcon href=@source.Href DefinitionName=@source.Definition?.Name iconPath=@source.Definition?.Platform.IconPath PlatformId=@source.Definition?.Platform.Id PlatformName=@source.Definition?.Platform.Name Flags=source.Flags>
-                source
-              </AIcon>
-            </Authorized>
-            <NotAuthorized>
-              @if (model.Fam != null && source.Flags.HasFlag(Models.Sources.SourceFlags.Paid))
-              {
-                <a href="/c/fam/@model.Fam.Id/pay">
-                  Mokamas
-                </a>
-              }
-              else
-              {
-                <AIcon href=@source.Href DefinitionName=@source.Definition?.Name iconPath=@source.Definition?.Platform.IconPath PlatformId=@source.Definition?.Platform.Id PlatformName=@source.Definition?.Platform.Name Flags=source.Flags>
-                  source
-                </AIcon>
-              }
-            </NotAuthorized>
-          </AuthorizeView>
+          <InnerLinkChannel Model=@source.Channel After />
+          <InnerLinkSource Model=@source />
+          |
+          <OuterLinkSource Model=@source Name="@source.DefinitionUid" />
         </ChildContent>
       </OneOrMany>
     </div>

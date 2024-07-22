@@ -7,6 +7,7 @@ public class Database(DbContextOptions<Database> options): DbContext(options)
   public DbSet<Contenter.Models.Contents.Content> Contents => this.Set<Contenter.Models.Contents.Content>();
   public DbSet<Contenter.Models.Contents.ContentFam> ContentFams => this.Set<Contenter.Models.Contents.ContentFam>();
   public DbSet<Contenter.Models.Contents.ContentSave> ContentSaves => this.Set<Contenter.Models.Contents.ContentSave>();
+  public DbSet<Contenter.Models.Persons.Persona> Personas => this.Set<Contenter.Models.Persons.Persona>();
   public DbSet<Contenter.Models.Sources.Source> Sources => this.Set<Contenter.Models.Sources.Source>();
   public DbSet<Contenter.Models.Sources.SourcePlatform> Platforms => this.Set<Contenter.Models.Sources.SourcePlatform>();
   public DbSet<Contenter.Models.Sources.Channel> Channels => this.Set<Contenter.Models.Sources.Channel>();
@@ -39,6 +40,7 @@ public class Database(DbContextOptions<Database> options): DbContext(options)
     #endregion
     #region Persons
     mb.Entity<Contenter.Models.Persons.Persona>(persona => {
+      persona.ToTable("Persona");
       persona.Property(item => item.Links).HasDefaultValue(new List<string>());
     });
     #endregion

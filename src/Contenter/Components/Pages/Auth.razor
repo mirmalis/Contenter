@@ -6,47 +6,18 @@
 
 <AuthorizeView>
   <table class="bord">
-    @foreach (var a in dict)
-    {
-      @foreach (var b in a.Value)
-      {
-        <tr>
-          @if(b.Key == a.Value.First().Key)
-          {
-            <td rowspan="@a.Value.Count">@a.Key</td>
-          }
-          <td>@b.Key</td>
-          <td><a href="/create/@b.Value">Create</a></td>
-          <td><a href="@b.Value">Index</a></td>
-        </tr>
-      }
-    }
+    <tr>
+      <td></td>
+      <td><a href="/sources">Sources</a></td>
+      <td><a href="/sources/nocontent">no-content</a></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td><a href="/contents">Contents</a></td>
+    </tr>
   </table>
+
 </AuthorizeView>
 @code {
-  private readonly Dictionary<string, Dictionary<string, string>> dict = new()
-  {
-    {
-      "Contents",
-      new() {
-        { "Content", "c/contents" },
-        { "ContentFam", "c/fam" }
-      }
-    },
-    { 
-      "Persons",
-      new() {
-        { "Persona", "p/personas" },
-        // { "Person", "p/people" },
-      } 
-    },
-    {
-      "Sources",
-      new() {
-        // { "Source", "s/sources" },
-        // { "SourceDefinition", "s/sourcesdefinitions" },
-        // { "SourcePlatform", "s/sourcesplatforms" },
-      }
-    }
-  };
+  
 }

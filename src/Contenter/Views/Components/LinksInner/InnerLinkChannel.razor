@@ -1,0 +1,21 @@
+﻿@code
+{
+  [EditorRequired]
+  [Parameter]
+  public ChannelView? Model { get; set; } = default!;
+
+  [Parameter]
+  public bool After { get; set; } = false;
+}
+@if (this.Model != null)
+{
+  <Contenter.Views.Bases.AnchorBase
+    href=@($"s/channels/{this.Model.Id}") 
+    Text=@this.Model.Name
+    MaxLength="20" 
+  />
+  @if (After)
+  {
+    <text> &raquo; </text>
+  }
+}

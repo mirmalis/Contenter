@@ -18,16 +18,18 @@
         },
         item.DefinitionUid,
       },
-      Content = item.ContentId == null ? null : new {
-        item.Content!.Id,
-        item.Content.Name,
-        Fam = item.Content.FamId == null ? null : new {
-          item.Content.Fam!.Id,
-          item.Content.Fam.Name,
+      Content = item.ContentId == null ? null : new ContentView {
+        Sources = null,
+        Id = item.Content!.Id,
+        Name = item.Content.Name,
+        Fam = item.Content.FamId == null ? null : new FamView {
+          Id = item.Content.Fam!.Id,
+          Name = item.Content.Fam.Name,
         },
-        Guests = item.Content.GuestPersonaAssignments.Select(guestAss => new {
-          guestAss.Guest.Id,
-          guestAss.Guest.Name
+        Guests = item.Content.GuestPersonaAssignments
+        .Select(guestAss => new GuestView {
+          Id = guestAss.Guest.Id,
+          Name = guestAss.Guest.Name,
         })
       }
     })
@@ -43,43 +45,41 @@
           <text> &raquo; </text>
         }
       }
-      
-      <a href="@model.Href" target="_blank">
-        <Contenter.Views.Bases.ImageBase Source=@model.Platform.IconPath />
-        @(model.Name ?? model.Platform?.DefinitionUid ?? "source")
-      </a>
+      <Contenter.Views.Bases.AnchorBase href=@($"") Text=@(model.Name ?? model.Platform?.DefinitionUid ?? "source") NewTab IconStart=@model.Platform?.IconPath />
     </FluentStack>
     @Before
     @if (model.Content != null)
     {
       <div>
-        @if (model.Content.Fam != null)
-        {
-          <a href="/c/fam/@model.Content.Fam.Id">@model.Content.Fam.Name</a>
-          <text> &raquo; </text>
-        }
-        <a href="/c/contents/@model.Content.Id">@(model.Content.Name ?? "no-name")</a>
-        @if (model.Content.Guests.Any())
-        {
-          <ul>
-            @foreach (var guest in model.Content.Guests)
-            {
-              <li>
-                <a href="/p/personas/@guest.Id">@guest.Name</a>
-              </li>
-            }
-          </ul>
-        }
+        <InnerLinkFam Model=@model.Content.Fam After />
+        <InnerLinkContent Model=@model.Content />
+        <OneOrMany ParamList=@model.Content.Guests Context="guest" Many>
+          <IfNone></IfNone>
+          <ChildContent>
+            <InnerLinkPersona Model=@guest />
+          </ChildContent>
+        </OneOrMany>
       </div>
     }
-    @if (model.Flags.HasFlag(Models.Sources.SourceFlags.HiddenFromMain))
-    {
-      <button @onclick=@(async () => await this.sourceBroker.Shown_at_MainPage(this.Id, true))>show in main</button>
-      
-    } else
-    {
-      <button @onclick=@(async () => await this.sourceBroker.Shown_at_MainPage(this.Id, false))>hide from main</button>
-    }
+    <AuthorizeView Policy="AdminSuper">
+      <Authorized>
+        @if (model.Flags.HasFlag(Models.Sources.SourceFlags.HiddenFromMain))
+        {
+          <button @onclick=@(async () => await this.sourceBroker.Shown_at_MainPage(this.Id, true))>show in main</button>
+          
+        } else
+        {
+          <button @onclick=@(async () => await this.sourceBroker.Shown_at_MainPage(this.Id, false))>hide from main</button>
+        }
+        @if (model.Flags.HasFlag(Models.Sources.SourceFlags.Preview))
+        {
+          <button @onclick=@(async () => await this.sourceBroker.Set_is_Preview(this.Id, false))>set is not preview</button>
+        } else
+        {
+          <button @onclick=@(async () => await this.sourceBroker.Set_is_Preview(this.Id, true))>set is preview</button>
+        }
+      </Authorized>
+    </AuthorizeView>
     @After
   </IfSome>
 </ExpList>

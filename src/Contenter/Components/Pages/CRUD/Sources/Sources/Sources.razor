@@ -1,5 +1,6 @@
 ﻿@rendermode InteractiveServer
 @inject Contenter.Brokers.Sources.ISourceBroker sourcebroker
+@using Contenter.Models.Views
 @using Contenter.Views.Bases
 @code {
   [Parameter]
@@ -32,27 +33,28 @@
     
     .Where(filterFunc())
     .OrderByDescending(item => item.CreatedAt)
-    .Select(s => new {
-      s.Id,
-      s.Href,
-      Channel = s.ChannelUid == null ? null : new {
-        s.Channel!.Id,
-        Name = s.Channel.Title ?? s.Channel.Name ?? s.Channel.Handle,
-      },
-      Platform = s.PlatformId == null ? null : new {
-        s.Platform!.IconPath,
-      },
+    .Select(s => new SourceView {
+      Id = s.Id,
+      Href = s.Href,
       Name = s.Name,
-      Content = s.ContentId == null ? null : new {
+      IconPath = s.PlatformId == null ? null : s.Platform!.IconPath,
+      Channel = s.ChannelUid == null ? null : new ChannelView(){
+        Id = s.Channel!.Id,
+        Name = s.Channel.Title ?? s.Channel.Name ?? s.Channel.Handle,
+        IconPath = s.Channel.Platform.IconPath ,
+        Href = s.Channel.Href,
+      },
+      Content = s.ContentId == null ? null : new ContentView {
+        Sources = null,
         Id = s.ContentId!.Value,
-        s.Content!.Name,
-        Fam = s.Content.FamId == null ? null : new {
-          s.Content.Fam!.Id,
-          s.Content.Fam.Name,
+        Name = s.Content!.Name,
+        Fam = s.Content.FamId == null ? null : new FamView {
+          Id = s.Content.Fam!.Id,
+          Name = s.Content.Fam.Name,
         },
-        Guests = s.Content.GuestPersonaAssignments.OrderBy(item => item.IndexA).Select(gass => new {
+        Guests = s.Content.GuestPersonaAssignments.OrderBy(item => item.IndexA).Select(gass => new GuestView {
           Id = gass.GuestId,
-          gass.Guest.Name,
+          Name = gass.Guest.Name,
         })
       }
     })
@@ -69,7 +71,7 @@
         }
       </td>
       <td>
-        <AnchorBase MaxLength="35" href=@model.Href NewTab IconStart=@model.Platform?.IconPath Text="@(model.Content?.Name ?? model.Name)" />
+        <OuterLinkSource Model=@model />
       </td>
       <td>
         @if (model.Content != null)
@@ -84,14 +86,10 @@
           }
           @if (model.Content.Guests.Any())
           {
-            <ul>
-              @foreach(var guest in model.Content.Guests)
-              {
-                <li>
-                  <a href="/p/personas/@guest.Id">@guest.Name</a>
-                </li>
-              }
-            </ul>
+            <text> &raquo; </text>
+            <OneOrMany ParamList=@model.Content.Guests Context="guest">
+              <a href="/p/personas/@guest.Id">@guest.Name</a>
+            </OneOrMany>
           }
         }
       </td>

@@ -1,8 +1,5 @@
 ﻿using System.Linq.Expressions;
-
 using Contenter.Models.Contents;
-using Contenter.Models.Views.Contents;
-
 namespace Contenter.Brokers.Contents;
 
 public interface IContentBroker

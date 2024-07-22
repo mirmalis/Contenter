@@ -5,38 +5,46 @@
   ParamSource=@(
     this.Source.Select(item => new {
       item.Name,
-      Channels = item.SourceChannelsAssignments.OrderBy(item => item.IndexA).Select(ass => new {
-        ass.Channel.Id,
+      Channels = item.SourceChannelsAssignments
+      .OrderBy(item => item.IndexA)
+      .Select(ass => new ChannelView {
+        Id = ass.Channel.Id,
         Name = ass.Channel.Title ?? ass.Channel.Name,
-        Platform = new {
-          ass.Channel.Platform.IconPath,
-          ass.Channel.Platform.Name,
-        },
-        ass.Channel.Href,
+        IconPath = ass.Channel.Platform.IconPath,
+        Href = ass.Channel.Href,
       }),
       Contents = item.Contents
       .OrderByDescending(item => item.PublishedAt)
       .Select(ct => new {
-        ct.Id,
-        ct.Name,
-        ct.PublishedAt,
+        Id = ct.Id,
+        Name = ct.Name,
+        PublishedAt = ct.PublishedAt,
         Guests = ct.GuestPersonaAssignments.OrderBy(ass => ass.IndexB)
-        .Select(ass => new {
-          ass.Guest.Id,
-          ass.Guest.Name,
+        .Select(ass => new GuestView {
+          Id = ass.Guest.Id,
+          Name = ass.Guest.Name,
         })
         ,
         Sources = ct.Sources
-        .Select(source => new {
-          source.Href,
-          Definition = source.Definition == null ? null : new {
-            source.Definition.Name,
-            Platform = new {
-              source.Definition.Platform.Id,
-              source.Definition.Platform.Name,
-              source.Definition.Platform.IconPath,
-            }
-          }
+        .Select(source => new SourceView {
+          Id = source.Id,
+          Href = source.Href,
+          IconPath = source.PlatformId == null ? null : source.Platform!.IconPath,
+          Name = source.Name,
+          DefinitionUid = source.DefinitionUid,
+          Channel = null ,
+          //new ChannelView{
+          //},
+          Content = null,
+          //Href = source.Href,
+          //Definition = source.Definition == null ? null : new {
+          //  source.Definition.Name,
+          //  Platform = new {
+          //    source.Definition.Platform.Id,
+          //    source.Definition.Platform.Name,
+          //    source.Definition.Platform.IconPath,
+          //  }
+          //}
         })
       })
     })
@@ -56,8 +64,12 @@
             @foreach(var ch in model.Channels)
             {
               <tr>
-                <td><a href="/s/channels/@ch.Id">@ch.Name</a></td>
-                <td><Contenter.Views.Bases.AnchorBase IconStart=@ch.Platform.IconPath href=@ch.Href Text=@(ch.Platform.Name) NoText="" NewTab /></td>
+                <td>
+                  <InnerLinkChannel Model=@ch />
+                </td>
+                <td>
+                  <Contenter.Views.Bases.AnchorBase IconStart=@ch.IconPath href=@ch.Href Text=@("open") NoText="" NewTab />
+                </td>
               </tr>
             }
           </table>
@@ -72,12 +84,17 @@
           {
             <tr>
               <td>@ct.PublishedAt?.ToShortDateString()</td>
-              <td><Name ParamHref=@($"/c/contents/{ct.Id}") ParamName="@ct.Name" /></td>
               <td>
-                <OneOrMany ParamList=@ct.Guests>
-                  <ChildContent Context="guest">
-                    <a href="/p/personas/@guest.Id">@guest.Name</a>
-                  </ChildContent>
+                <Name ParamHref=@($"/c/contents/{ct.Id}") ParamName="@ct.Name" />
+              </td>
+              <td>
+                <OneOrMany ParamList=@ct.Guests Context="guest">
+                  <InnerLinkPersona Model=@guest />
+                </OneOrMany>
+              </td>
+              <td>
+                <OneOrMany ParamList=@ct.Sources Context="source">
+                  <OuterLinkSource Model=@source Name="@source.DefinitionUid" />
                 </OneOrMany>
               </td>
             </tr>

@@ -1,0 +1,11 @@
+﻿@code {
+  [EditorRequired]
+  [Parameter]
+  public GuestView? Model { get; set; }
+}
+@if (this.Model != null)
+{
+  <a href="/p/personas/@this.Model.Id">
+    @this.Model.Name
+  </a>
+}

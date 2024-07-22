@@ -6,6 +6,7 @@ public class YoutubeVideo
   {
     public string Id { get; set; } = default!;
     public string Title { get; set; } = default!;
+    public string Href => $"https://www.youtube.com/channel/{this.Id}";
   }
   public string Id { get; set; } = default!;
   public ChannelIdentifier Author { get; set; } = default!;

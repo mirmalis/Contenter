@@ -28,6 +28,7 @@
               return;
             this.model.CotentFamsAssignments.Add(
               new() {
+                IndexA = 1,
                 IndexB = this.model.CotentFamsAssignments.Any() ? this.model.CotentFamsAssignments.Select(item => item.IndexB).Max() + 1 : 1,
                 ContentFam = val,
               }

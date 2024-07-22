@@ -6,8 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Microsoft.AspNetCore.Authentication;
 using Contenter.Brokers.Contents;
-using Contenter.Services.Views.ContentViews;
-using Contenter.Services.Views.SourceViews;
 using Contenter.Brokers.Sources;
 
 namespace Contenter;
@@ -29,8 +27,6 @@ public class Program
     builder.Services.AddScoped<IYoutubeBroker, YoutubeBroker>();
     builder.Services.AddScoped<IContentBroker, ContentBroker>();
     builder.Services.AddScoped<ISourceBroker, SourceBroker>();
-    builder.Services.AddScoped<ISourceViewService, SourceViewService>();
-    builder.Services.AddScoped<IContentViewService, ContentViewService>();
     builder.Services.AddCascadingAuthenticationState();
     builder.Services.AddScoped<Contenter.Components.Account.IdentityUserAccessor>();
     builder.Services.AddScoped<Contenter.Components.Account.IdentityRedirectManager>();

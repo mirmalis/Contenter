@@ -1,7 +1,8 @@
 ﻿@typeparam T
 @code {
   [Parameter]
-  public int Take { get; set; } = 20;
+  public int? Take { get; set; }
+  private int GetTake() => this.Take ?? 20;
   [Parameter]
   public int Skip { get; set; } = 0;
 
@@ -28,10 +29,10 @@
     this.List ??= [];
     var items = await this.ParamSource
       .Skip(this.Skip)
-      .Take(this.Take)
+      .Take(this.GetTake())
       .ToListAsync();
     this.List.AddRange(items);
-    this.Skip += this.Take;
+    this.Skip += this.GetTake();
     if(items.Count() < this.Take)
     {
       this.HasMore = false;

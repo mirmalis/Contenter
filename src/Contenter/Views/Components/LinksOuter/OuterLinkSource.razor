@@ -1,0 +1,26 @@
+﻿@code {
+  [EditorRequired]
+  [Parameter]
+  public ISourceViewOuter? Model { get; set; }
+
+  [Parameter]
+  public string? Name { get; set; }
+
+  [Parameter]
+  public int? MaxLength { get; set; }
+}
+
+@if (this.Model != null)
+{
+  @if (this.Model.Href != null)
+  {
+    <Contenter.Views.Bases.AnchorBase
+      href=@this.Model.Href 
+      IconStart=@(this.Model.IconPath)
+      NoText="no-name"
+      Text="@(this.Name ?? this.Model.Name)"
+      MaxLength=@this.MaxLength
+      NewTab
+    />
+  }
+}

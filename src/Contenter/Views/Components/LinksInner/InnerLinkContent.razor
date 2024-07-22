@@ -1,0 +1,21 @@
+﻿@code
+{
+  [EditorRequired]
+  [Parameter]
+  public ContentView? Model { get; set; }
+
+  [Parameter]
+  public string? Name { get; set; }
+
+  [Parameter]
+  public int? MaxLength { get; set; }
+}
+
+@if (this.Model != null)
+{
+  <Contenter.Views.Bases.AnchorBase
+    href=@($"/c/contents/{this.Model.Id}")
+    Text=@(this.Name ?? this.Model.Name)
+    MaxLength=@this.MaxLength 
+  />
+}

@@ -1,0 +1,37 @@
+﻿@inject Contenter.Data.Database db
+@code {
+  [Parameter]
+  public string? IconPath { get; set; }
+  [EditorRequired]
+  [Parameter]
+  public Guid ChannelId { get; set; }
+}
+<ExpList 
+  ParamSource=@(
+    this.db.Sources.Where(item => item.Channel != null && item.Channel.Id ==this.ChannelId )
+  )
+>
+  <Wrapper Context="rows">
+    <table class="bord">@rows</table>
+  </Wrapper>
+  <IfSome Context="source">
+    <tr>
+      <td>@source.PublishedAt?.ToShortDateString()</td>
+      <td>
+        <a href="@source.Href">
+          @if(this.IconPath != null)
+          {
+            <Contenter.Views.Bases.ImageBase Source="@this.IconPath" />
+          }
+          @source.Name
+        </a>
+      </td>
+      <td>
+        <a href="/s/sources/@source.Id">Details</a> |
+        <a href="/edit/s/sources/@source.Id">Edit</a> |
+        <a href="/delete/s/sources/@source.Id">Delete</a>
+      </td>
+    </tr>
+  </IfSome>
+  <IfNone></IfNone>
+</ExpList>

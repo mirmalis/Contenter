@@ -7,17 +7,14 @@
 <FluentLabel Typo=@Typography.H5>
   ContentFam
 </FluentLabel>
+<AuthorizeView Policy="AdminSuper">
+  <Authorized>
+    <text>
+      <a href="/edit/c/fam/@this.Id">Edit</a>
+      |
+      <a href="/delete/c/fam/@this.Id">Delete</a>
+    </text>
+  </Authorized>
+</AuthorizeView>
 
-<_Display Id=@this.Id >
-  <Before>
-    <AuthorizeView Policy="AdminSuper">
-      <Authorized>
-        <text>
-          <a href="/edit/c/fam/@this.Id">Edit</a>
-          |
-          <a href="/delete/c/fam/@this.Id">Delete</a>
-        </text>
-      </Authorized>
-    </AuthorizeView>
-  </Before>
-</_Display>
+<_Display Id=@this.Id />

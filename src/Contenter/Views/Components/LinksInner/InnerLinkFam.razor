@@ -1,0 +1,20 @@
+﻿@code
+{
+  [EditorRequired]
+  [Parameter]
+  public FamView? Model { get; set; } = default!;
+
+  [Parameter]
+  public bool After { get; set; } = false;
+}
+@if(this.Model != null)
+{
+  <a href="/c/fam/@this.Model.Id">
+    @this.Model.Name
+  </a>
+
+  @if (this.After)
+  {
+    <text> &raquo; </text>
+  }
+}

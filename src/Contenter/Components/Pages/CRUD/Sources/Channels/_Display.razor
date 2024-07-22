@@ -49,13 +49,15 @@
     <div>
       <FluentSelect TOption=@((XX, Guid?))>
         <FluentOption OnSelect=@(() => this.ChangeFilter(XX.All, null))>All</FluentOption>
-        <FluentOption OnSelect=@(() => this.ChangeFilter(XX.NoContentOrNoFam, null))>Nepriskirti</FluentOption>
         @foreach (var fam in model.ContentFams)
         {
           <FluentOption OnSelect=@(() => this.ChangeFilter(XX.SpecificFam, fam.Id))>
-            @fam.Name
+            <b>@fam.Name</b>
           </FluentOption>
         }
+        <FluentOption OnSelect=@(() => this.ChangeFilter(XX.NoContentOrNoFam, null))>
+          <b>Nepriskirti</b>
+        </FluentOption>
         <FluentOption OnSelect=@(() => this.ChangeFilter(XX.BeContent, null))>Nesutvarkyti</FluentOption>
         <FluentOption OnSelect=@(() => this.ChangeFilter(XX.NepriskirtiFamai, null))>Klaidos</FluentOption>
       </FluentSelect>
@@ -72,21 +74,26 @@
           .Where(item => item.Channel != null && item.Channel.Id == this.Id)
           .Where(this.ChannelContentFilter(model.ContentFams.Select(item => item.Id).ToList()))
           .OrderByDescending(item => item.PublishedAt)
-          .Select(s => new {
-            s.Id,
-            PublishedAt = s.PublishedAt == null ? null : s.PublishedAt.Value.ToShortDateString(),
-            s.Href,
-            s.Name,
-            Content = s.ContentId == null ? null : new {
-              s.Content!.Id,
-              s.Content.Name,
-              Fam = s.Content.FamId == null ? null : new {
-                s.Content.Fam!.Id,
-                s.Content.Fam.Name,
+          .Select(source => new SourceView {
+            Channel = null,
+            Id = source.Id,
+            PublishedAt = source.PublishedAt == null ? null : source.PublishedAt,
+            Href = source.Href,
+            Name = source.Name,
+            IconPath = source.PlatformId == null ? null : source.Platform!.IconPath,
+            Content = source.ContentId == null ? null : new ContentView {
+              Sources = null,
+              Id = source.Content!.Id,
+              Name = source.Content.Name,
+              Fam = source.Content.FamId == null ? null : new FamView {
+                Id = source.Content.Fam!.Id,
+                Name = source.Content.Fam.Name,
               },
-              Guests = s.Content.GuestPersonaAssignments.OrderBy(item => item.IndexA).Select(ass => new {
-                ass.Guest.Id,
-                ass.Guest.Name,
+              Guests = source.Content.GuestPersonaAssignments
+              .OrderBy(item => item.IndexA)
+              .Select(ass => new GuestView {
+                Id = ass.Guest.Id,
+                Name = ass.Guest.Name,
               })
             }
           })
@@ -97,7 +104,7 @@
         <IfSome Context="source">
           <tr>
             <td>
-              <a href="/s/sources/@source.Id">Details</a>
+              <InnerLinkSource Model=@source Name="Details" />
               <AuthorizeView Policy="AdminSuper">
                 <Authorized>
                   | <a href="/edit/s/sources/@source.Id">Edit</a>
@@ -105,15 +112,9 @@
                 </Authorized>
               </AuthorizeView>
             </td>
-            <td>@source.PublishedAt</td>
+            <td>@source.PublishedAt?.ToShortDateString()</td>
             <td>
-              <a href="@source.Href" target="_blank">
-                @if (model.Platform.IconPath != null)
-                {
-                  <Contenter.Views.Bases.ImageBase Source="@model.Platform.IconPath" />
-                }
-                @source.Name
-              </a>
+              <OuterLinkSource Model=@source Name=@source.Content?.Name />
             </td>
             @if (this.X != XX.BeContent)
             {
@@ -137,7 +138,7 @@
                       &raquo;
                   </Before>
                   <ChildContent>
-                    <a href="/p/personas/@guest.Id">@guest.Name</a>
+                    <InnerLinkPersona Model=@guest />
                   </ChildContent>
                   <IfNone></IfNone>
                 </OneOrMany>

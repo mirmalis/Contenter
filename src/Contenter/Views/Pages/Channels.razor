@@ -1,0 +1,43 @@
+﻿@page "/channels"
+@code {
+  [SupplyParameterFromQuery]
+  public string? PlatformId { get; set; }
+}
+@inject Data.Database db
+
+<Contenter.Components.Shared.ExpList
+  ParamSource=@(
+    this.db.Platforms
+    .Where(item => this.PlatformId == null || item.Id == this.PlatformId)
+    .OrderBy(item => item.Name)
+    .Select(pl => new {
+      pl.Id,
+      pl.Name,
+      pl.IconPath,
+      Channels = pl.Channels.OrderBy(item => item.Title).Select(ch => new {
+        Id = ch.Id,
+        Name = ch.Title ?? ch.Name,
+      })
+    })
+  )
+>
+  <Wrapper Context="rows">
+    <ul>@rows</ul>
+  </Wrapper>
+  <IfSome Context="model">
+    <li>
+      @model.Name
+      @if (model.Channels.Any())
+      {
+        <ul>
+          @foreach(var ch in model.Channels)
+          {
+            <li>
+              <a href="/s/channels/@ch.Id">@ch.Name</a>
+            </li>
+          }
+        </ul>
+      }
+    </li>
+  </IfSome>
+</Contenter.Components.Shared.ExpList>

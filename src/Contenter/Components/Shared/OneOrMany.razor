@@ -15,12 +15,15 @@
   
   [Parameter]
   public RenderFragment? After { get; set; }
+
+  [Parameter]
+  public bool Many { get; set; } = false;
 }
 
 @if (this.ParamList != null && this.ParamList.Any())
 {
   @Before
-  @if (this.ParamList.Count() == 1)
+  @if (!this.Many && this.ParamList.Count() == 1)
   {
     @ChildContent(this.ParamList.First())
   }

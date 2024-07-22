@@ -1,0 +1,28 @@
+﻿@code {
+
+}
+@inject Contenter.Data.Database db
+
+<ExpList 
+  ParamSource=@(
+    this.db.ContentFams
+    .OrderByDescending(fam => fam.Contents.Count)
+    .Where(item => item.Contents.Count > 0)
+    .Select(fam => new {
+      View = new FamView { Id = fam.Id, Name = fam.Name, },
+      Content = new { Count = fam.Contents.Count },
+    })
+  )
+>
+  <Wrapper Context="rows">
+    <table class="bord">@rows</table>
+  </Wrapper>
+  <IfSome Context="fam">
+    <tr>
+      <td>
+        <InnerLinkFam Model=@fam.View />
+      </td>
+      <td>@fam.Content.Count</td>
+    </tr>
+  </IfSome>
+</ExpList>

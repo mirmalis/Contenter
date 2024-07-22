@@ -34,3 +34,30 @@
     }
   </FluentStack>
 </EditForm>
+
+@if (!string.IsNullOrWhiteSpace(this.model.Name))
+{
+  <ExpList 
+    ParamSource=@(
+      this.db.Personas
+      .Where(item => item.Name == this.model.Name)
+      .Select(persona => new GuestView {
+        Id = persona.Id,
+        Name = persona.Name,
+      })
+    )
+  >
+    <Wrapper Context="rows">
+      <div>
+        Asmenys su tuo pačiu vardu: 
+        <ul>@rows</ul>
+      </div>
+    </Wrapper>
+    <IfSome Context="persona">
+      <li>
+        <InnerLinkPersona Model=@persona />
+      </li>
+    </IfSome>
+    <IfNone>no duplicates</IfNone>
+  </ExpList>
+}

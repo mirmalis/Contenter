@@ -3,19 +3,38 @@
 <ExpList
   ParamExpectedCount="1"
   ParamSource=@(
-    this.Source.Select(item => new {
-      item.Name,
-      Contents = item.ContentAssignments
-      .OrderByDescending(ass => ass.Content.PublishedAt)
-      .Select(ass => new {
-        ass.Content.Id,
-        ass.Content.Name,
-        ass.Content.PublishedAt,
-        Fam = ass.Content.FamId == null ? null : new {
-          Id = ass.Content.Fam!.Id,
-          ass.Content.Fam!.Name,
-        }
-      })
+    this.Source.Select(persona => new {
+      persona.Name,
+      Contents = persona.ContentAssignments
+        .OrderByDescending(ass => ass.Content.PublishedAt)
+         .Select(ass => new ContentView {
+            Id = ass.Content.Id,
+            PublishedAt = ass.Content.PublishedAt,
+            Name = ass.Content.Name,
+            Fam = ass.Content.FamId == null ? null : new FamView {
+              Id = ass.Content.Fam!.Id,
+              Name = ass.Content.Fam!.Name,
+            },
+            Guests = ass.Content.GuestPersonaAssignments
+              .OrderBy(gass => gass.Guest.Name)
+              .Where(item => item.GuestId != this.Id)
+              .Select(gass => new GuestView{
+                Id = gass.GuestId,
+                Name = gass.Guest.Name,
+              }),
+            Sources = ass.Content.Sources.Select(source => new SourceView {
+              Id = source.Id,
+              Href = source.Href,
+              IconPath = source.PlatformId == null ? null : source.Platform!.IconPath,
+              DefinitionUid = source.DefinitionUid,
+              Name = null,
+              Channel = null,
+              Content = null,
+              PublishedAt = null,
+            }),
+        }),
+
+
     })
   )
 >
@@ -34,14 +53,20 @@
         {
           <tr>
             <td>@ct.PublishedAt?.ToShortDateString()</td>
+            <td><InnerLinkFam Model=@ct.Fam /></td>
+            <td><InnerLinkContent Model=@ct/></td>
             <td>
-              @if (ct.Fam != null)
-              {
-                <a href="/c/fam/@ct.Fam.Id">@ct.Fam.Name</a>
-              }
+              <OneOrMany ParamList=@(ct.Sources) Context="source">
+                <OuterLinkSource Model=@source Name=@source.DefinitionUid />
+              </OneOrMany>
             </td>
             <td>
-              <Name ParamHref=@($"/c/contents/{ct.Id}") ParamName="@ct.Name" />
+              <OneOrMany ParamList="ct.Guests" Context="guest" Many>
+                <IfNone></IfNone>
+                <ChildContent>
+                  <InnerLinkPersona Model=@guest />
+                </ChildContent>
+              </OneOrMany>
             </td>
           </tr>
         }

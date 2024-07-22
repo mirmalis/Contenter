@@ -1,0 +1,15 @@
+﻿@code {
+  [EditorRequired]
+  [Parameter]
+  public ISourceViewInner? Model { get; set; }
+
+  [Parameter]
+  public string? Name{ get; set; }
+}
+
+@if (this.Model != null)
+{
+  <a href="/s/sources/@this.Model.Id">
+    @(this.Name ?? this.Model.Name)
+  </a>
+}

@@ -1,0 +1,76 @@
+﻿@inject Contenter.Data.Database db
+@code {
+  [Parameter]
+  public int? Take { get; set; }
+}
+<MyLoader 
+  Take=@this.Take
+  ParamSource=@(
+    this.db.Contents
+    .OrderByDescending(item => item.CreatedAt)
+    .Select(ct => new ContentView {
+      Id = ct.Id,
+      Name = ct.Name,
+      Fam = ct.FamId == null ? null : new FamView(){
+        Id = ct.FamId!.Value,
+        Name = ct.Fam!.Name,
+      },
+      Guests = ct.GuestPersonaAssignments.Select(ass => new GuestView {
+        Id = ass.Guest.Id,
+        Name = ass.Guest.Name,
+      }),
+      Sources = ct.Sources
+        .OrderByDescending(s => s.CreatedAt)
+        .Select(s => new SourceView {
+          Id =  s.Id,
+          Name = null ,
+          Href = s.Href,
+          DefinitionUid = s.DefinitionUid,
+          
+          IconPath = s.PlatformId == null ? null : s.Platform!.IconPath,
+          Channel = 
+          null
+          //s.ChannelUid == null ? null: new ChannelView {
+          //  Id = s.Channel!.Id,
+          //  Name = s.Channel.Title ?? s.Channel.Name,
+          //  IconPath = s.Channel.Platform.IconPath,
+          //}
+          ,
+          
+          Content = null,
+        })
+    })
+  )>
+  <Wrapper Context="rows">
+    <table class="bord">
+      @rows
+    </table>
+  </Wrapper>
+  <IfSome Context="model">
+    <tr>
+      <td><InnerLinkFam Model=@model.Fam /></td>
+      <td>
+        <InnerLinkContent Model=@model MaxLength="60" />
+      </td>
+      <td>
+        <OneOrMany ParamList=@(model.Sources) Context="source">
+          <OuterLinkSource Model=@source Name=@source.DefinitionUid />
+          @if (source.Channel != null)
+          {
+            @* <text> &raquo; </text>
+            <InnerLinkChannel Model=@source.Channel /> *@
+          }
+        </OneOrMany>
+      </td>
+      <td>
+        <OneOrMany ParamList=@(model.Guests) Context="guest">
+          <IfNone></IfNone>
+          <Before></Before>
+          <ChildContent>
+            <InnerLinkPersona Model=@guest />
+          </ChildContent>
+        </OneOrMany>
+      </td>
+    </tr>
+  </IfSome>
+</MyLoader>

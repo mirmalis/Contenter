@@ -34,6 +34,8 @@ public class SourceBroker(Database db): ISourceBroker
     => await AddFlag(sourceId, SourceFlags.DoesntHaveContentIntentionally, true);
   public async Task<bool> Shown_at_MainPage(Guid sourceId, bool state)
     => await AddFlag(sourceId, SourceFlags.HiddenFromMain, !state);
+  public async Task<bool> Set_is_Preview(Guid sourceId, bool state)
+    => await AddFlag(sourceId, SourceFlags.Preview, state);
 
   private async Task<bool> AddFlag(Guid sourceId, SourceFlags flag, bool state)
   {
