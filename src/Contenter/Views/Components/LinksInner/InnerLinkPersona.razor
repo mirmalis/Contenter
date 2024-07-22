@@ -5,7 +5,8 @@
 }
 @if (this.Model != null)
 {
-  <a href="/p/personas/@this.Model.Id">
-    @this.Model.Name
-  </a>
+  <AnchorBase 
+    href=@($"/p/personas/{this.Model.Id}")
+    Text=@this.Model.Name
+  />
 }

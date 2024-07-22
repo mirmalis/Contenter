@@ -9,7 +9,8 @@
 
 @if (this.Model != null)
 {
-  <a href="/s/sources/@this.Model.Id">
-    @(this.Name ?? this.Model.Name)
-  </a>
+  <AnchorBase 
+    href=@($"/s/sources/{this.Model.Id}") 
+    Text=@(this.Name ?? this.Model.Name) 
+  />
 }

@@ -9,10 +9,10 @@
 }
 @if(this.Model != null)
 {
-  <a href="/c/fam/@this.Model.Id">
-    @this.Model.Name
-  </a>
-
+  <AnchorBase
+    href=@($"/c/fam/{this.Model.Id}")
+    Text=@this.Model.Name
+    />
   @if (this.After)
   {
     <text> &raquo; </text>
