@@ -18,7 +18,7 @@
             Guests = ass.Content.GuestPersonaAssignments
               .OrderBy(gass => gass.Guest.Name)
               .Where(item => item.GuestId != this.Id)
-              .Select(gass => new GuestView{
+              .Select(gass => new PersonaView{
                 Id = gass.GuestId,
                 Name = gass.Guest.Name,
               }),

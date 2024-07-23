@@ -12,7 +12,7 @@
         Name = item.Fam!.Name,
       },
       Guests =  item.GuestPersonaAssignments.OrderBy(item => item.IndexB)
-      .Select(ass => new GuestView {
+      .Select(ass => new PersonaView {
         Id = ass.GuestId,
         Name = ass.Guest.Name,
       }),

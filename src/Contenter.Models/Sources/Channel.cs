@@ -3,10 +3,9 @@
 namespace Contenter.Models.Sources;
 public class Channel: IIded<Guid>
 {
-  public override string ToString() => this.Title ?? this.Name ?? this.Handle ?? this.Uid ?? "no-name";
+  public override string? ToString() => this.Title ?? this.Name ?? this.Handle;
   public Guid Id { get; set; }
 
-  [Required]
   public SourcePlatform Platform { get; set; } = default!;
   public string PlatformId { get; set; } = default!;
 

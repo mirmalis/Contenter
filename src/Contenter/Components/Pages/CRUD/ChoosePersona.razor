@@ -1,0 +1,116 @@
+﻿@inject IDialogService DialogService
+
+@code {
+  [EditorRequired]
+  [Parameter] 
+  public Contenter.Models.Persons.Persona? value { get; set; } 
+  [EditorRequired]
+  [Parameter] 
+  public EventCallback<Contenter.Models.Persons.Persona?> valueChanged { get; set; }
+
+  [Parameter]
+  public RenderFragment ChildContent { get; set; } =@<text>Ieškoti</text>;
+}
+
+@code {
+  private string SeachTerm { get; set; } = string.Empty;
+  [Parameter] public int MinTermLength { get; set; } = 0;
+  private bool Hidden { get; set; } = true;
+}
+@inject Data.Database db
+<FluentButton OnClick=@(() => this.Hidden = !this.Hidden)>
+  @ChildContent
+</FluentButton>
+
+@if(!this.Hidden)
+{
+  <FluentDialog Hidden="@this.Hidden">
+    <FluentDialogHeader>
+      <FluentTextField Immediate ImmediateDelay="500" 
+        @bind-Value=@this.SeachTerm 
+        Label="Paieškos frazė"
+        Required
+      />
+    </FluentDialogHeader>
+    <FluentDialogBody>
+      @if (this.MinTermLength == 0 || (!string.IsNullOrWhiteSpace(this.SeachTerm) && this.SeachTerm.Length >= this.MinTermLength))
+      {
+        <ExpList 
+          ParamSource=@(
+            this.db.Personas
+              .Where(c => c.Name == this.SeachTerm || c.Name.ToLower().Contains(this.SeachTerm.ToLower())) // TODO: neranda su didžiosiomis LT raidėmis
+              .Select(persona => new {
+                persona.Id,
+                persona.Name
+              })
+          )
+        >
+          <Wrapper Context="rows">
+            <table class="bord">
+              @rows
+            </table>
+          </Wrapper>
+          <IfSome Context="model">
+            <tr>
+              <td>@model.Name</td>
+              <td>
+                <FluentButton OnClick=@(async () => await this.Choose(model.Id))>
+                  Choose
+                </FluentButton>
+              </td>
+            </tr>
+          </IfSome>
+          <IfNone>
+            @{
+              var n = new Contenter.Models.Persons.Persona() {
+                Name = this.SeachTerm
+              };
+            }
+            <FluentLabel Typo=@Typography.Subject>Sukurti naują asmenį:</FluentLabel>
+            <Contenter.Components.Pages.CRUD.People.Personas._Bind model=@n OnValidSubmitCallback=@(async (val) => await this.Choose(val) )>
+              Sukurti naują
+            </Contenter.Components.Pages.CRUD.People.Personas._Bind>
+          </IfNone>
+        </ExpList>
+      }
+      else
+      {
+        @if (this.MinTermLength > 0)
+        {
+          <span class="muted">Įveskite bent @this.MinTermLength raides paieškoje, kad surasti asmenį.</span>
+
+        }
+      }
+    </FluentDialogBody>
+    <FluentDialogFooter>
+      <FluentButton OnClick=@(() => this.Hidden = true)>Cancel</FluentButton>
+    </FluentDialogFooter>
+  </FluentDialog>
+}
+
+
+@code {
+  public void Enter(KeyboardEventArgs e)
+  {
+    Console.WriteLine(e.Code);
+    if (e.Code == "Enter" || e.Code == "NumpadEnter")
+    {
+      // ...
+    }
+  }
+  private async Task Choose(Guid id)
+  {
+    var existing = await this.db.Personas
+      .Where(item => item.Id == id)
+      .FirstOrDefaultAsync();
+    if (existing == null)
+      return;
+    await Choose(existing);
+  }
+  private async Task Choose(Contenter.Models.Persons.Persona choice)
+  {
+    this.SeachTerm = string.Empty;
+    this.Hidden = true;
+    await this.valueChanged.InvokeAsync(choice);
+  }
+}

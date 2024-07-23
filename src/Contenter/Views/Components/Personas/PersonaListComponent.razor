@@ -1,0 +1,33 @@
+﻿@code {
+
+}
+@inject Contenter.Data.Database db
+
+<ExpList 
+  ParamSource=@(
+    this.db.Personas
+    .OrderByDescending(fam => fam.ContentAssignments.Count)
+    .Where(item => item.ContentAssignments.Count > 0)
+    .Select(persona => new {
+      View = new PersonaView(){
+        Id = persona.Id,
+        Name = persona.Name,
+      },
+      Content = new {
+        Count = persona.ContentAssignments.Count
+      }
+    })
+  )
+>
+  <Wrapper Context="rows">
+    <table class="bord">@rows</table>
+  </Wrapper>
+  <IfSome Context="fam">
+    <tr>
+      <td>
+        <InnerLinkPersona Model=@fam.View />
+      </td>
+      <td>@fam.Content.Count</td>
+    </tr>
+  </IfSome>
+</ExpList>

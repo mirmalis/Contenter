@@ -6,6 +6,6 @@ public class ContentView
   public required string? Name { get; set; }
   public required FamView? Fam { get; set; }
   public DateTime? PublishedAt { get; set; }
-  public required IEnumerable<GuestView> Guests { get; set; }
+  public required IEnumerable<PersonaView> Guests { get; set; }
   public required IEnumerable<SourceView>? Sources { get; set; }
 }

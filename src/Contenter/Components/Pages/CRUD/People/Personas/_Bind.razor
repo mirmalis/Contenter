@@ -41,7 +41,7 @@
     ParamSource=@(
       this.db.Personas
       .Where(item => item.Name == this.model.Name)
-      .Select(persona => new GuestView {
+      .Select(persona => new PersonaView {
         Id = persona.Id,
         Name = persona.Name,
       })

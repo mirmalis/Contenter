@@ -1,4 +1,5 @@
 ﻿using Contenter.Data;
+using Contenter.Models.Contents;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -46,5 +47,29 @@ public class ContentBroker(Contenter.Data.Database db): IContentBroker
     return await this.db.Contents.Where(item => item.Id == id)
       .Select(core_to_view_expression)
       .FirstOrDefaultAsync();
+  }
+
+  public async Task<bool> Shown_at_MainPage(Guid contentId, bool state)
+    => await this.AddFlag(contentId, ContentFlags.NotAtMain, !state);
+  private async Task<bool> AddFlag(Guid sourceId, ContentFlags flag, bool state)
+  {
+    var existing = await this.db
+      .Set<Contenter.Models.Contents.Content>()
+      .FirstOrDefaultAsync(item => item.Id == sourceId);
+    if (existing == null)
+    {
+      return false;
+    }
+    if (
+      (existing.Flags.HasFlag(flag) && state)
+      ||
+      (!existing.Flags.HasFlag(flag) && !state)
+    )
+    {
+      return true;
+    }
+    existing.Flags = Helpers.ChangeFlag(existing.Flags, state, flag);
+    await this.db.SaveChangesAsync();
+    return true;
   }
 }

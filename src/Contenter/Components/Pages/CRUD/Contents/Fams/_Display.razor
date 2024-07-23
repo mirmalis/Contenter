@@ -20,7 +20,7 @@
         Name = ct.Name,
         PublishedAt = ct.PublishedAt,
         Guests = ct.GuestPersonaAssignments.OrderBy(ass => ass.IndexB)
-        .Select(ass => new GuestView {
+        .Select(ass => new PersonaView {
           Id = ass.Guest.Id,
           Name = ass.Guest.Name,
         })

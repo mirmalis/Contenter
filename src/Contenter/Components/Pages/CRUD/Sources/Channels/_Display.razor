@@ -80,6 +80,7 @@
             PublishedAt = source.PublishedAt == null ? null : source.PublishedAt,
             Href = source.Href,
             Name = source.Name,
+            DefinitionUid = source.DefinitionUid,
             IconPath = source.PlatformId == null ? null : source.Platform!.IconPath,
             Content = source.ContentId == null ? null : new ContentView {
               Sources = null,
@@ -91,7 +92,7 @@
               },
               Guests = source.Content.GuestPersonaAssignments
               .OrderBy(item => item.IndexA)
-              .Select(ass => new GuestView {
+              .Select(ass => new PersonaView {
                 Id = ass.Guest.Id,
                 Name = ass.Guest.Name,
               })
@@ -103,6 +104,7 @@
         </Wrapper>
         <IfSome Context="source">
           <tr>
+            <td>@source.PublishedAt?.ToShortDateString()</td>
             <td>
               <InnerLinkSource Model=@source Name="Details" />
               <AuthorizeView Policy="AdminSuper">
@@ -112,38 +114,33 @@
                 </Authorized>
               </AuthorizeView>
             </td>
-            <td>@source.PublishedAt?.ToShortDateString()</td>
-            <td>
-              <OuterLinkSource Model=@source Name=@source.Content?.Name />
-            </td>
-            @if (this.X != XX.BeContent)
+            @if (source.Content == null || this.X == XX.BeContent)
             {
-            <td>
-              @if(source.Content != null)
-              {
-                @if(source.Content.Fam != null){
-                  <a href="/c/contents/@source.Content.Id">
-                    @source.Content.Fam.Name
-                  </a>
-                }
-                else
-                {
-                  <a href="/c/contents/@source.Content.Id" class="no-name">
-                    no-show
-                  </a>
-                }
-              
+              <td colspan="3">
+                <OuterLinkSource Model=@source Name=@source.Name />
+              </td>
+            } else
+            {
+              <td>
+                <OuterLinkSource Model=@source Name=@source.DefinitionUid />
+              </td>
+              @if(this.X != XX.SpecificFam){
+                <td>
+                  <InnerLinkFam Model=@source.Content.Fam />
+                </td>
+              }
+              <td>
+                <InnerLinkContent Model=@source.Content />
                 <OneOrMany ParamList=@source.Content.Guests Context="guest">
                   <Before>
-                      &raquo;
+                    &raquo;
                   </Before>
                   <ChildContent>
                     <InnerLinkPersona Model=@guest />
                   </ChildContent>
                   <IfNone></IfNone>
                 </OneOrMany>
-              }
-            </td>
+              </td>
             }
           </tr>
         </IfSome>

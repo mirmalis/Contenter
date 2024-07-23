@@ -2,11 +2,15 @@
 @code {
   [Parameter]
   public int? Take { get; set; }
+
+  [Parameter]
+  public bool Main { get; set; }
 }
 <MyLoader 
   Take=@this.Take
   ParamSource=@(
     this.db.Contents
+    .Where(item => !this.Main || !item.Flags.HasFlag(Models.Contents.ContentFlags.NotAtMain))
     .OrderByDescending(item => item.CreatedAt)
     .Select(ct => new ContentView {
       Id = ct.Id,
@@ -15,10 +19,12 @@
         Id = ct.FamId!.Value,
         Name = ct.Fam!.Name,
       },
-      Guests = ct.GuestPersonaAssignments.Select(ass => new GuestView {
-        Id = ass.Guest.Id,
-        Name = ass.Guest.Name,
-      }),
+      Guests = ct.GuestPersonaAssignments
+        .OrderBy(item => item.IndexA).ThenBy(item => item.Guest.Name)
+        .Select(ass => new PersonaView {
+          Id = ass.Guest.Id,
+          Name = ass.Guest.Name,
+        }),
       Sources = ct.Sources
         .OrderByDescending(s => s.CreatedAt)
         .Select(s => new SourceView {
@@ -26,7 +32,6 @@
           Name = null ,
           Href = s.Href,
           DefinitionUid = s.DefinitionUid,
-          
           IconPath = s.PlatformId == null ? null : s.Platform!.IconPath,
           Channel = 
           null
@@ -50,7 +55,7 @@
     <tr>
       <td><InnerLinkFam Model=@model.Fam /></td>
       <td>
-        <InnerLinkContent Model=@model MaxLength="60" />
+        <InnerLinkContent Model=@model MaxLength="100" />
       </td>
       <td>
         <OneOrMany ParamList=@(model.Sources) Context="source">

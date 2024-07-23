@@ -42,21 +42,16 @@ public class SourceBroker(Database db): ISourceBroker
     var existing = await this.db.Sources.FirstOrDefaultAsync(item => item.Id == sourceId);
     if (existing == null)
     {
-      // Bad request
       return false;
     }
-    if (state)
-    {
-      if (existing.Flags.HasFlag(flag))
-        return true;
-      existing.Flags ^= flag;
+    if(
+      (existing.Flags.HasFlag(flag) && state)
+      ||
+      (!existing.Flags.HasFlag(flag) && !state)
+    ){
+      return true;
     }
-    else
-    {
-      if (!existing.Flags.HasFlag(flag))
-        return true;
-      existing.Flags &= ~flag;
-    }
+    existing.Flags = Helpers.ChangeFlag(existing.Flags, state, flag);
     await this.db.SaveChangesAsync();
     return true;
   }

@@ -1,28 +1,24 @@
 ﻿@inherits _Binder<Contenter.Models.Sources.Channel>
 @rendermode InteractiveServer
-@code {
-  override protected async Task OnParametersSetAsync()
-  {
-    await base.OnParametersSetAsync();
-  }
-}
-<EditForm Model=@this.model OnValidSubmit=@this.OnValidSubmit FormName="create">
+<EditForm
+  Model=@this.model
+  OnValidSubmit=@this.OnValidSubmit
+>
   <DataAnnotationsValidator />
   <FluentValidationSummary />
 
   <FluentStack Orientation="@Orientation.Vertical">
     <div>
-      <FluentTextField @bind-Value=@this.model.Title Label="Title" Style="width:100%;" />
-      <FluentTextField @bind-Value=@this.model.Uid Label="Uid" Style="width:100%;" />
-      <FluentTextField @bind-Value=@this.model.Name Label="Name" Style="width:100%;" />
-      <FluentTextField @bind-Value=@this.model.Handle Label="Handle" Style="width:100%;" />
-      <FluentTextField @bind-Value=@this.model.Href Label="Href" Style="width:100%;" />
+      <FluentTextField @bind-Value=@this.model.Title Label="Title"  />
+      <FluentTextField @bind-Value=@this.model.Uid Label="Uid"  />
+      <FluentTextField @bind-Value=@this.model.Name Label="Name"  />
+      <FluentTextField @bind-Value=@this.model.Handle Label="Handle"  />
+      <FluentTextField @bind-Value=@this.model.Href Label="Href"  />
     </div>
     <div>
       ContentFams:
       <div>
-        <EFSelect T="@Contenter.Models.Contents.ContentFam"
-          value=null
+        <ChooseFam MinTermLength="1" value=@null
           valueChanged=@(val => {
             if(val == null)
               return;
@@ -34,7 +30,8 @@
               }
             );
           })
-        />
+        > Parinkti laidą
+        </ChooseFam>
         <Listmanager @bind-list=@this.model.CotentFamsAssignments Context="ass" Backwards>
           <td>@ass.ContentFam</td>
         </Listmanager>
@@ -42,7 +39,12 @@
     </div>
     @if (ChildContent != null)
     {
-      <FluentButton Type=@ButtonType.Submit Appearance=@Appearance.Accent>@ChildContent</FluentButton>
+      <FluentButton
+        Type=@ButtonType.Submit
+        Appearance=@Appearance.Accent
+      >
+        @ChildContent
+      </FluentButton>
     }
   </FluentStack>
 </EditForm>

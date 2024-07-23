@@ -27,7 +27,7 @@
           Name = item.Content.Fam.Name,
         },
         Guests = item.Content.GuestPersonaAssignments
-        .Select(guestAss => new GuestView {
+        .Select(guestAss => new PersonaView {
           Id = guestAss.Guest.Id,
           Name = guestAss.Guest.Name,
         })
@@ -37,15 +37,18 @@
 >
   <IfSome Context="model">
     <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
+
       @if(model.Platform != null)
       {
         @if(model.Platform.Channel != null)
         {
-          <a href="/s/channels/@model.Platform.Channel.Id">@model.Platform.Channel.Title</a>
-          <text> &raquo; </text>
+          <div>
+            <a href="/s/channels/@model.Platform.Channel.Id">@model.Platform.Channel.Title</a>
+            <text> &raquo; </text>
+          </div>
         }
       }
-      <Contenter.Views.Bases.AnchorBase href=@($"") Text=@(model.Name ?? model.Platform?.DefinitionUid ?? "source") NewTab IconStart=@model.Platform?.IconPath />
+      <Contenter.Views.Bases.AnchorBase href=@(model.Href) Text=@(model.Name ?? model.Platform?.DefinitionUid ?? "source") NewTab IconStart=@model.Platform?.IconPath />
     </FluentStack>
     @Before
     @if (model.Content != null)

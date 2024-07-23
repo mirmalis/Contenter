@@ -6,13 +6,16 @@
 
   [Parameter]
   public bool After { get; set; } = false;
+
+  [Parameter]
+  public int? MaxLength { get; set; }
 }
 @if (this.Model != null)
 {
   <Contenter.Views.Bases.AnchorBase
     href=@($"s/channels/{this.Model.Id}") 
     Text=@this.Model.Name
-    MaxLength="20" 
+    MaxLength=@this.MaxLength
   />
   @if (After)
   {

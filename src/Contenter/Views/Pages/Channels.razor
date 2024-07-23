@@ -1,43 +1,60 @@
 ﻿@page "/channels"
+@using Contenter.Models.Views
 @code {
   [SupplyParameterFromQuery]
   public string? PlatformId { get; set; }
 }
 @inject Data.Database db
-
+<FluentLabel Typo="Microsoft.FluentUI.AspNetCore.Components.Typography.H3">
+  Kanalai
+</FluentLabel>
 <Contenter.Components.Shared.ExpList
   ParamSource=@(
-    this.db.Platforms
-    .Where(item => this.PlatformId == null || item.Id == this.PlatformId)
-    .OrderBy(item => item.Name)
-    .Select(pl => new {
-      pl.Id,
-      pl.Name,
-      pl.IconPath,
-      Channels = pl.Channels.OrderBy(item => item.Title).Select(ch => new {
-        Id = ch.Id,
-        Name = ch.Title ?? ch.Name,
-      })
+    this.db.Channels
+    .Where(item => this.PlatformId == null || item.PlatformId == this.PlatformId)
+    .Where(item => item.Sources.Count > 0)
+    .OrderByDescending(item => item.Sources.Max(item => item.CreatedAt))
+    .Select(channel => new {
+      View = new ChannelView(){
+        Id = channel.Id,
+        Name = channel.Title ?? channel.Name,
+        Href = channel.Href,
+        IconPath = channel.Platform.IconPath,
+      },
+      Sources = new {
+        LastCreatedAt = channel.Sources.Max(item => item.CreatedAt),
+        Count = channel.Sources.Count,
+        UnclasifiedCount = channel.Sources.Where(item => item.ContentId == null).Count(),
+      },
+      Fams = new {
+        Count = channel.CotentFamsAssignments.Count
+      }
     })
+
   )
 >
   <Wrapper Context="rows">
-    <ul>@rows</ul>
+    <table class="bord">
+      @rows
+    </table>
   </Wrapper>
   <IfSome Context="model">
-    <li>
-      @model.Name
-      @if (model.Channels.Any())
-      {
-        <ul>
-          @foreach(var ch in model.Channels)
-          {
-            <li>
-              <a href="/s/channels/@ch.Id">@ch.Name</a>
-            </li>
-          }
-        </ul>
-      }
-    </li>
+    <tr>
+      <td><OuterLinkChannel Model=@model.View Name="open" /></td>
+      <td>
+        <InnerLinkChannel Model=@model.View />
+      </td>
+      <td>@model.Sources.Count</td>
+      <td>
+        @if (model.Sources.UnclasifiedCount > 0)
+        {
+          @model.Sources.UnclasifiedCount
+        }
+      </td>
+      <td>@model.Fams.Count</td>
+      <td>
+        @model.Sources.LastCreatedAt.ToShortDateString()
+      </td>
+    </tr>
   </IfSome>
 </Contenter.Components.Shared.ExpList>

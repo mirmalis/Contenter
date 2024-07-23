@@ -1,21 +1,25 @@
 ﻿@page "/c/contents/{id:guid}"
+@rendermode InteractiveServer
+@inject Contenter.Brokers.Contents.IContentBroker contentBroker
 @attribute [Microsoft.AspNetCore.Authorization.AllowAnonymous]
 @code {
   [Parameter]
   public Guid Id { get; set; }
 }
-
 <FluentLabel Typo=@Typography.H5>
   Content
 </FluentLabel>
-<_Display Id=@this.Id />
-
-<div>
-  <AuthorizeView Policy="AdminSuper">
-    <Authorized>
+<AuthorizeView Policy="AdminSuper">
+  <Authorized>
+    <div>
       <a href="/edit/c/contents/@this.Id">Edit</a>
       |
       <a href="/delete/c/contents/@this.Id">Delete</a>
-    </Authorized>
-  </AuthorizeView>
-</div>
+      |
+      <button @onclick=@(async () => await this.contentBroker.Shown_at_MainPage(this.Id, false))>
+        hide from main
+      </button>
+    </div>
+  </Authorized>
+</AuthorizeView>
+<_Display Id=@this.Id />

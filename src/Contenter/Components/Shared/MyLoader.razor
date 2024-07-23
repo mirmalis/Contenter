@@ -26,17 +26,18 @@
   private bool HasMore { get; set; } = true;
   private async Task More()
   {
+    var take = this.GetTake();
     this.List ??= [];
     var items = await this.ParamSource
       .Skip(this.Skip)
-      .Take(this.GetTake())
+      .Take(take)
       .ToListAsync();
-    this.List.AddRange(items);
-    this.Skip += this.GetTake();
-    if(items.Count() < this.Take)
+    if(!items.Any() || items.Count() < take)
     {
       this.HasMore = false;
     }
+    this.List.AddRange(items);
+    this.Skip += take;
   }
   [Parameter]
   public RenderFragment<RenderFragment> Wrapper { get; set; } = rows => rows;
