@@ -5,11 +5,17 @@
 @code
 {
   [SupplyParameterFromQuery]
+  public Guid? SourceId { get; set; }
+  [SupplyParameterFromQuery]
+  public Guid? FamId { get; set; }
+  [SupplyParameterFromQuery]
   public string? YoutubeVideoIdentifier { get; set; }
 }
 <h3>Create Content</h3>
 @inject NavigationManager navigationManager
 <_Create
+  SourceId=@this.SourceId
+  FamId=@this.FamId
   YoutubeVideoIdentifier=@this.YoutubeVideoIdentifier
   OnAfterSave=@(async (Contenter.Models.Contents.Content model) => {
     this.navigationManager.NavigateTo($"/c/contents/{model.Id}");

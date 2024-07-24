@@ -5,12 +5,25 @@
 @inject NavigationManager navigationManager
 @code {
   [Parameter]
+  public Guid? SourceId { get; set; }
+  [Parameter]
   public Guid? FamId { get; set; }
   [Parameter]
   public string? YoutubeVideoIdentifier { get; set; }
   override protected async Task OnParametersSetAsync()
   {
     await base.OnParametersSetAsync();
+    if (this.SourceId != null)
+    {
+      var source = await this.db.Sources.FirstOrDefaultAsync(item => item.Id == this.SourceId);
+      if(source != null)
+      {
+        this.model.Sources = [source];
+        this.model.Name = source.Name;
+        this.model.PublishedAt = source.PublishedAt;
+
+      }
+    }
     if (this.YoutubeVideoIdentifier != null)
     {
       var videoInfo = await this.yt.GetVideoInfo(this.YoutubeVideoIdentifier);

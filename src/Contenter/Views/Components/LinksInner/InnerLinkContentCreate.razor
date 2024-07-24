@@ -1,0 +1,35 @@
+﻿@code
+{
+
+  [Parameter]
+  public string? Name { get; set; }
+
+  [Parameter]
+  public int? MaxLength { get; set; }
+
+  [Parameter]
+  public Guid? ParamSourceId { get; set; }
+}
+
+<Contenter.Views.Bases.AnchorBase
+  href=@this.GetHref()
+  Text=@(this.Name ?? "Create")
+  MaxLength=@this.MaxLength 
+/>
+
+@code {
+  private static readonly string start = "/create/c/contents";
+  private string GetHref()
+  {
+    Dictionary<string, string> pars = new();
+    if (this.ParamSourceId != null)
+    {
+      pars.Add("SourceId", this.ParamSourceId!.ToString()!);
+    }
+    if (pars.Any())
+    {
+      return start + "?" + string.Join("&", pars.Select(kv => $"{kv.Key}={kv.Value}"));
+    }
+    return start;
+  }
+}

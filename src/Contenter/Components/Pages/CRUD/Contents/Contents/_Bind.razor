@@ -40,6 +40,28 @@
       }
       else
       {
+        @if (this.model.Sources?.Count == 1)
+        {
+          var source = this.model.Sources.First();
+          if(source.ChannelUid != null)
+          {
+            <ExpList 
+              ParamSource=@(
+                this.db.Entry(source).Reference(item => item.Channel)
+                .Query()
+                .SelectMany(ch => ch.CotentFamsAssignments.Select(ass => ass.ContentFam))
+              )
+            >
+              <IfSome Context="fam">
+                <FluentButton OnClick=@(() => this.model.Fam = fam) Appearance="@Appearance.Accent">
+                  @fam.Name
+                </FluentButton>
+
+              </IfSome>
+            </ExpList>
+          }
+        }
+
         <ChooseFam 
           value=@this.model.Fam
           valueChanged=@(val => {

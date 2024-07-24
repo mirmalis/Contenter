@@ -19,7 +19,7 @@ public partial class _Display: _Displayer<Contenter.Models.Sources.Channel, Guid
   private Guid? FamId { get;set;}
   private XX X { get; set; }
   private ComponentBase SourcesLoader { get; set; } = default!;
-  private async Task ChangeFilter(XX x, Guid? famId)
+  private void ChangeFilter(XX x, Guid? famId)
   {
     this.X = x;
     this.FamId = famId;

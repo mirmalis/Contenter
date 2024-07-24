@@ -114,27 +114,27 @@
                 </Authorized>
               </AuthorizeView>
             </td>
+            <td>
+              <OuterLinkSource Model=@source Name=@source.DefinitionUid />
+            </td>
             @if (source.Content == null || this.X == XX.BeContent)
             {
-              <td colspan="3">
-                <OuterLinkSource Model=@source Name=@source.Name />
+              <td colspan="@(2 + (this.X == XX.SpecificFam ? 0 : 1)) ">
+                <InnerLinkContentCreate ParamSourceId=@source.Id Name="Create" />
+                &raquo;
+                @source.Name
               </td>
             } else
             {
-              <td>
-                <OuterLinkSource Model=@source Name=@source.DefinitionUid />
-              </td>
-              @if(this.X != XX.SpecificFam){
+              @if(this.X != XX.SpecificFam)
+              {
                 <td>
                   <InnerLinkFam Model=@source.Content.Fam />
                 </td>
               }
+              <td><InnerLinkContent Model=@source.Content /></td>
               <td>
-                <InnerLinkContent Model=@source.Content />
                 <OneOrMany ParamList=@source.Content.Guests Context="guest">
-                  <Before>
-                    &raquo;
-                  </Before>
                   <ChildContent>
                     <InnerLinkPersona Model=@guest />
                   </ChildContent>

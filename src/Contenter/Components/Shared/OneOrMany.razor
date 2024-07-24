@@ -5,6 +5,8 @@
   public IEnumerable<T>? ParamList { get; set; }
 
   [Parameter]
+  public RenderFragment<RenderFragment> WrapperOfAll { get; set; } = fragment => fragment;
+  [Parameter]
   public RenderFragment<T> ChildContent { get; set; } = item => @<text>@item!.ToString()</text>;
 
   [Parameter]
@@ -23,21 +25,25 @@
 @if (this.ParamList != null && this.ParamList.Any())
 {
   @Before
-  @if (!this.Many && this.ParamList.Count() == 1)
-  {
-    @ChildContent(this.ParamList.First())
-  }
-  else
-  {
-    <ul>
-      @foreach (var item in this.ParamList)
-      {
-        <li>
-          @ChildContent(item)
-        </li>
-      }
-    </ul>
-  }
+  @WrapperOfAll(
+    @:@{
+    @if (!this.Many && this.ParamList.Count() == 1)
+    {
+      @ChildContent(this.ParamList.First())
+    }
+    else
+    {
+      <ul>
+        @foreach (var item in this.ParamList)
+        {
+          <li>
+            @ChildContent(item)
+          </li>
+        }
+      </ul>
+    }
+    }
+  )
   @After
 }
 else

@@ -6,9 +6,10 @@ public partial class ConditionBase: ComponentBase
   [Parameter]
   public bool Condition { get; set; }
 
+  [EditorRequired]
   [Parameter]
-  public RenderFragment Match { get; set; }
+  public RenderFragment Match { get; set; } = default!;
 
   [Parameter]
-  public RenderFragment NotMatch { get; set; }
+  public RenderFragment? NotMatch { get; set; }
 }
