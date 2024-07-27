@@ -2,21 +2,20 @@
 
 public class Channel: IIded<string>
 {
-  /// <summary>
-  /// Starts with UC....
-  /// </summary>
-  public string Id { get; set; }
-  public string? Handle { get; set; }
-  public string? Title { get; set; }
-  public string? Country { get; set; }
-  
-  public string? UploadsPlaylistId { get; set; }
-  public DateTime? Since { get; set; }
-
-  public bool IsOld()
-  {
-    return true;
-  }
+  public string Id { get; set; } = default!;
   public DateTime CreatedAt { get; set; }
-  public DateTime? UpdatedAt { get; set; }
+  public DateTime UpdatedAt { get; set; }
+  public DateTime? PublishedAt { get; set; }
+  public string Title { get; set; } = default!;
+
+  public string? UploadsPlaylistId { get; set; }
+  public string? Handle { get; set; }
+  public string? Country { get; set; }
+
+  public List<Video> Videos { get; set; } = [];
+  public List<Playlist> Playlists { get; set; } = [];
+  public List<PlaylistItem> PlaylistItems { get; set; } = [];
+
+  public List<ChannelSnippet> Snippets { get; set; } = [];
 }
+ 

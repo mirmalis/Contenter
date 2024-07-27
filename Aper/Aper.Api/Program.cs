@@ -1,4 +1,8 @@
-using Aper.Api.Brokers;
+using Aper.Api.Brokers.Storages;
+using Aper.Api.Brokers.YoutubeApiBrokers;
+using Aper.Api.Services;
+
+using Google.Apis.Services;
 
 using Microsoft.EntityFrameworkCore;
 namespace Aper.Api;
@@ -10,9 +14,12 @@ public class Program
     var builder = WebApplication.CreateBuilder(args);
 
     // Add services to the container.
-    var aperDbConntextString = builder.Configuration.GetConnectionString("Aper");
-    builder.Services.AddTransient<IYoutubeApiBroker, YoutubeApiBroker>();
-    builder.Services.AddDbContext<Database>(options => options.UseSqlite(aperDbConntextString, b => b.MigrationsAssembly("Aper.Api")));
+    builder.Services.AddSingleton<BaseClientService.Initializer>();
+
+    builder.Services.AddTransient<ITrueDataBroker, YoutubeApiBroker>();
+    builder.Services.AddDbContext<IStorageBroker, StorageBroker>();
+    builder.Services.AddTransient<IVideoService, VideoService>();
+
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();

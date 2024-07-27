@@ -2,7 +2,7 @@
 
 public static class Helpers
 {
-  public static DateTime? ParseRawDateTime(this string datetimeRaw)
+  public static DateTime ParseRawDateTime(this string datetimeRaw)
   {
     return DateTime.Parse(datetimeRaw).NoMS();
   }
