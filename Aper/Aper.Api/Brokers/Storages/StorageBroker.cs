@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Aper.Api.Brokers.Storages;
 
 public partial class StorageBroker: DbContext, IStorageBroker
 {
+  #region Constructors
   private const string SQL_DATETIME_NOW = "DateTime('now')";
   private readonly IConfiguration configuration;
 
@@ -12,6 +14,7 @@ public partial class StorageBroker: DbContext, IStorageBroker
     this.configuration = configuration;
     this.Database.Migrate();
   }
+  #endregion
 
   private async ValueTask<T> InsertAsync<T>(T @object)
     where T : class

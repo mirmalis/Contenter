@@ -1,11 +1,11 @@
 ﻿using Aper.Api.Controllers.Models.Videos;
-using Aper.Api.Services;
+using Aper.Api.Services.Foundations.Videos;
 
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aper.Api.Controllers;
 [ApiController]
-[Microsoft.AspNetCore.Mvc.Route("[controller]")]
+[Route("[controller]")]
 public class YoutubeVideoController: ControllerBase
 {
   #region Constructors

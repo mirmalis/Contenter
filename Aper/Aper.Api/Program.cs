@@ -1,7 +1,7 @@
 using Aper.Api.Brokers.Storages;
 using Aper.Api.Brokers.YoutubeApiBrokers;
-using Aper.Api.Services;
-
+using Aper.Api.Services.Foundations.Videos;
+using Aper.Api.Services.Foundations.Channels;
 using Google.Apis.Services;
 
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +18,7 @@ public class Program
 
     builder.Services.AddTransient<ITrueDataBroker, YoutubeApiBroker>();
     builder.Services.AddDbContext<IStorageBroker, StorageBroker>();
+    builder.Services.AddTransient<IChannelService, ChannelService>();
     builder.Services.AddTransient<IVideoService, VideoService>();
 
     builder.Services.AddControllers();
