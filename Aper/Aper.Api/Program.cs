@@ -1,6 +1,7 @@
 using Aper.Api.Brokers.Storages;
 using Aper.Api.Brokers.TruthBrokers;
 using Aper.Api.Services.Foundations.Channels;
+using Aper.Api.Services.Foundations.PlaylistItems;
 using Aper.Api.Services.Foundations.Playlists;
 using Aper.Api.Services.Foundations.Videos;
 
@@ -22,6 +23,7 @@ public class Program
     builder.Services.AddTransient<IChannelService, ChannelService>();
     builder.Services.AddTransient<IVideoService, VideoService>();
     builder.Services.AddTransient<IPlaylistService, PlaylistService>();
+    builder.Services.AddTransient<IPlaylistItemService, PlaylistItemService>();
 
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

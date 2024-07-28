@@ -4,6 +4,7 @@ namespace Aper.Api.Brokers.Storages;
 
 public partial interface IStorageBroker
 {
+
   //Channels
   IQueryable<Channel> ReadChannels();
   ValueTask<Channel?> ReadChannelByIdAsync(string id);
@@ -22,4 +23,10 @@ public partial interface IStorageBroker
   ValueTask<Playlist> CreatePlaylistAsync(Playlist playlist);
   ValueTask<Playlist> UpdatePlaylistAsync(Playlist playlist);
   ValueTask<Playlist> DeletePlaylistAsync(Playlist playlist);
+  // PlaylistItems
+  IQueryable<PlaylistItem> ReadPlaylistItems();
+  ValueTask<PlaylistItem?> ReadPlaylistItemByIdAsync(string id);
+  ValueTask<PlaylistItem> CreatePlaylistItemAsync(PlaylistItem playlistItem);
+  ValueTask<PlaylistItem> UpdatePlaylistItemAsync(PlaylistItem playlistItem);
+  ValueTask<PlaylistItem> DeletePlaylistItemAsync(PlaylistItem playlistItem);
 }
