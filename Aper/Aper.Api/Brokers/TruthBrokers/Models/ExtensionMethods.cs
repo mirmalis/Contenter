@@ -1,7 +1,4 @@
-﻿using Aper.Api.Brokers.YoutubeApiBrokers.Models;
-
-namespace Aper.Api.Controllers;
-
+﻿namespace Aper.Api.Brokers.TruthBrokers.Models;
 public static class ExtensionMethods
 {
   public static Aper.Models.Channel Merge(this ChannelDetails data, Aper.Models.Channel? existing, DateTime? now = null)
@@ -11,7 +8,7 @@ public static class ExtensionMethods
       CreatedAt = _now,
     };
     existing.UpdatedAt = _now;
-    
+
     existing.Id = data.Id;
     existing.Handle = data.Handle;
     existing.Title = data.Title;
@@ -80,19 +77,20 @@ public static class ExtensionMethods
     existing.PublishedAt = data.PublishedAt;
 
     //existing.ChannelId = null!; // Channel is set above
-    if(channel == null)
+    if (channel == null)
     {
       existing.ChannelId = data.Channel.Id;
-    } else
+    }
+    else
     {
       existing.Channel = channel;
     }
 
     existing.CurrentItemsCount = data.CurrentItemsCount;
     existing.PrivacyStatus = data.PrivacyStatus switch {
-        PrivacyStatuses._private => Aper.Models.AccessStates._private,
-        PrivacyStatuses._unlisted => Aper.Models.AccessStates._unlisted,
-        PrivacyStatuses._public => Aper.Models.AccessStates._public,
+      PrivacyStatuses._private => Aper.Models.AccessStates._private,
+      PrivacyStatuses._unlisted => Aper.Models.AccessStates._unlisted,
+      PrivacyStatuses._public => Aper.Models.AccessStates._public,
       _ => throw new NotImplementedException()
     };
 

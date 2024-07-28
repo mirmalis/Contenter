@@ -6,7 +6,7 @@ namespace Aper.Api.Brokers.Storages;
 public partial class StorageBroker
 {
   public DbSet<Aper.Models.Video> Videos => this.Set<Aper.Models.Video>();
-  public IQueryable<Aper.Models.Video> ReadVideosAll() => this.Videos;
+  public IQueryable<Aper.Models.Video> ReadVideos() => this.Videos;
 
   public async ValueTask<Aper.Models.Video> CreateVideoAsync(Aper.Models.Video video)
   {

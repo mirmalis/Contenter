@@ -1,4 +1,4 @@
-﻿namespace Aper.Api.Brokers.YoutubeApiBrokers.Models;
+﻿namespace Aper.Api.Brokers.TruthBrokers.Models;
 
 public class PlaylistItemDetails
 {

@@ -1,6 +1,6 @@
-﻿namespace Aper.Api.Brokers.TruthBrokers.Models;
+﻿namespace Aper.Api.Controllers.Models;
 
-public class BasicChannelInfo
+public class IDTitle
 {
   public required string Id { get; set; }
   public required string Title { get; set; }

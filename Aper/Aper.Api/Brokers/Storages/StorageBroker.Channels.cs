@@ -1,19 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Aper.Models;
 namespace Aper.Api.Brokers.Storages;
 
 public partial class StorageBroker
 {
-  public DbSet<Aper.Models.Channel> Channels
-    => this.Set<Aper.Models.Channel>();
+  public DbSet<Channel> Channels
+    => this.Set<Channel>();
 
-  public IQueryable<Aper.Models.Channel> ReadChannelsAll()
-    => this.SelectAll<Aper.Models.Channel>();
-  public async ValueTask<Aper.Models.Channel?> ReadChannelByIdAsync(string id)
-    => await SelectAsync<Aper.Models.Channel>(id);
-  public async ValueTask<Aper.Models.Channel> CreateChannelAsync(Aper.Models.Channel channel)
+  public IQueryable<Channel> ReadChannels()
+    => this.SelectAll<Channel>();
+  public async ValueTask<Channel?> ReadChannelByIdAsync(string id)
+    => await SelectAsync<Channel>(id);
+  public async ValueTask<Channel> CreateChannelAsync(Channel channel)
     => await InsertAsync(channel);
-  public async ValueTask<Aper.Models.Channel> UpdateChannelAsync(Aper.Models.Channel channel)
+  public async ValueTask<Channel> UpdateChannelAsync(Channel channel)
     => await this.UpdateAsync(channel);
-  public async ValueTask<Aper.Models.Channel> DeleteChannelAsync(Aper.Models.Channel channel)
+  public async ValueTask<Channel> DeleteChannelAsync(Channel channel)
     => await this.DeleteAsync(channel);
 }

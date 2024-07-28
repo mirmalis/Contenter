@@ -1,10 +1,11 @@
 using Aper.Api.Brokers.Storages;
-using Aper.Api.Brokers.YoutubeApiBrokers;
-using Aper.Api.Services.Foundations.Videos;
+using Aper.Api.Brokers.TruthBrokers;
 using Aper.Api.Services.Foundations.Channels;
+using Aper.Api.Services.Foundations.Playlists;
+using Aper.Api.Services.Foundations.Videos;
+
 using Google.Apis.Services;
 
-using Microsoft.EntityFrameworkCore;
 namespace Aper.Api;
 
 public class Program
@@ -20,6 +21,7 @@ public class Program
     builder.Services.AddDbContext<IStorageBroker, StorageBroker>();
     builder.Services.AddTransient<IChannelService, ChannelService>();
     builder.Services.AddTransient<IVideoService, VideoService>();
+    builder.Services.AddTransient<IPlaylistService, PlaylistService>();
 
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

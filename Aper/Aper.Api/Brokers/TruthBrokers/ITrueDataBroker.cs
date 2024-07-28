@@ -1,11 +1,15 @@
-﻿using Aper.Api.Brokers.YoutubeApiBrokers.Models;
+﻿using Aper.Api.Brokers.TruthBrokers.Models;
 
-namespace Aper.Api.Brokers.YoutubeApiBrokers;
+namespace Aper.Api.Brokers.TruthBrokers;
 
 public interface ITrueDataBroker
 {
+  // Channels
   Task<ChannelDetails?> GetChannelDetails(string? channelId, string? handle = null, string? username = null);
-  Task<PlaylistDetails?> GetPlaylistDetails(string playlistId);
-  Task<IEnumerable<PlaylistItemDetails>> Playlist_GetAllVideoIds(string playlistId, DateTime? until);
+  // Videos
   Task<VideoDetails?> VideoDetails(string videoId);
+  // Playlists
+  Task<PlaylistDetails?> GetPlaylistDetails(string playlistId);
+  // PlaylistItems
+  Task<IEnumerable<PlaylistItemDetails>> GetPlaylistItemsByPlaylistId(string playlistId, DateTime? until);
 }

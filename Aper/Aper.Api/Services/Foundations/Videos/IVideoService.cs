@@ -1,4 +1,4 @@
-﻿using Aper.Api.Brokers.YoutubeApiBrokers.Models;
+﻿using Aper.Api.Brokers.TruthBrokers.Models;
 namespace Aper.Api.Services.Foundations.Videos;
 
 public interface IVideoService

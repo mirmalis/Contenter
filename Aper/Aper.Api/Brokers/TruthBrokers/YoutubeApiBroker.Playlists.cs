@@ -1,8 +1,9 @@
-﻿using Aper.Api.Brokers.YoutubeApiBrokers.Models;
+﻿using Aper.Api.Brokers.TruthBrokers.Models;
+using Aper.Api.Brokers.TruthBrokers.Models;
 
 using Google.Apis.YouTube.v3;
 
-namespace Aper.Api.Brokers.YoutubeApiBrokers;
+namespace Aper.Api.Brokers.TruthBrokers;
 
 public partial class YoutubeApiBroker
 {

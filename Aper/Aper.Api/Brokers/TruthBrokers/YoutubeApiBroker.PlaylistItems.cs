@@ -1,8 +1,8 @@
-﻿using Aper.Api.Brokers.YoutubeApiBrokers.Models;
+﻿using Aper.Api.Brokers.TruthBrokers.Models;
 
 using Google.Apis.YouTube.v3;
 
-namespace Aper.Api.Brokers.YoutubeApiBrokers;
+namespace Aper.Api.Brokers.TruthBrokers;
 
 public partial class YoutubeApiBroker
 {
@@ -23,7 +23,7 @@ public partial class YoutubeApiBroker
     request.PageToken = pageToken;
     return request;
   }
-  public async Task<IEnumerable<PlaylistItemDetails>> Playlist_GetAllVideoIds(string playlistId, DateTime? until)
+  public async Task<IEnumerable<PlaylistItemDetails>> GetPlaylistItemsByPlaylistId(string playlistId, DateTime? until)
   {
     List<PlaylistItemDetails> result = [];
     var nextPageToken = "";

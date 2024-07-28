@@ -1,8 +1,7 @@
 ﻿using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 
-namespace Aper.Api.Brokers.YoutubeApiBrokers;
-
+namespace Aper.Api.Brokers.TruthBrokers;
 
 public partial class YoutubeApiBroker: YouTubeService, ITrueDataBroker
 {

@@ -26,7 +26,7 @@ public class YoutubeVideoController: ControllerBase
         Id = details.Id,
         Title = details.Title,
         PublishedAt = details.PublishedAt,
-        Channel = new OutVideoDetails.OutChannelBasicInfo() {
+        Channel = new() {
           Id = details.Channel.Id,
           Title = details.Channel.Title,
         }

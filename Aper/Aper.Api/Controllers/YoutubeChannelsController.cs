@@ -1,4 +1,4 @@
-﻿using Aper.Api.Brokers.YoutubeApiBrokers.Models;
+﻿using Aper.Api.Brokers.TruthBrokers.Models;
 using Aper.Api.Controllers.Models.Channels;
 using Aper.Api.Services.Foundations.Channels;
 

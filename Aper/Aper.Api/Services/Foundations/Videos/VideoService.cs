@@ -1,7 +1,6 @@
 ﻿using Aper.Api.Brokers.Storages;
-using Aper.Api.Brokers.YoutubeApiBrokers;
-using Aper.Api.Brokers.YoutubeApiBrokers.Models;
-using Aper.Api.Controllers;
+using Aper.Api.Brokers.TruthBrokers;
+using Aper.Api.Brokers.TruthBrokers.Models;
 namespace Aper.Api.Services.Foundations.Videos;
 
 

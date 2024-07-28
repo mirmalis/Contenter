@@ -1,16 +1,15 @@
 ﻿using Aper.Api.Brokers.Storages;
-using Aper.Api.Brokers.YoutubeApiBrokers;
-using Aper.Api.Brokers.YoutubeApiBrokers.Models;
-using Aper.Api.Controllers;
+using Aper.Api.Brokers.TruthBrokers;
+using Aper.Api.Brokers.TruthBrokers.Models;
 namespace Aper.Api.Services.Foundations.Channels;
 
 public class ChannelService(
-  Brokers.Storages.IStorageBroker storageBroker,
-  Brokers.YoutubeApiBrokers.ITrueDataBroker truthBroker
+  IStorageBroker storageBroker,
+  ITrueDataBroker truthBroker
 ): IChannelService
 {
   private IStorageBroker storageBroker { get; } = storageBroker;
-  public ITrueDataBroker truthBroker { get; } = truthBroker;
+  private ITrueDataBroker truthBroker { get; } = truthBroker;
 
 
   private async Task<ChannelDetails?> Create(string id)
@@ -41,7 +40,7 @@ public class ChannelService(
 
   public async Task<ChannelDetails?> Get(string channelId, bool cacheless = false)
   {
-    var core = await this.storageBroker.ReadChannelByIdAsync(channelId:channelId);
+    var core = await this.storageBroker.ReadChannelByIdAsync(id:channelId);
     if (!cacheless && core != null)
     {
       bool isUpToDate = false; // TODO
