@@ -1,6 +1,6 @@
 proj = --project Aper.Api
 ct = --context Aper.Api.Brokers.Storages.StorageBroker
-dbfile = D:\git\-\dbs\Aper2-youtube.db3
+dbfile = D:\git\-\dbs\Aper-youtube.db3
 wr:
 	dotnet watch run $(proj)
 open:

@@ -8,7 +8,7 @@ public partial class StorageBroker
   {
     mb.Entity<Aper.Models.ChannelSnippet>(videos => {
       videos.ToTable("ChannelSnippets");
-      videos.Property(item => item.CreatedAt).HasDefaultValueSql(SQL_DATETIME_NOW);
+      videos.Property(item => item.CreatedDate).HasDefaultValueSql(SQL_DATETIME_NOW);
     });
   }
 }

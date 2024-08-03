@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Aper.Models.Videos;
+using Microsoft.EntityFrameworkCore;
 
 namespace Aper.Api.Brokers.Storages;
 
@@ -6,9 +7,9 @@ public partial class StorageBroker
 {
   private static void ConfigVideos(ModelBuilder mb)
   {
-    mb.Entity<Aper.Models.Video>(videos => {
+    mb.Entity<Video>(videos => {
       videos.ToTable("Video");
-      videos.Property(item => item.CreatedAt).HasDefaultValueSql(SQL_DATETIME_NOW);
+      videos.Property(item => item.CreatedDate).HasDefaultValueSql(SQL_DATETIME_NOW);
     });
   }
 }

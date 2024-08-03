@@ -6,7 +6,7 @@ public class ChannelDetails
   public required string Handle { get; set; }
   public required string Title { get; set; }
   public required string Description { get; set; }
-  public required DateTime PublishedAt { get; set; }
+  public required DateTimeOffset PublishedAt { get; set; }
   public required string Country { get; set; }
   public required string UploadsPlaylist { get; set; }
   public required string WatchLaterPlaylist { get; set; }

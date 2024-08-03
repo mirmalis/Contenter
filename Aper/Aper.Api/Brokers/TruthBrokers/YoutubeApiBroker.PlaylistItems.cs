@@ -1,4 +1,5 @@
 ﻿using Aper.Api.Brokers.TruthBrokers.Models;
+using Aper.Api.Controllers.Models;
 
 using Google.Apis.YouTube.v3;
 
@@ -23,7 +24,7 @@ public partial class YoutubeApiBroker
     request.PageToken = pageToken;
     return request;
   }
-  public async Task<IEnumerable<PlaylistItemDetails>> GetPlaylistItemsByPlaylistId(string playlistId, DateTime? until)
+  public async Task<IEnumerable<PlaylistItemDetails>> GetPlaylistItemsByPlaylistId(string playlistId)
   {
     List<PlaylistItemDetails> result = [];
     var nextPageToken = "";
@@ -43,6 +44,11 @@ public partial class YoutubeApiBroker
             Playlist = new BasicPlaylistInfo {
               Id = item.Snippet.PlaylistId,
             },
+            Channel = new () {
+              Id = item.Snippet.ChannelId,
+              Title = item.Snippet.ChannelTitle,
+              
+            },
             Video = new BasicVideoInfo() {
               Id = item.ContentDetails.VideoId,
               Title = item.Snippet.Title,
@@ -57,10 +63,6 @@ public partial class YoutubeApiBroker
           }
         );
       result.AddRange(newItems);
-      if (until != null && newItems.Last().PublishedAt < until)
-      {
-        break;
-      }
     }
     return result;
   }

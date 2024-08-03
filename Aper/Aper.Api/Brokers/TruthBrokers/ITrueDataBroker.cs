@@ -11,5 +11,5 @@ public interface ITrueDataBroker
   // Playlists
   Task<PlaylistDetails?> GetPlaylistDetails(string playlistId);
   // PlaylistItems
-  Task<IEnumerable<PlaylistItemDetails>> GetPlaylistItemsByPlaylistId(string playlistId, DateTime? until);
+  Task<IEnumerable<PlaylistItemDetails>> GetPlaylistItemsByPlaylistId(string playlistId);
 }

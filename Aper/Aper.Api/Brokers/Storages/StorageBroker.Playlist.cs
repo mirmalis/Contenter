@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Aper.Models;
+using Aper.Models.Playlists;
 
 namespace Aper.Api.Brokers.Storages;
 

@@ -1,4 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Collections.Immutable;
+
+using Aper.Models.Videos;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Aper.Api.Brokers.Storages;
@@ -24,6 +28,21 @@ public partial class StorageBroker: DbContext, IStorageBroker
 
     return @object;
   }
+
+  private async ValueTask<IEnumerable<T>> InsertManyNewAsync<T, TKey>(IEnumerable<T> xs)
+    where T : class, IIded<TKey>
+  {
+    var exIds = await this.Set<T>()
+      .Where(item  => xs.Select(x => x.Id).Contains(item.Id))
+      .Select(item => item.Id)
+      .ToListAsync();
+    var newXs = xs.Where(x => !exIds.Contains(x.Id));
+    this.Set<T>().AddRange(newXs);
+    await this.SaveChangesAsync();
+
+    return newXs;
+  }
+
 
   private IQueryable<T> SelectAll<T>()
     where T : class
@@ -72,4 +91,6 @@ public partial class StorageBroker: DbContext, IStorageBroker
     string connectionString = this.configuration.GetConnectionString("Aper") ?? throw new NullReferenceException("Failed to get connection string");
     optionsBuilder.UseSqlite(connectionString);
   }
+
+  
 }
