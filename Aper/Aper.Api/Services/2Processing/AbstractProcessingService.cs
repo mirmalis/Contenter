@@ -4,8 +4,8 @@ using Aper.Models.Channels;
 namespace Aper.Api.Services._2Processing;
 
 public abstract class AbstractProcessingService<T, TKey, TFoundationService>
-  where T: class, IIded<TKey>
-  where TFoundationService: IAbstractFoundationService<T, TKey>
+  where T : class, IIded<TKey>
+  where TFoundationService : IAbstractFoundationService<T, TKey>
 {
   public async ValueTask<T?> GetOneById(TKey id)
     => await this.service.GetOneById(id);
@@ -42,8 +42,8 @@ public abstract class AbstractProcessingService<T, TKey, TFoundationService>
     var existingIds = await this.service.GetExistingIds([entity.Id]);
 
     return existingIds.Any()
-      ? await this.service.CreateOne(entity)
-      : await this.service.UpdateOne(entity)
+      ? await this.service.UpdateOne(entity)
+      : await this.service.CreateOne(entity)
       ;
   }
 }

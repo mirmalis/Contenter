@@ -16,9 +16,12 @@ public class Aggregator(IPlaylistOrchestrationService playlists, IVideoOrchestra
       video.Id,
       video.Title,
       Channel = new {
-        Id= video.ChannelId,
+        Id = video.ChannelId,
       },
-      video.PrivacyStatus,
+      Privacy = new {
+        Accessible = video.PrivacyStatus!.Value.HasFlag(Aper.Models.AccessStates._accessible),
+        Listed = video.PrivacyStatus!.Value.HasFlag(Aper.Models.AccessStates._listed)
+      }
     });
   }
 }

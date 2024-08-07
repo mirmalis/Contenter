@@ -43,10 +43,9 @@ public partial class YoutubeApiBroker
             Playlist = new BasicPlaylistInfo {
               Id = item.Snippet.PlaylistId,
             },
-            Channel = new () {
+            Channel = new() {
               Id = item.Snippet.ChannelId,
               Title = item.Snippet.ChannelTitle,
-              
             },
             Video = new BasicVideoInfo() {
               Id = item.ContentDetails.VideoId,
@@ -65,5 +64,4 @@ public partial class YoutubeApiBroker
     }
     return result;
   }
-  
 }

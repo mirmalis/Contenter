@@ -7,10 +7,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aper.Api.Services._1Foundations;
 
-public partial class VideoService: 
-  AbstractFoundryService<Video, string>, 
+public partial class VideoService:
+  AbstractFoundryService<Video, string>,
   IVideoService
 {
+  protected override Video MergeForUpdating(Video input, Video existing)
+  {
+    input.Title ??= existing.Title;
+    input.Description ??= existing.Description;
+    input.PrivacyStatus ??= existing.PrivacyStatus;
+
+    return base.MergeForUpdating(input, existing);
+  }
   protected override async ValueTask<Video?> DoSelect(string id) => await this.db.ReadVideoByIdAsync(id);
   protected override async ValueTask<Video> DoInsert(Video video) => await this.db.InsertVideoAsync(video);
   protected override async ValueTask<Video> DoUpdate(Video video) => await this.db.UpdateVideoAsync(video);

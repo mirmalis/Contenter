@@ -7,11 +7,10 @@ public partial class AbstractFoundryService<T, TKey>
 {
   protected virtual Xeptions.Xeption newNullInputException() => new X_NullException<T>();
   protected virtual Xeptions.Xeption newInvalidInputException() => new X_InvalidException<T>();
-  
+
   protected virtual Exception UpcastException(Exception ex)
   {
-    return ex switch
-    {
+    return ex switch {
       _ => new UnknownException()
     };
   }

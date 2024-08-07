@@ -9,18 +9,18 @@ public record class InvalidIf(bool Condition, string ParameterName, string Messa
   private static InvalidIf isDefault<T>(T obj, string parameterName, string? message)
     => new(obj == null || obj.Equals(default(T)), parameterName, message ?? "required");
   private static InvalidIf isSame<T>(T obj1, T obj2, string parameterName, string? message)
-    => new((obj1 is null && obj2 is null)||(obj1 is not null && obj2 is not null && obj1.Equals(obj2))
+    => new((obj1 is null && obj2 is null) || (obj1 is not null && obj2 is not null && obj1.Equals(obj2))
   , parameterName, message ?? "must match");
   private static InvalidIf isDiferent<T>(T obj1, string parameterName, T obj2, string message)
     => new((obj1 is null ^ obj2 is null) || (!obj1!.Equals(obj2!))
   , parameterName, message);
 
   //private static InvalidIf isDefault(Guid id, string message, string parameterName) => new(id == default, message, parameterName);
-  public static InvalidIf IsDefault(string value, string parameterName, string? message = null) 
+  public static InvalidIf IsDefault(string value, string parameterName, string? message = null)
     => isDefault(value, parameterName, message);
-  public static InvalidIf IsDefault(DateTimeOffset value, string parameterName, string? message = null) 
+  public static InvalidIf IsDefault(DateTimeOffset value, string parameterName, string? message = null)
     => isDefault(value, parameterName, message);
-  public static InvalidIf InvalidId(Guid id, string parameterName, string? message = null) 
+  public static InvalidIf InvalidId(Guid id, string parameterName, string? message = null)
     => isDefault(id, parameterName, message);
   public static InvalidIf InvalidId(string id, string parameterName, string? message = null)
     => isDefault(id, parameterName, message);
@@ -33,7 +33,7 @@ public record class InvalidIf(bool Condition, string ParameterName, string Messa
     => new InvalidIf(firstDate != secondDate, parameterName, $"IsDiferent: must match with {secondDateName}");
   public static InvalidIf IsSame(DateTimeOffset firstDate, string parameterName, DateTimeOffset secondDate, string secondDateName)
     => new InvalidIf(firstDate == secondDate, parameterName, $"IsSame: must be higher than {secondDateName}");
-  public static InvalidIf IsOld(DateTimeOffset date, string parameterName, DateTimeOffset now) 
+  public static InvalidIf IsOld(DateTimeOffset date, string parameterName, DateTimeOffset now)
     => new InvalidIf(_dateNotRecent(date, now), parameterName, "IsOld: must be recent");
   private static bool _dateNotRecent(DateTimeOffset date, DateTimeOffset currentDateTime)
   {

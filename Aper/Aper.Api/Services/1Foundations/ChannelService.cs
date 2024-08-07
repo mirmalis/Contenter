@@ -4,10 +4,20 @@ using Aper.Api.Services._0Brokers.Storages;
 using Aper.Models.Channels;
 namespace Aper.Api.Services._1Foundations;
 
-public partial class ChannelService: 
-  AbstractFoundryService<Channel, string>, 
+public partial class ChannelService:
+  AbstractFoundryService<Channel, string>,
   IChannelService
 {
+  protected override Channel MergeForUpdating(Channel input, Channel existing)
+  {
+    input.Title ??= existing.Title;
+    input.Handle ??= existing.Handle;
+    input.Country ??= existing.Country;
+    input.UploadsPlaylistId ??= existing.UploadsPlaylistId;
+    input.PublishedAt ??= existing.PublishedAt;
+
+    return base.MergeForUpdating(input, existing);
+  }
   #region Constructors
   public ChannelService(IStorageBroker storageBroker, ILoggingBroker loggingBroker, IDateTimeBroker dateTimeBroker) : base(storageBroker, loggingBroker, dateTimeBroker)
   {

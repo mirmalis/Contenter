@@ -53,7 +53,7 @@ public partial class PlaylistOrchestrationService: IPlaylistOrchestrationService
     var videos = playlistItems.Select(item => item.Video.Merge(null, now));
     var channels = playlistItems.Select(item => item.Video.Channel.Merge(null, now));
     var inputs = playlistItems.Select(item => item.Merge(null, this.now));
-    
+
     await this.channelProcessingService.CreateOrUpdateMany(channels);
     await this.videoProcessingService.CreateOrUpdateMany(videos);
     await this.playlistItemsProcessingService.CreateOrUpdateMany(inputs);

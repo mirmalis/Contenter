@@ -29,13 +29,13 @@ public partial class VideoOrchestrationService: IVideoOrchestrationService
   {
     var existing = await this.videoProcessingService.GetOneById(videoId);
     bool isOld = false;
-    if(existing != null && !isOld)
+    if (existing != null && !isOld)
     {
       return existing;
     }
 
     var details = await api.VideoDetails(videoId);
-    if(details == null)
+    if (details == null)
     {
       return null;
     }
