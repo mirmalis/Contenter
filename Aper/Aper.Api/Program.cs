@@ -1,11 +1,11 @@
-using Aper.Api.Brokers.DateTimes;
-using Aper.Api.Brokers.Logging;
-using Aper.Api.Brokers.Storages;
-using Aper.Api.Brokers.TruthBrokers;
-using Aper.Api.Services.Foundations;
-using Aper.Api.Services.Orchestrations;
-using Aper.Api.Services.Processing;
-using Aper.Models.Videos;
+using Aper.Api.Services._0Brokers.DateTimes;
+using Aper.Api.Services._0Brokers.Logging;
+using Aper.Api.Services._0Brokers.Storages;
+using Aper.Api.Services._0Brokers.TruthBrokers;
+using Aper.Api.Services._1Foundations;
+using Aper.Api.Services._2Processing;
+using Aper.Api.Services._3Orchestrations;
+using Aper.Api.Services._4Aggregators;
 
 using Google.Apis.Services;
 
@@ -24,11 +24,21 @@ public class Program
     builder.Services.AddTransient<ILoggingBroker, LoggingBroker>();
     builder.Services.AddTransient<ITrueDataBroker, YoutubeApiBroker>();
     builder.Services.AddDbContext<IStorageBroker, StorageBroker>();
+
     builder.Services.AddTransient<IChannelService, ChannelService>();
-    builder.Services.AddTransient<IChannelProcessingService, ChannelProcessingService>();
     builder.Services.AddTransient<IVideoService, VideoService>();
+    builder.Services.AddTransient<IPlaylistService, PlaylistService>();
+    builder.Services.AddTransient<IPlaylistItemsService, PlaylistItemsService>();
+
+    builder.Services.AddTransient<IChannelProcessingService, ChannelProcessingService>();
+    builder.Services.AddTransient<IPlaylistProcessingService, PlaylistProcessingService>();
     builder.Services.AddTransient<IVideoProcessingService, VideoProcessingService>();
+    builder.Services.AddTransient<IPlaylistItemsProcessingService, PlaylistItemsProcessingService>();
+
     builder.Services.AddTransient<IVideoOrchestrationService, VideoOrchestrationService>();
+    builder.Services.AddTransient<IPlaylistOrchestrationService, PlaylistOrchestrationService>();
+
+    builder.Services.AddTransient<IAggregator, Aggregator>();
 
     builder.Services.AddControllers();
 

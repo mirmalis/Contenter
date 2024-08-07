@@ -1,6 +1,4 @@
-﻿using Aper.Api.Services.Foundations;
-using Aper.Api.Services.Orchestrations;
-using Aper.Models;
+﻿using Aper.Api.Services._3Orchestrations;
 using Aper.Models.Videos;
 
 using Microsoft.AspNetCore.Mvc;
@@ -19,19 +17,6 @@ public class YoutubeVideoController: RESTFulController
   }
   private IVideoOrchestrationService videoOrchestrator { get; }
   #endregion
-  //[HttpPost]
-  //public async Task<ActionResult> PostVideoAsync(Video video)
-  //{
-  //  try
-  //  {
-  //    var created = await this.videoOrchestrator(video);
-  //    return Created(created);
-  //  }
-  //  catch (Exception ex)
-  //  {
-  //    return BadRequest(ex);
-  //  }
-  //}
   [HttpGet]
   public async Task<ActionResult<Video?>> GetVideoAsync(string videoId)
   {
