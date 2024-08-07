@@ -6,7 +6,6 @@ public static class YoutubeHelpers
   private static readonly System.Text.RegularExpressions.Regex r2 = new(@"https:\/\/youtu\.be/(.{11})");
   private static readonly System.Text.RegularExpressions.Regex r3 = new(@"https:\/\/www\.youtube\.com\/shorts\/(.{11})");
 
-
   public static string? ExtractV(string identifier)
   {
     if (identifier.Length < 11)
