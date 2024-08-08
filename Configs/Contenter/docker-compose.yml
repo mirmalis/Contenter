@@ -10,7 +10,9 @@ services:
       - ./data/wwwroot:/app/wwwroot
     environment:
       - ASPNETCORE_ENVIRONMENT=Release
-      # - HTTP_PORTS=80
+      - HTTP_PORTS=80
+
+
     networks:
       - objectify-internal-network
 networks:

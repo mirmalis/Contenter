@@ -1,0 +1,21 @@
+version: '3'
+services:
+  container:
+    container_name: aper
+    image: aper
+    restart: always
+    volumes:
+      - ./data/sqlite:/dbs
+      - ./data/keys:/root/.aspnet/DataProtection-Keys
+      
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Release
+      - HTTP_PORTS=80
+      - YoutubeDataApiKey=${YoutubeDataApiKey}
+      - YoutubeDataApiApplicationName=${YoutubeDataApiApplicationName}
+    networks:
+      - objectify-internal-network
+networks:
+  objectify-internal-network:
+    name: nginx_objectify-internal-network
+    external: true

@@ -16,5 +16,5 @@ dau:
 u:
 	dotnet ef database update $(ct) $(proj)
 tar:
-	docker build -f Dockerfile -t contenter .
-	docker save -o //pi401/configs/projects/Aper/dockerimage.tar contenter:latest
+	docker build -f Dockerfile -t aper .
+	docker save -o //pi401/configs/projects/Aper/dockerimage.tar aper:latest

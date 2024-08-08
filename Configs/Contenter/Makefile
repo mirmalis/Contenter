@@ -7,5 +7,5 @@ load:
 re:
 	docker compose down
 	docker load -i dockerimage.tar
-	rm dockerimage.tar
+	# rm dockerimage.tar
 	docker compose up -d
