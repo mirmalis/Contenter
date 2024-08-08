@@ -1,5 +1,4 @@
-﻿using Aper.Api.Services._3Orchestrations;
-using Aper.Models.Videos;
+﻿using Aper.Api.Services._4Aggregators;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,14 +10,14 @@ namespace Aper.Api.Controllers;
 public class YoutubeVideoController: RESTFulController
 {
   #region Constructors
-  public YoutubeVideoController(IVideoOrchestrationService videoService) : base()
+  public YoutubeVideoController(IVideoAggregator videoService) : base()
   {
     this.videoOrchestrator = videoService;
   }
-  private IVideoOrchestrationService videoOrchestrator { get; }
+  private IVideoAggregator videoOrchestrator { get; }
   #endregion
   [HttpGet]
-  public async Task<ActionResult<Video?>> GetVideoAsync(string videoId)
+  public async Task<ActionResult<object?>> GetVideoAsync(string videoId)
   {
     try
     {

@@ -8,7 +8,6 @@ namespace Contenter.Brokers.Contents;
 public class ContentBroker(Contenter.Data.Database db): IContentBroker
 {
   private readonly Database db = db;
-
   public async Task<List<T>> GetLatestContentsSelection<T>(System.Linq.Expressions.Expression<Func<Contenter.Models.Contents.Content, T>> expression, int max = 100, int skip = 0)
   {
     return await this.db

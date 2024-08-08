@@ -7,5 +7,4 @@ public class PlaylistItemsProcessingService(IPlaylistItemsService playlistServic
   AbstractProcessingService<PlaylistItem, string, IPlaylistItemsService>(playlistService),
   IPlaylistItemsProcessingService
 {
-
 }

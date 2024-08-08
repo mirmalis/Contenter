@@ -1,9 +1,6 @@
 ﻿using System.Collections.Immutable;
-using Aper.Api.Services._0Brokers.Storages;
-using Aper.Models.Videos;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Aper.Api.Services._0Brokers.Storages;
 
@@ -19,10 +16,18 @@ public partial class StorageBroker: DbContext, IStorageBroker
     this.Database.Migrate();
   }
   #endregion
-  public async ValueTask<T?> GetOne<T, TKey>(TKey id)
+  public async ValueTask<T?> GetOneById<T, TKey>(TKey id)
     where T: class, IIded<TKey>
   {
     return await this.Set<T>().Where(item => item.Id!.Equals(id)).FirstOrDefaultAsync();
+  }
+  public async ValueTask<TOut?> GetOneById<T, TKey, TOut>(TKey id, System.Linq.Expressions.Expression<Func<T, TOut>> selector) 
+    where T : class, IIded<TKey>
+  {
+    return await this.Set<T>()
+      .Where(item => item.Id!.Equals(id))
+      .Select(selector)
+      .FirstOrDefaultAsync();
   }
   public IQueryable<T> GetAll<T>() 
     where T: class
@@ -37,7 +42,6 @@ public partial class StorageBroker: DbContext, IStorageBroker
 
     return @object;
   }
-
   private async ValueTask<IEnumerable<T>> InsertManyNewAsync<T, TKey>(IEnumerable<T> xs)
     where T : class, IIded<TKey>
   {
@@ -51,21 +55,17 @@ public partial class StorageBroker: DbContext, IStorageBroker
 
     return newXs;
   }
-
-
   private IQueryable<T> SelectAll<T>()
     where T : class
   {
     return this.Set<T>();
   }
-
   private async ValueTask<T?> SelectAsync<T>(params object[] @objectIds)
     where T : class
   {
     return await this.FindAsync<T>(objectIds);
 
   }
-
   private async ValueTask<T> UpdateAsync<T>(T @object)
     where T : class
   {
@@ -74,7 +74,6 @@ public partial class StorageBroker: DbContext, IStorageBroker
 
     return @object;
   }
-
   private async ValueTask<T> DeleteAsync<T>(T @object)
     where T : class
   {
@@ -83,7 +82,6 @@ public partial class StorageBroker: DbContext, IStorageBroker
 
     return @object;
   }
-
   protected override void OnModelCreating(ModelBuilder mb)
   {
     base.OnModelCreating(mb);
@@ -93,13 +91,11 @@ public partial class StorageBroker: DbContext, IStorageBroker
     ConfigPlaylist(mb);
     ConfigPlaylistItems(mb);
   }
-
   protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
   {
     optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-    string connectionString = this.configuration.GetConnectionString("Aper") ?? throw new NullReferenceException("Failed to get connection string");
+    string connectionString = this.configuration.GetConnectionString("Aper")
+      ?? throw new NullReferenceException("Failed to get connection string");
     optionsBuilder.UseSqlite(connectionString);
   }
-
-  
 }

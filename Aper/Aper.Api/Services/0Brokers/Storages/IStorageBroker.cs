@@ -8,8 +8,9 @@ namespace Aper.Api.Services._0Brokers.Storages;
 public partial interface IStorageBroker
 {
   IQueryable<T> GetAll<T>() where T : class;
-  ValueTask<T?> GetOne<T, TKey>(TKey id) where T : class, IIded<TKey>;
-
+  ValueTask<T?> GetOneById<T, TKey>(TKey id) where T : class, IIded<TKey>;
+  ValueTask<TOut?> GetOneById<T, TKey, TOut>(TKey id, System.Linq.Expressions.Expression<Func<T, TOut>> selector) where T : class, IIded<TKey>;
+  
   // Channels
   IQueryable<Channel> GetChannels();
   ValueTask<Channel?> ReadChannelByIdAsync(string id);

@@ -1,6 +1,6 @@
 ﻿using Contenter.Models.Views;
 
-namespace Contenter.Services.Views.Youtube;
+namespace Contenter.Brokers.Youtube;
 
 public interface IYoutubeBroker
 {

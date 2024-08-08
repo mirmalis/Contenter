@@ -25,9 +25,9 @@ public partial class VideoOrchestrationService: IVideoOrchestrationService
   private ITrueDataBroker api { get; }
   #endregion
 
-  public async ValueTask<Video?> GetVideo(string videoId)
+  public async ValueTask<TOut?> GetVideo<TOut>(string videoId, System.Linq.Expressions.Expression<Func<Video, TOut>> selector)
   {
-    var existing = await this.videoProcessingService.GetOneById(videoId);
+    var existing = await this.videoProcessingService.GetOneById(videoId, selector);
     bool isOld = false;
     if (existing != null && !isOld)
     {
@@ -37,7 +37,7 @@ public partial class VideoOrchestrationService: IVideoOrchestrationService
     var details = await api.VideoDetails(videoId);
     if (details == null)
     {
-      return null;
+      throw new Exception($"{typeof(Video).Name} with id={videoId} doesn't exist.");
     }
     var now = this.dateTimeBroker.GetCurrentDateTime();
     var ch = await this.channelProcessingService.CreateOrUpdateOne(details.Channel.Merge(null, now));
@@ -45,7 +45,7 @@ public partial class VideoOrchestrationService: IVideoOrchestrationService
     (
       details.Merge(null, now)
     );
-    return created;
+    return await this.videoProcessingService.GetOneById(videoId, selector);
   }
 
   public async ValueTask<IEnumerable<Video>> GetExistingVideosByPlaylistIdAsync(string playlistId)

@@ -1,7 +1,7 @@
-﻿using Contenter.Data;
+﻿using Contenter.Brokers.Youtube;
+using Contenter.Data;
 using Contenter.Models.Sources;
-using Contenter.Services.Views.Youtube;
-using Microsoft.AspNetCore.Http.HttpResults;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

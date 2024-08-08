@@ -7,8 +7,10 @@ public abstract class AbstractProcessingService<T, TKey, TFoundationService>
   where T : class, IIded<TKey>
   where TFoundationService : IAbstractFoundationService<T, TKey>
 {
-  public async ValueTask<T?> GetOneById(TKey id)
+  public virtual async ValueTask<T?> GetOneById(TKey id)
     => await this.service.GetOneById(id);
+  public virtual async ValueTask<TOut?> GetOneById<TOut>(TKey id, System.Linq.Expressions.Expression<Func<T, TOut>> selector)
+    => await this.service.GetOneById(id, selector);
   public async ValueTask<IEnumerable<TKey>> GetExistingIds(IEnumerable<TKey> ids)
     => await this.service.GetExistingIds(ids);
   public async ValueTask<IEnumerable<T>> UpdateMany(IEnumerable<T> entities)

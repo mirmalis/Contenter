@@ -13,11 +13,11 @@ public class Aggregator(IPlaylistOrchestrationService playlists, IVideoOrchestra
     var result = await this.videos.GetExistingVideosByPlaylistIdAsync(playlistId);
     return result.Select(video => new {
       video.PublishedAt,
-      video.Id,
-      video.Title,
       Channel = new {
         Id = video.ChannelId,
       },
+      video.Id,
+      video.Title,
       Privacy = new {
         Accessible = video.PrivacyStatus!.Value.HasFlag(Aper.Models.AccessStates._accessible),
         Listed = video.PrivacyStatus!.Value.HasFlag(Aper.Models.AccessStates._listed)

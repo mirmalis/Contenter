@@ -1,4 +1,4 @@
-using Contenter.Services.Views.Youtube;
+using Contenter.Brokers.Youtube;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;

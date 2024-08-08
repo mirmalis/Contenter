@@ -18,28 +18,28 @@ public partial class YoutubeApiBroker: YouTubeService, ITrueDataBroker
   }
 
   private readonly IConfiguration _configuration;
-  public YoutubeApiBroker(IConfiguration configuration) : base(
-      new BaseClientService.Initializer {
-        ApiKey = GetApiKey(configuration),
-        ApplicationName = GetApplicationName(configuration)
-      }
+  public YoutubeApiBroker(IConfiguration configuration) : base
+  (
+    new BaseClientService.Initializer {
+      ApiKey = GetApiKey(configuration),
+      ApplicationName = GetApplicationName(configuration)
+    }
   )
-    {
+  {
     this._configuration = configuration;
   }
   private static string GetApiKey(IConfiguration configuration)
   {
-    var apiKey = configuration["YoutubeDataApiKey"];
+    var apiKey = Environment.GetEnvironmentVariable("YoutubeDataApiKey");
     if (string.IsNullOrWhiteSpace(apiKey))
     {
       throw new InvalidOperationException("API key is not configured.");
     }
     return apiKey;
   }
-
   private static string GetApplicationName(IConfiguration configuration)
   {
-    var applicationName = configuration["YoutubeDataApiApplicationName"];
+    var applicationName = Environment.GetEnvironmentVariable("YoutubeDataApiApplicationName");
     if (string.IsNullOrWhiteSpace(applicationName))
     {
       throw new InvalidOperationException("Application name is not configured.");

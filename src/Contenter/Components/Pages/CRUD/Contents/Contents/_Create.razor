@@ -1,7 +1,7 @@
 ﻿@using Contenter.Models.Contents
 @inherits _Creator<Contenter.Models.Contents.Content>
 @rendermode InteractiveServer
-@inject Contenter.Services.Views.Youtube.IYoutubeBroker yt
+@inject Contenter.Brokers.Youtube.IYoutubeBroker yt
 @inject NavigationManager navigationManager
 @code {
   [Parameter]
@@ -36,7 +36,7 @@
           return;
         }
         var channel = 
-          await this.db.Channels.FirstOrDefaultAsync(item => item.PlatformId == "yt" && item.Uid == videoInfo.Author.Id)
+          await this.db.Channels.FirstOrDefaultAsync(item => item.PlatformId == "yt" && item.Uid == videoInfo.Channel.Id)
           ??
           new Models.Sources.Channel() {
             Uid = videoInfo.Id,

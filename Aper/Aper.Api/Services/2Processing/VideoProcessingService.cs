@@ -11,4 +11,9 @@ public partial class VideoProcessingService(IVideoService videoService):
   {
     return await this.service.GetVideoByPlaylistIdAsync(playlistId);
   }
+
+  public override async ValueTask<Video?> GetOneById(string id)
+  {
+    return await this.service.GetOneById(id);
+  }
 }

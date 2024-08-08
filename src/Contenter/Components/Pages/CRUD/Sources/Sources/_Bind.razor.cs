@@ -1,4 +1,4 @@
-﻿using Contenter.Services.Views.Youtube;
+﻿using Contenter.Brokers.Youtube;
 
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
@@ -31,12 +31,12 @@ public partial class _Bind: _Binder<Contenter.Models.Sources.Source>
           .Include(item => item.Platform)
           .FirstOrDefaultAsync(item => item.Uid == "video" && item.PlatformId == "yt");
         this.model.Platform = this.model.Definition?.Platform;
-        this.model.Channel = await this.db.Channels.FirstOrDefaultAsync(item => item.Uid == ytInfo.Author.Id)
+        this.model.Channel = await this.db.Channels.FirstOrDefaultAsync(item => item.Uid == ytInfo.Channel.Id)
           ?? new Models.Sources.Channel() {
-            Uid = ytInfo.Author.Id,
-            Title = ytInfo.Author.Title,
+            Uid = ytInfo.Channel.Id,
+            Title = ytInfo.Channel.Title,
             PlatformId = "yt",
-            Href = ytInfo.Author.Href,
+            Href = ytInfo.Channel.Href,
           };
         this.model.Href = ytInfo.Href;
         this.model.Name = ytInfo.Title;

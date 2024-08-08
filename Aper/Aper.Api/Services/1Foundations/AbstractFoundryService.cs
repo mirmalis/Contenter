@@ -2,6 +2,7 @@
 using Aper.Api.Services._0Brokers.Logging;
 using Aper.Api.Services._0Brokers.Storages;
 
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aper.Api.Services._1Foundations;
@@ -23,7 +24,10 @@ public abstract partial class AbstractFoundryService<T, TKey>
   protected IStorageBroker db { get; }
   protected ILoggingBroker loggingBroker { get; }
   #endregion
-  public async ValueTask<T?> GetOneById(TKey id) => await this.db.GetOne<T, TKey>(id);
+  public async ValueTask<T?> GetOneById(TKey id) => await this.db.GetOneById<T, TKey>(id);
+  public async ValueTask<TOut?> GetOneById<TOut>(TKey id, System.Linq.Expressions.Expression<Func<T, TOut>> selector) 
+    => await this.db.GetOneById<T, TKey, TOut>(id, selector);
+  
   protected IQueryable<T> GetAll() => this.db.GetAll<T>();
 
   public async ValueTask<IEnumerable<T>> CreateMany(IEnumerable<T> entities)

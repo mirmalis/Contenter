@@ -20,25 +20,29 @@ public class Program
 
     // Add services to the container.
     builder.Services.AddSingleton<BaseClientService.Initializer>();
+    // 0
     builder.Services.AddSingleton<IDateTimeBroker, DateTimeBroker>();
     builder.Services.AddTransient<ILoggingBroker, LoggingBroker>();
     builder.Services.AddTransient<ITrueDataBroker, YoutubeApiBroker>();
     builder.Services.AddDbContext<IStorageBroker, StorageBroker>();
-
+    //1
     builder.Services.AddTransient<IChannelService, ChannelService>();
     builder.Services.AddTransient<IVideoService, VideoService>();
     builder.Services.AddTransient<IPlaylistService, PlaylistService>();
     builder.Services.AddTransient<IPlaylistItemsService, PlaylistItemsService>();
-
+    //2
     builder.Services.AddTransient<IChannelProcessingService, ChannelProcessingService>();
     builder.Services.AddTransient<IPlaylistProcessingService, PlaylistProcessingService>();
     builder.Services.AddTransient<IVideoProcessingService, VideoProcessingService>();
     builder.Services.AddTransient<IPlaylistItemsProcessingService, PlaylistItemsProcessingService>();
-
+    // 3
     builder.Services.AddTransient<IVideoOrchestrationService, VideoOrchestrationService>();
     builder.Services.AddTransient<IPlaylistOrchestrationService, PlaylistOrchestrationService>();
-
+    builder.Services.AddTransient<IChannelsOrchestratorService, ChannelsOrchestratorService>();
+    // 4
     builder.Services.AddTransient<IAggregator, Aggregator>();
+    builder.Services.AddTransient<IChannelAggregator, ChannelAggregator>();
+    builder.Services.AddTransient<IVideoAggregator, VideoAggregator>();
 
     builder.Services.AddControllers();
 
