@@ -26,15 +26,33 @@ public abstract class AbstractProcessingService<T, TKey, TFoundationService>
   #endregion
   public virtual async ValueTask<IEnumerable<T>> CreateOrUpdateMany(IEnumerable<T> entities)
   {
-    entities = entities.DistinctBy(item => item.Id);
+    if(!entities.Any())
+      return [];
+
+    entities = entities.DistinctBy(item => item.Id).ToArray();
+
     var existingIds = await this.GetExistingIds(entities.Select(video => video.Id));
-    var existingInputs = entities.Where(item => existingIds.Contains(item.Id));
-    var newInputs = entities.Where(item => !existingIds.Contains(item.Id));
+    var existingInputs = entities.Where(item => existingIds.Contains(item.Id)).ToArray();
+    var newInputs = entities.Where(item => !existingIds.Contains(item.Id)).ToArray();
 
     var updated = await this.UpdateMany(existingInputs);
     var created = await this.CreateMany(newInputs);
 
     return [.. updated, .. created];
+  }
+  public virtual async ValueTask<IEnumerable<T>> CreateNonExsistant(IEnumerable<T> entities)
+  {
+    if (!entities.Any())
+      return [];
+
+    entities = entities.DistinctBy(item => item.Id).ToArray();
+
+    var existingIds = await this.GetExistingIds(entities.Select(video => video.Id));
+    var newInputs = entities.Where(item => !existingIds.Contains(item.Id)).ToArray();
+
+    var created = await this.CreateMany(newInputs);
+
+    return created;
   }
   public virtual async ValueTask<T> CreateOrUpdateOne(T entity)
   {

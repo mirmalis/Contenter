@@ -25,7 +25,6 @@ public partial class PlaylistOrchestrationService: IPlaylistOrchestrationService
   IPlaylistItemsProcessingService playlistItemsProcessingService { get; }
   ITrueDataBroker api { get; }
   #endregion
-
   public async ValueTask<Playlist?> EnsurePlaylistExists(string playlistId)
   {
     var playlist = await this.playlistProcessingService.GetOneById(playlistId);
@@ -41,23 +40,39 @@ public partial class PlaylistOrchestrationService: IPlaylistOrchestrationService
     var result = await this.playlistProcessingService.CreateOrUpdateOne(core);
     return result;
   }
-
-  public async ValueTask<Playlist?> EnsurePlaylistUpToDate(string playlistId)
+  public async ValueTask<Playlist?> EnsurePlaylistUpToDateUntil(string playlistId, DateTimeOffset until)
   {
-    // Create playlist
     var playlist = await this.EnsurePlaylistExists(playlistId);
     if (playlist == null)
-      return null;
-    // Scrape videos of playlist
+      return null; // bad playlistId
+
+    var playlistItems = await this.api.GetPlaylistItemsByPlaylistIdUntil(playlistId, until);
+    await this.write(playlistItems);
+
+    return playlist;
+  }
+  public async ValueTask<Playlist?> EnsurePlaylistUpToDate(string playlistId)
+  {
+    var playlist = await this.EnsurePlaylistExists(playlistId);
+    if (playlist == null)
+      return null; // bad playlistId
+
     var playlistItems = await this.api.GetPlaylistItemsByPlaylistId(playlistId);
+    await this.write(playlistItems);
+
+    return playlist;
+  }
+  private async ValueTask write(IEnumerable<PlaylistItemDetails> playlistItems)
+  {
+    if(playlistItems == null || !playlistItems.Any())
+      return;
+
     var videos = playlistItems.Select(item => item.Video.Merge(null, now));
     var channels = playlistItems.Select(item => item.Video.Channel.Merge(null, now));
     var inputs = playlistItems.Select(item => item.Merge(null, this.now));
 
-    await this.channelProcessingService.CreateOrUpdateMany(channels);
-    await this.videoProcessingService.CreateOrUpdateMany(videos);
+    await this.channelProcessingService.CreateNonExsistant(channels);
+    await this.videoProcessingService.CreateNonExsistant(videos);
     await this.playlistItemsProcessingService.CreateOrUpdateMany(inputs);
-
-    return playlist;
   }
 }

@@ -5,8 +5,41 @@ namespace Aper.Api.Services._0Brokers.TruthBrokers;
 
 public partial class YoutubeApiBroker
 {
+  #region Constructors
+  [Flags]
+  private enum ChannelsResource_List_Parts
+  {
+    None = 0,
+    id = 1,
+    status = 2,
+    snippet = 4,
+    statistics = 8,
+    contentDetails = 16,
+    topicDetails = 32,
+    brandingSettings = 64,
+    contentOwnerDetails = 128,
+    localizations = 256,
+    auditDetails = 512,
+  }
+  private ChannelsResource.ListRequest ChannelsResource_ListRequest(ChannelsResource_List_Parts parts, long maxResults, string? channelId = null, string? handle = null, string? username = null)
+  {
+    if (parts == ChannelsResource_List_Parts.None)
+      throw new Exception("Atleast one part is required by youtube.");
+    if (channelId == null && handle == null && username == null)
+      throw new ArgumentNullException($"Provide atleast one identifier of channel ({nameof(channelId)}, {nameof(handle)}, {nameof(username)})");
+
+    ChannelsResource.ListRequest request = this.Channels.List(parts.ToString());
+    request.Id = channelId;
+    request.ForHandle = handle;
+    request.ForUsername = username;
+    request.MaxResults = maxResults;
+
+    return request;
+  }
+  #endregion
   public async Task<ChannelDetails?> GetChannelDetails(string? channelId, string? handle = null, string? username = null)
   {
+
     var response = await
       ChannelsResource_ListRequest(ChannelsResource_List_Parts.snippet | ChannelsResource_List_Parts.contentDetails, 1, channelId: channelId, handle: handle, username: username)
       .ExecuteAsync();
@@ -42,35 +75,5 @@ public partial class YoutubeApiBroker
       return response.Items.First().Id;
     }
     return null;
-  }
-  [Flags]
-  private enum ChannelsResource_List_Parts
-  {
-    None = 0,
-    id = 1,
-    status = 2,
-    snippet = 4,
-    statistics = 8,
-    contentDetails = 16,
-    topicDetails = 32,
-    brandingSettings = 64,
-    contentOwnerDetails = 128,
-    localizations = 256,
-    auditDetails = 512,
-  }
-  private ChannelsResource.ListRequest ChannelsResource_ListRequest(ChannelsResource_List_Parts parts, long maxResults, string? channelId = null, string? handle = null, string? username = null)
-  {
-    if (parts == ChannelsResource_List_Parts.None)
-      throw new Exception("Atleast one part is required by youtube.");
-    if (channelId == null && handle == null && username == null)
-      throw new ArgumentNullException($"Provide atleast one identifier of channel ({nameof(channelId)}, {nameof(handle)}, {nameof(username)})");
-
-    ChannelsResource.ListRequest request = this.Channels.List(parts.ToString());
-    request.Id = channelId;
-    request.ForHandle = handle;
-    request.ForUsername = username;
-    request.MaxResults = maxResults;
-
-    return request;
   }
 }

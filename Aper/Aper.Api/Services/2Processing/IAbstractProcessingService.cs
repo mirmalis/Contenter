@@ -9,5 +9,8 @@ public interface IAbstractProcessingService<T, TKey>
   ValueTask<IEnumerable<T>> UpdateMany(IEnumerable<T> entities);
   ValueTask<IEnumerable<T>> CreateMany(IEnumerable<T> entities);
   ValueTask<IEnumerable<T>> CreateOrUpdateMany(IEnumerable<T> entities);
+  ValueTask<IEnumerable<T>> CreateNonExsistant(IEnumerable<T> entities);
   ValueTask<T> CreateOrUpdateOne(T entity);
+
+
 }

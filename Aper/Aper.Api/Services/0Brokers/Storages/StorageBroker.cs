@@ -9,19 +9,39 @@ public partial class StorageBroker: DbContext, IStorageBroker
   #region Constructors
   private const string SQL_DATETIME_NOW = "DateTime('now')";
   private readonly IConfiguration configuration;
-
   public StorageBroker(IConfiguration configuration)
   {
     this.configuration = configuration;
     this.Database.Migrate();
   }
+  protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+  {
+    optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+    string connectionString = this.configuration.GetConnectionString("Aper")
+      ?? throw new NullReferenceException("Failed to get connection string");
+    optionsBuilder.UseSqlite(connectionString);
+  }
   #endregion
+  protected override void OnModelCreating(ModelBuilder mb)
+  {
+    base.OnModelCreating(mb);
+    ConfigChannels(mb);
+    ConfigChannelSnippet(mb);
+    ConfigVideos(mb);
+    ConfigPlaylist(mb);
+    ConfigPlaylistItems(mb);
+  }
   public async ValueTask<T?> GetOneById<T, TKey>(TKey id)
-    where T: class, IIded<TKey>
+    where T : class, IIded<TKey>
   {
     return await this.Set<T>().Where(item => item.Id!.Equals(id)).FirstOrDefaultAsync();
   }
-  public async ValueTask<TOut?> GetOneById<T, TKey, TOut>(TKey id, System.Linq.Expressions.Expression<Func<T, TOut>> selector) 
+  public async ValueTask<IEnumerable<T>> GetManyByIds<T, TKey>(IEnumerable<TKey> ids)
+    where T : class, IIded<TKey>
+  {
+    return await this.Set<T>().Where(item => ids.Contains(item.Id)).ToListAsync();
+  }
+  public async ValueTask<TOut?> GetOneById<T, TKey, TOut>(TKey id, System.Linq.Expressions.Expression<Func<T, TOut>> selector)
     where T : class, IIded<TKey>
   {
     return await this.Set<T>()
@@ -29,12 +49,13 @@ public partial class StorageBroker: DbContext, IStorageBroker
       .Select(selector)
       .FirstOrDefaultAsync();
   }
-  public IQueryable<T> GetAll<T>() 
-    where T: class
+  public IQueryable<T> GetAll<T>()
+    where T : class
   {
     return this.Set<T>();
   }
-  private async ValueTask<T> InsertAsync<T>(T @object)
+
+  public async ValueTask<T> InsertAsync<T>(T @object)
     where T : class
   {
     this.Entry(@object).State = EntityState.Added;
@@ -46,7 +67,7 @@ public partial class StorageBroker: DbContext, IStorageBroker
     where T : class, IIded<TKey>
   {
     var exIds = await this.Set<T>()
-      .Where(item  => xs.Select(x => x.Id).Contains(item.Id))
+      .Where(item => xs.Select(x => x.Id).Contains(item.Id))
       .Select(item => item.Id)
       .ToListAsync();
     var newXs = xs.Where(x => !exIds.Contains(x.Id));
@@ -74,6 +95,20 @@ public partial class StorageBroker: DbContext, IStorageBroker
 
     return @object;
   }
+  public async ValueTask<IEnumerable<T>> UpdateManyAsync<T>(IEnumerable<T> objects)
+    where T : class
+  {
+    foreach(var obj in objects)
+    {
+      this.Update(obj);
+      //this.Entry(obj).State = EntityState.Modified;
+    }
+    await this.SaveChangesAsync();
+
+    return objects;
+  }
+
+
   private async ValueTask<T> DeleteAsync<T>(T @object)
     where T : class
   {
@@ -81,21 +116,5 @@ public partial class StorageBroker: DbContext, IStorageBroker
     await this.SaveChangesAsync();
 
     return @object;
-  }
-  protected override void OnModelCreating(ModelBuilder mb)
-  {
-    base.OnModelCreating(mb);
-    ConfigChannels(mb);
-    ConfigChannelSnippet(mb);
-    ConfigVideos(mb);
-    ConfigPlaylist(mb);
-    ConfigPlaylistItems(mb);
-  }
-  protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-  {
-    optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-    string connectionString = this.configuration.GetConnectionString("Aper")
-      ?? throw new NullReferenceException("Failed to get connection string");
-    optionsBuilder.UseSqlite(connectionString);
   }
 }

@@ -17,8 +17,6 @@ public class Program
   public static void Main(string[] args)
   {
     var builder = WebApplication.CreateBuilder(args);
-
-    // Add services to the container.
     builder.Services.AddSingleton<BaseClientService.Initializer>();
     // 0
     builder.Services.AddSingleton<IDateTimeBroker, DateTimeBroker>();
@@ -40,10 +38,11 @@ public class Program
     builder.Services.AddTransient<IPlaylistOrchestrationService, PlaylistOrchestrationService>();
     builder.Services.AddTransient<IChannelsOrchestratorService, ChannelsOrchestratorService>();
     // 4
-    builder.Services.AddTransient<IAggregator, Aggregator>();
+    builder.Services.AddTransient<ITopPlaylistFunctions, TopPlaylistFunctions>();
+    builder.Services.AddTransient<ITopChannelFunctions, TopChannelFunctions>();
     builder.Services.AddTransient<IChannelAggregator, ChannelAggregator>();
     builder.Services.AddTransient<IVideoAggregator, VideoAggregator>();
-
+    // 9
     builder.Services.AddControllers();
 
     builder.Services.AddMvc().AddJsonOptions(options => {

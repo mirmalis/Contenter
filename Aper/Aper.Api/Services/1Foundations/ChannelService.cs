@@ -10,11 +10,11 @@ public partial class ChannelService:
 {
   protected override Channel MergeForUpdating(Channel input, Channel existing)
   {
-    input.Title ??= existing.Title;
-    input.Handle ??= existing.Handle;
-    input.Country ??= existing.Country;
-    input.UploadsPlaylistId ??= existing.UploadsPlaylistId;
-    input.PublishedAt ??= existing.PublishedAt;
+    existing.Title ??= input.Title;
+    existing.Handle ??= input.Handle;
+    existing.Country ??= input.Country;
+    existing.UploadsPlaylistId ??= input.UploadsPlaylistId;
+    existing.PublishedAt ??= input.PublishedAt;
 
     return base.MergeForUpdating(input, existing);
   }

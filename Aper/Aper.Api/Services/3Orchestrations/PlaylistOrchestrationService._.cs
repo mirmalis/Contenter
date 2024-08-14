@@ -6,4 +6,5 @@ public interface IPlaylistOrchestrationService
 {
   ValueTask<Playlist?> EnsurePlaylistExists(string playlistId);
   ValueTask<Playlist?> EnsurePlaylistUpToDate(string playlistId);
+  ValueTask<Playlist?> EnsurePlaylistUpToDateUntil(string playlistId, DateTimeOffset since);
 }

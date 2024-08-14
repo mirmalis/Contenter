@@ -13,6 +13,7 @@ public partial class YoutubeApiBroker: YouTubeService, ITrueDataBroker
       "public" => PrivacyStatuses._public,
       "private" => PrivacyStatuses._private,
       "unlisted" => PrivacyStatuses._unlisted,
+      "privacyStatusUnspecified" => PrivacyStatuses._error,
       _ => throw new NotImplementedException()
     };
   }

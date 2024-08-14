@@ -9,7 +9,9 @@ public partial interface IStorageBroker
 {
   IQueryable<T> GetAll<T>() where T : class;
   ValueTask<T?> GetOneById<T, TKey>(TKey id) where T : class, IIded<TKey>;
+  ValueTask<IEnumerable<T>> GetManyByIds<T, TKey>(IEnumerable<TKey> ids) where T : class, IIded<TKey>;
   ValueTask<TOut?> GetOneById<T, TKey, TOut>(TKey id, System.Linq.Expressions.Expression<Func<T, TOut>> selector) where T : class, IIded<TKey>;
+  ValueTask<T> InsertAsync<T>(T @object) where T : class;
   
   // Channels
   IQueryable<Channel> GetChannels();
@@ -37,4 +39,5 @@ public partial interface IStorageBroker
   ValueTask<IEnumerable<PlaylistItem>> InsertPlaylistItemsAsync(IEnumerable<PlaylistItem> playlistItems);
   ValueTask<PlaylistItem> UpdatePlaylistItemAsync(PlaylistItem playlistItem);
   ValueTask<PlaylistItem> DeletePlaylistItemAsync(PlaylistItem playlistItem);
+  ValueTask<IEnumerable<T>> UpdateManyAsync<T>(IEnumerable<T> objects) where T : class;
 }

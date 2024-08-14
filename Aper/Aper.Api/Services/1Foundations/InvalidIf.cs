@@ -20,6 +20,8 @@ public record class InvalidIf(bool Condition, string ParameterName, string Messa
     => isDefault(value, parameterName, message);
   public static InvalidIf IsDefault(DateTimeOffset value, string parameterName, string? message = null)
     => isDefault(value, parameterName, message);
+  public static InvalidIf IsDefault(DateTimeOffset? value, string parameterName, string? message = null)
+    => isDefault(value, parameterName, message);
   public static InvalidIf InvalidId(Guid id, string parameterName, string? message = null)
     => isDefault(id, parameterName, message);
   public static InvalidIf InvalidId(string id, string parameterName, string? message = null)

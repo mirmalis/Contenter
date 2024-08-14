@@ -2,7 +2,6 @@
 using Aper.Api.Services._0Brokers.Logging;
 using Aper.Api.Services._0Brokers.Storages;
 
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aper.Api.Services._1Foundations;
@@ -11,6 +10,7 @@ public abstract partial class AbstractFoundryService<T, TKey>
 {
   protected abstract ValueTask<T> DoUpdate(T obj);
   protected abstract ValueTask<T> DoInsert(T obj);
+  //protected abstract ValueTask<T> DoInsertMany(IEnumerable<T> obj);
   protected abstract ValueTask<T?> DoSelect(TKey id);
   #region Constructors
   protected string TName => typeof(T).Name;
@@ -54,24 +54,35 @@ public abstract partial class AbstractFoundryService<T, TKey>
       return await this.DoInsert(input);
     });
   }
-  public async ValueTask<IEnumerable<T>> UpdateMany(IEnumerable<T> entities)
+  public async ValueTask<IEnumerable<T>> UpdateMany(IEnumerable<T> inputs)
   {
-    if (!entities.Any())
+    if (!inputs.Any())
       return [];
-    var list = new List<T>();
-    foreach (var entity in entities)
+    
+    foreach(var input in inputs)
     {
-      var result = await this.UpdateOne(entity);
-      list.Add(result);
+      if (input is null)
+        throw new Exception($"{typeof(T).Name} input is null.");
+      var x = newInvalidInputException();
+      ValidateInput_Common(x, input);
+      ValidateInput_CreateSpecific(x, input)
+        .ThrowIfContainsErrors();
     }
-    return list;
+    var existings = await this.db.GetManyByIds<T, TKey>(ids: inputs.Select(input => input.Id));
+    if(existings.Count() != inputs.Count())
+      throw new Exception($"Failed to find some {typeof(T).Name}s to update.");
+    foreach(var existing in existings)
+    {
+      this.MergeForUpdating(inputs.First(item => item.Id!.Equals(existing.Id)), existing);
+    }
+    var result = await this.db.UpdateManyAsync(existings);
+    return result;
   }
   public async ValueTask<T> UpdateOne(T entity) => await this.standardModifyAsync(entity);
   protected virtual T MergeForUpdating(T input, T existing)
   {
-    input.CreatedDate = existing.CreatedDate;
-    input.UpdatedDate = now;
-    return input;
+    existing.UpdatedDate = now;
+    return existing;
   }
   protected ValueTask<T> standardModifyAsync(T input)
   {

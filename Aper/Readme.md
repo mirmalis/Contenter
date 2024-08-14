@@ -8,26 +8,36 @@ graph LR;
     PlaylistItemController --> PlaylistItemOrchestrationService --> PlaylistItemProcessingService --> PlaylistItemService;
 
     VideoService & ChannelService & PlaylistService & PlaylistItemService --> StorageBroker --> db[(SQLite db)];
-    VideoOrchestrationService & ChannelOrchestrationService & PlaylistOrchestrationService & PlaylistItemOrchestrationService --> TruthProcessingService --> TruthService --> TruthBroker --> yt;
+    TruthProcessingService --> TruthService --> TruthBroker --> yt;
+
+    PlaylistVideoController -->
+    Playlist_Video_OrchestrationService --> PlaylistItemOrchestrationService & VideoOrchestrationService;
 
     subgraph External
         yt[(youtube api)];
     end
     subgraph Controllers
+        PlaylistVideoController;
         ChannelController;
         VideoController;
         PlaylistController;
         PlaylistItemController;
-    end
+    end;
+    
+
     subgraph Orchestration
-        ChannelOrchestrationService;
-        VideoOrchestrationService;
-        PlaylistOrchestrationService;
-        PlaylistItemOrchestrationService;
+        subgraph 1
+            ChannelOrchestrationService;
+            VideoOrchestrationService;
+            PlaylistOrchestrationService;
+            PlaylistItemOrchestrationService;
+        end
+        Playlist_Video_OrchestrationService;
     end
+    1 --> DateTimeBroker & TruthProcessingService & LoggingBroker;
     subgraph Processing
-        ChannelProcessingService;
         VideoProcessingService;
+        ChannelProcessingService;
         PlaylistProcessingService;
         PlaylistItemProcessingService;
         TruthProcessingService;
@@ -42,7 +52,9 @@ graph LR;
     subgraph Brokers
         StorageBroker;
         TruthBroker;
+    end
+    subgraph SubBrokers
+        LoggingBroker;
         DateTimeBroker;
-        Loggingbroker;
     end
 ```

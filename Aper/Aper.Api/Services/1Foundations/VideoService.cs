@@ -13,9 +13,9 @@ public partial class VideoService:
 {
   protected override Video MergeForUpdating(Video input, Video existing)
   {
-    input.Title ??= existing.Title;
-    input.Description ??= existing.Description;
-    input.PrivacyStatus ??= existing.PrivacyStatus;
+    existing.Title ??= input.Title;
+    existing.Description ??= input.Description;
+    existing.PrivacyStatus ??= input.PrivacyStatus;
 
     return base.MergeForUpdating(input, existing);
   }
