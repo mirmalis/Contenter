@@ -15,7 +15,7 @@ public class VideoAggregator(
       Channel = new {
         Id = existing.ChannelId,
         Title = existing.Channel.Title,
-        Uploads = new {
+        Uploads = existing.Channel.UploadsPlaylistId == null ? null : new {
           Id = existing.Channel.UploadsPlaylistId,
         },
       },
