@@ -38,7 +38,7 @@ public partial class YoutubeApiBroker
       Id = item.ContentDetails.VideoId,
       Title = item.Snippet.Title,
       Description = item.Snippet.Description,
-      PublishedAt = item.ContentDetails.VideoPublishedAtRaw == null ? null : item.ContentDetails.VideoPublishedAtRaw.ParseRawDateTime(),
+      PublishedAt = item.ContentDetails.VideoPublishedAtRaw.ParseRawDateTime(),
       PrivacyStatus = AsPrivacyStatus(item.Status.PrivacyStatus),
       Channel = new BasicChannelInfo() {
         Id = item.Snippet.VideoOwnerChannelId,
