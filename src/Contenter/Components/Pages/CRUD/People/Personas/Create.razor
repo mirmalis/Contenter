@@ -8,7 +8,7 @@
 }
 @inject NavigationManager navigationManager
 <_Create
-  OnAfterSave=@(async (Contenter.Models.Persons.Persona model) => {
+  OnAfterSave=@(async (Thing model) => {
     if(this.BackToContentCreation){
          this.navigationManager.NavigateTo($"/create/c/contents");
     } else {

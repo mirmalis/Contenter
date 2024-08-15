@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Contenter.Models.Objectify;
 
 namespace Contenter.Models.Persons;
 public class Person: IIded<Guid>
@@ -9,5 +10,5 @@ public class Person: IIded<Guid>
   [Required]
   public string Name { get; set; } = default!;
 
-  public List<Persona> Personas { get; set; } = [];
+  public List<Thing> Personas { get; set; } = [];
 }

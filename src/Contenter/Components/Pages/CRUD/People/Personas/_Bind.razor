@@ -1,4 +1,4 @@
-﻿@inherits _Binder<Contenter.Models.Persons.Persona>
+﻿@inherits _Binder<Thing>
 @rendermode InteractiveServer
 @code {
   override protected async Task OnParametersSetAsync()
@@ -39,7 +39,7 @@
 {
   <ExpList 
     ParamSource=@(
-      this.db.Personas
+      this.db.Things
       .Where(item => item.Name == this.model.Name)
       .Select(persona => new PersonaView {
         Id = persona.Id,

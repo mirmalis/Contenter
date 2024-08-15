@@ -1,4 +1,6 @@
-﻿namespace Contenter.Models.Contents;
+﻿using Contenter.Models.Objectify;
+
+namespace Contenter.Models.Contents;
 [Flags]
 public enum ContentFlags
 {
@@ -19,6 +21,6 @@ public class Content: IIded<Guid>
 
   public ContentFlags Flags { get; set; }
 
-  public List<ContentGuests<Contenter.Models.Persons.Persona>> GuestPersonaAssignments { get; set; } = [];
+  public List<ContentGuests<Thing>> GuestPersonaAssignments { get; set; } = [];
   public List<Sources.Source> Sources { get; set; } = [];
 }

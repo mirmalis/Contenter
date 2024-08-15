@@ -29,10 +29,21 @@
           <EFSelect Label="Definition"
                     ParamSource=@(db => this.db.Entry(this.model.Platform!).Collection(pl => pl.Definitions).Query())
                     @bind-value=@this.model.Definition/>
-          <EFSelect Label="Channel"
+          @* <EFSelect Label="Channel"
                     ParamSource=@(db => this.db.Entry(this.model.Platform!).Collection(pl => pl.Channels).Query())
                     @bind-value=@this.model.Channel 
-          />
+          /> *@
+          <FluentInputLabel Label="Channel: ">
+            @if (this.model.Channel != null)
+            {
+              <FluentButton OnClick=@(() => this.model.Channel = null)>
+                @this.model.Channel?.Name
+              </FluentButton>
+            } else 
+            {
+              <ChooseChannel @bind-value=@this.model.Channel MinTermLength="2" ParamPlatform="@this.model.Platform" />
+            }
+          </FluentInputLabel>
         }
         <FluentTextField @bind-Value=@this.model.Name Label="Name" Style="width:100%;" />
         <FluentDatePicker @bind-Value=@this.model.PublishedAt Label="Published at" />

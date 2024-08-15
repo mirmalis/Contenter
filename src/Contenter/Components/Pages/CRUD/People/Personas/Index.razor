@@ -8,7 +8,7 @@
 }
 <FluentDataGrid Pagination=@this.paginationState
   Items=@(
-    this.db.Set<Contenter.Models.Persons.Persona>()
+    this.db.Set<Thing>()
   )
 >
   <TemplateColumn Context="model">

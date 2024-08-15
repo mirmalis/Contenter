@@ -7,7 +7,9 @@ public class Database(DbContextOptions<Database> options): DbContext(options)
   public DbSet<Contenter.Models.Contents.Content> Contents => this.Set<Contenter.Models.Contents.Content>();
   public DbSet<Contenter.Models.Contents.ContentFam> ContentFams => this.Set<Contenter.Models.Contents.ContentFam>();
   public DbSet<Contenter.Models.Contents.ContentSave> ContentSaves => this.Set<Contenter.Models.Contents.ContentSave>();
-  public DbSet<Contenter.Models.Persons.Persona> Personas => this.Set<Contenter.Models.Persons.Persona>();
+  public DbSet<Contenter.Models.Objectify.Scope> Scopes => this.Set<Contenter.Models.Objectify.Scope>();
+  public DbSet<Contenter.Models.Objectify.ThingDefinition> ThingDefinitions => this.Set<Contenter.Models.Objectify.ThingDefinition>();
+  public DbSet<Contenter.Models.Objectify.Thing> Things => this.Set<Contenter.Models.Objectify.Thing>();
   public DbSet<Contenter.Models.Sources.Source> Sources => this.Set<Contenter.Models.Sources.Source>();
   public DbSet<Contenter.Models.Sources.SourcePlatform> Platforms => this.Set<Contenter.Models.Sources.SourcePlatform>();
   public DbSet<Contenter.Models.Sources.Channel> Channels => this.Set<Contenter.Models.Sources.Channel>();
@@ -25,7 +27,7 @@ public class Database(DbContextOptions<Database> options): DbContext(options)
       content.Property(item => item.CreatedAt).HasDefaultValueSql(SQL_DATETIME_NOW);
 
     });
-    mb.Entity<Contenter.Models.Contents.ContentGuests<Models.Persons.Persona>>(personaGuestAss => {
+    mb.Entity<Contenter.Models.Contents.ContentGuests<Contenter.Models.Objectify.Thing >> (personaGuestAss => {
 
       personaGuestAss.HasKey(item => new { item.ContentId, item.GuestId });
     });
@@ -38,11 +40,19 @@ public class Database(DbContextOptions<Database> options): DbContext(options)
         );
     });
     #endregion
-    #region Persons
-    mb.Entity<Contenter.Models.Persons.Persona>(persona => {
-      persona.ToTable("Persona");
-      persona.Property(item => item.Links).HasDefaultValue(new List<string>());
+    #region Objectify
+    mb.Entity<Contenter.Models.Objectify.Scope>(scopes => {
+      scopes.ToTable("Scopes");
     });
+    mb.Entity<Contenter.Models.Objectify.ThingDefinition>(thingdefinitions => {
+      thingdefinitions.ToTable("ThingDefinitions");
+    });
+    mb.Entity<Contenter.Models.Objectify.Thing>(things => {
+      things.ToTable("Things");
+      things.Property(item => item.Links).HasDefaultValue(new List<string>());
+    });
+    #endregion
+    #region Persons
     #endregion
     #region Sources
     mb.Entity<Contenter.Models.Sources.Source>(source => {

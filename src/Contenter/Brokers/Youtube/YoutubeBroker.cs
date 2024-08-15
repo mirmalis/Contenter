@@ -20,6 +20,7 @@ public class YoutubeBroker: IYoutubeBroker
   public async Task<YoutubeVideo?> GetVideoInfo(string identifier)
   {
     var v = YoutubeHelpers.ExtractV(identifier);
-    return await httpClient.GetFromJsonAsync<YoutubeVideo>($"/YoutubeVideo?videoId={v}");
+    var result = await httpClient.GetFromJsonAsync<YoutubeVideo>($"/YoutubeVideo?videoId={v}");
+    return result;
   }
 }

@@ -11,13 +11,13 @@ public class YoutubeVideo
     public string Id { get; set; } = default!;
     public string Title { get; set; } = default!;
     public string Href => $"https://www.youtube.com/channel/{this.Id}";
-    public PlaylistIdentifier Uploads { get; set ; }
+    public PlaylistIdentifier? Uploads { get; set ; }
   }
   
-
   public string Id { get; set; } = default!;
   public DateTime PublishedAt { get; set; }
   public string Title { get; set; } = default!;
+  public string? Description { get; set; }
   public ChannelIdentifier Channel { get; set; } = default!;
   public override string ToString()
   {

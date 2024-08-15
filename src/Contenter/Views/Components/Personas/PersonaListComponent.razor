@@ -5,7 +5,7 @@
 
 <ExpList 
   ParamSource=@(
-    this.db.Personas
+    this.db.Things
     .OrderByDescending(fam => fam.ContentAssignments.Count)
     .Where(item => item.ContentAssignments.Count > 0)
     .Select(persona => new {

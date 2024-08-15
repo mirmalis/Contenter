@@ -31,66 +31,68 @@
       </div>
     </div>
     <div>
-      Laida 
-      @if (this.model.Fam != null)
-      {
-        <FluentButton OnClick=@(() => this.model.Fam = null)>
-          @this.model.Fam
-        </FluentButton>
-      }
-      else
-      {
-        @if (this.model.Sources?.Count == 1)
+      <FluentInputLabel Label="Laida: ">
+        @if (this.model.Fam != null)
         {
-          var source = this.model.Sources.First();
-          if(source.ChannelUid != null)
-          {
-            <ExpList 
-              ParamSource=@(
-                this.db.Entry(source).Reference(item => item.Channel)
-                .Query()
-                .SelectMany(ch => ch.CotentFamsAssignments.Select(ass => ass.ContentFam))
-              )
-            >
-              <IfSome Context="fam">
-                <FluentButton OnClick=@(() => this.model.Fam = fam) Appearance="@Appearance.Accent">
-                  @fam.Name
-                </FluentButton>
-
-              </IfSome>
-            </ExpList>
-          }
+          <FluentButton OnClick=@(() => this.model.Fam = null)>
+            @this.model.Fam
+          </FluentButton>
         }
-
-        <ChooseFam 
-          value=@this.model.Fam
-          valueChanged=@(val => {
-            if(val.Id == default) // if new created
+        else
+        {
+          @if (this.model.Sources?.Count == 1)
+          {
+            var source = this.model.Sources.First();
+            if(source.ChannelUid != null)
             {
+              <ExpList 
+                ParamSource=@(
+                  this.db.Entry(source).Reference(item => item.Channel)
+                  .Query()
+                  .SelectMany(ch => ch.CotentFamsAssignments.Select(ass => ass.ContentFam))
+                )
+              >
+                <IfSome Context="fam">
+                  <FluentButton OnClick=@(() => this.model.Fam = fam) Appearance="@Appearance.Accent">
+                    @fam.Name
+                  </FluentButton>
+
+                </IfSome>
+              </ExpList>
             }
-            this.model.Fam = val;
-          })
-          MinTermLength="2"
-        > Pasirinkti
-        </ChooseFam>
-      }
+          }
+
+          <ChooseFam 
+            value=@this.model.Fam
+            valueChanged=@(val => {
+              if(val.Id == default) // if new created
+              {
+              }
+              this.model.Fam = val;
+            })
+            MinTermLength="2"
+          > Pasirinkti
+          </ChooseFam>
+        }
+      </FluentInputLabel>
       
     </div>
     <div>
-      Svečiai:
-      <ChoosePersona MinTermLength="3" value="null" 
-        valueChanged=@(val => {
-          if(val == null)
-            return;
-          this.model.GuestPersonaAssignments.Add(
-            new() {
-              IndexA = this.model.GuestPersonaAssignments.Any() ? this.model.GuestPersonaAssignments.Max(item => item.IndexA) + 1 : 1,
-              Guest = val,
-              Percentage = 100,
-            }
-          );
-        })
-      >Pridėti svečią</ChoosePersona>
+      <FluentInputLabel Label="Svečiai: ">
+        <ChooseThing MinTermLength="3" value="null" 
+          valueChanged=@(val => {
+            if(val == null)
+              return;
+            this.model.GuestPersonaAssignments.Add(
+              new() {
+                IndexA = this.model.GuestPersonaAssignments.Any() ? this.model.GuestPersonaAssignments.Max(item => item.IndexA) + 1 : 1,
+                Guest = val,
+                Percentage = 100,
+              }
+            );
+          })
+        >Pridėti svečią</ChooseThing>
+      </FluentInputLabel>
       <Listmanager @bind-list=@model.GuestPersonaAssignments Context="ass" >
         <td>@ass.Guest</td>
         <td>

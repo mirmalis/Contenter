@@ -1,12 +1,12 @@
 ﻿@inject IDialogService DialogService
-
+@using Contenter.Models.Objectify
 @code {
   [EditorRequired]
   [Parameter] 
-  public Contenter.Models.Persons.Persona? value { get; set; } 
+  public Thing? value { get; set; } 
   [EditorRequired]
   [Parameter] 
-  public EventCallback<Contenter.Models.Persons.Persona?> valueChanged { get; set; }
+  public EventCallback<Thing?> valueChanged { get; set; }
 
   [Parameter]
   public RenderFragment ChildContent { get; set; } =@<text>Ieškoti</text>;
@@ -22,6 +22,15 @@
   @ChildContent
 </FluentButton>
 
+@code {
+  private Scope? scope { get; set; }
+  private void SetScope(Scope? value)
+  {
+    this.scope = value;
+    this.thingDefinition = null;
+  }
+  private ThingDefinition? thingDefinition{ get; set; }
+}
 @if(!this.Hidden)
 {
   <FluentDialog Hidden="@this.Hidden">
@@ -31,14 +40,55 @@
         Label="Paieškos frazė"
         Required
       />
+      <FluentInputLabel Label="">
+        @if (this.scope != null)
+        {
+          <FluentButton Appearance="Appearance.Accent" OnClick=@(() => this.SetScope(null))>@scope?.Name</FluentButton>
+          <text>&raquo;</text>
+          @if (this.thingDefinition == null)
+          {
+            <ExpList ParamSource=@(
+               this.db.Entry(this.scope).Collection(scope => scope.ThingDefinitions).Query()
+               )>
+              <IfSome Context="td">
+                <FluentButton OnClick=@(() => this.thingDefinition = td)>
+                  @td.Name
+                </FluentButton>
+              </IfSome>
+            </ExpList>
+          }
+          else
+          {
+            <FluentButton Appearance="Appearance.Accent" OnClick=@(() => this.thingDefinition = null)>
+              @this.thingDefinition?.Name
+            </FluentButton>
+          }
+        }
+        else
+        {
+          <ExpList ParamSource=@(this.db.Scopes)>
+            <IfSome Context="sc">
+              <FluentButton OnClick=@(() => this.SetScope(sc))>
+                @sc.Name
+              </FluentButton>
+            </IfSome>
+          </ExpList>
+        }
+      </FluentInputLabel>
     </FluentDialogHeader>
     <FluentDialogBody>
+      
       @if (this.MinTermLength == 0 || (!string.IsNullOrWhiteSpace(this.SeachTerm) && this.SeachTerm.Length >= this.MinTermLength))
       {
         <ExpList 
           ParamSource=@(
-            this.db.Personas
-              .Where(c => c.Name == this.SeachTerm || c.Name.ToLower().Contains(this.SeachTerm.ToLower())) // TODO: neranda su didžiosiomis LT raidėmis
+            this.db.Things
+              .Where(thing => 
+                (thing.Name == this.SeachTerm || thing.Name.ToLower().Contains(this.SeachTerm.ToLower()))
+                && 
+                (this.thingDefinition == null || thing.ThingDefinitionId == this.thingDefinition.Id)
+              ) 
+              // TODO: neranda su didžiosiomis LT raidėmis
               .Select(persona => new {
                 persona.Id,
                 persona.Name
@@ -62,8 +112,9 @@
           </IfSome>
           <IfNone>
             @{
-              var n = new Contenter.Models.Persons.Persona() {
-                Name = this.SeachTerm
+              var n = new Contenter.Models.Objectify.Thing() {
+                Name = this.SeachTerm,
+                ThingDefinition = this.thingDefinition
               };
             }
             <FluentLabel Typo=@Typography.Subject>Sukurti naują asmenį:</FluentLabel>
@@ -78,7 +129,6 @@
         @if (this.MinTermLength > 0)
         {
           <span class="muted">Įveskite bent @this.MinTermLength raides paieškoje, kad surasti asmenį.</span>
-
         }
       }
     </FluentDialogBody>
@@ -100,14 +150,14 @@
   }
   private async Task Choose(Guid id)
   {
-    var existing = await this.db.Personas
+    var existing = await this.db.Things
       .Where(item => item.Id == id)
       .FirstOrDefaultAsync();
     if (existing == null)
       return;
     await Choose(existing);
   }
-  private async Task Choose(Contenter.Models.Persons.Persona choice)
+  private async Task Choose(Thing choice)
   {
     this.SeachTerm = string.Empty;
     this.Hidden = true;

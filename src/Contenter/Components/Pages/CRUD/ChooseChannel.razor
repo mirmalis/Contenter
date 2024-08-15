@@ -1,0 +1,118 @@
+﻿@inject IDialogService DialogService
+@using Contenter.Models.Objectify
+@code {
+
+  [Parameter]
+  public Models.Sources.SourcePlatform ParamPlatform { get; set; }
+
+  [EditorRequired]
+  [Parameter]
+  public Contenter.Models.Sources.Channel? value { get; set; }
+  [EditorRequired]
+  [Parameter]
+  public EventCallback<Contenter.Models.Sources.Channel?> valueChanged { get; set; }
+
+  [Parameter]
+  public RenderFragment ChildContent { get; set; } =@<text>Ieškoti</text>;
+
+  [Parameter]
+  public int MinTermLength { get; set; } = 0;
+}
+
+@code {
+  private string SeachTerm { get; set; } = string.Empty;
+  private bool Hidden { get; set; } = true;
+}
+@inject Data.Database db
+<FluentButton OnClick=@(() => this.Hidden = !this.Hidden)>
+  @ChildContent
+</FluentButton>
+
+@if (!this.Hidden)
+{
+  <FluentDialog Hidden="@this.Hidden">
+    <FluentDialogHeader>
+      <FluentTextField Immediate ImmediateDelay="500"
+                       @bind-Value=@this.SeachTerm
+                       Label="Paieškos frazė"
+                       Required />
+    </FluentDialogHeader>
+    <FluentDialogBody>
+
+      @if (this.MinTermLength == 0 || (!string.IsNullOrWhiteSpace(this.SeachTerm) && this.SeachTerm.Length >= this.MinTermLength))
+      {
+        <ExpList ParamSource=@(
+          this.db.Channels
+            .Where(stored =>
+              (stored.Name == this.SeachTerm || stored.Name.ToLower().Contains(this.SeachTerm.ToLower()))
+            )
+            // TODO: neranda su didžiosiomis LT raidėmis
+            .Select(item => new { item.Id, item.Name })
+          )>
+          <Wrapper Context="rows">
+            <table class="bord">@rows</table>
+          </Wrapper>
+          <IfSome Context="model">
+            <tr>
+              <td>@model.Name</td>
+              <td>
+                <FluentButton OnClick=@(async () => await this.Choose(model.Id))>
+                  Choose
+                </FluentButton>
+              </td>
+            </tr>
+          </IfSome>
+          <IfNone>
+            @{
+              var n = new Contenter.Models.Sources.Channel() {
+                Name = this.SeachTerm,
+                Platform = this.ParamPlatform
+              };
+            }
+            <FluentLabel Typo=@Typography.Subject>Sukurti naują Channel:</FluentLabel>
+            <Contenter.Components.Pages.CRUD.Sources.Channels._Bind model=@n OnValidSubmitCallback=@(async (val) => await this.Choose(val) )>
+              Sukurti naują
+            </Contenter.Components.Pages.CRUD.Sources.Channels._Bind>
+          </IfNone>
+        </ExpList>
+      }
+      else
+      {
+        @if (this.MinTermLength > 0)
+        {
+          <span class="muted">Įveskite bent @this.MinTermLength raides paieškoje, kad surasti Channel.</span>
+        }
+      }
+    </FluentDialogBody>
+    <FluentDialogFooter>
+      <FluentButton OnClick=@(() => this.Hidden = true)>Cancel</FluentButton>
+    </FluentDialogFooter>
+  </FluentDialog>
+}
+
+
+@code {
+  public void Enter(KeyboardEventArgs e)
+  {
+    Console.WriteLine(e.Code);
+    if (e.Code == "Enter" || e.Code == "NumpadEnter")
+    {
+      // ...
+    }
+  }
+  private async Task Choose(Guid id)
+  {
+    var existing = await this.db.Set<Models.Sources.Channel>()
+      .Where(item => item.Id == id)
+      .FirstOrDefaultAsync();
+    if (existing == null)
+      return;
+    await Choose(existing);
+  }
+  private async Task Choose(Models.Sources.Channel choice)
+  {
+    this.SeachTerm = string.Empty;
+    this.Hidden = true;
+    await this.valueChanged.InvokeAsync(choice);
+  }
+}

@@ -1,9 +1,8 @@
-﻿@inherits _Editor<Contenter.Models.Persons.Persona, Guid>
+﻿@inherits _Editor<Thing, Guid>
 @page "/edit/p/personas/{id:guid}"
 @rendermode InteractiveServer
-
 @code {
-  protected override IQueryable<Contenter.Models.Persons.Persona> Includer(IQueryable<Contenter.Models.Persons.Persona> dbset)
+  protected override IQueryable<Thing> Includer(IQueryable<Thing> dbset)
   {
     return base.Includer(dbset)
     ;
