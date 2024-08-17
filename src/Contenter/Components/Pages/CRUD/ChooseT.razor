@@ -1,0 +1,115 @@
+﻿@typeparam TKey
+@typeparam T where T: class, IIded<TKey>, new()
+@typeparam TBinder where TBinder: _Binder<T>
+@inject IDialogService DialogService
+@using Contenter.Models.Objectify
+@code {
+  [EditorRequired]
+  [Parameter]
+  public T? value { get; set; }
+  [EditorRequired]
+  [Parameter]
+  public EventCallback<T?> valueChanged { get; set; }
+
+  [Parameter]
+  public RenderFragment ChildContent { get; set; } =@<text>Ieškoti</text>;
+  [Parameter]
+  public int MinTermLength { get; set; } = 0;
+}
+
+@code {
+  private string SeachTerm { get; set; } = string.Empty;
+  private bool Hidden { get; set; } = true;
+}
+@inject Data.Database db
+<FluentButton OnClick=@(() => this.Hidden = !this.Hidden)>
+  @ChildContent
+</FluentButton>
+
+@if (!this.Hidden)
+{
+  <FluentDialog Hidden="@this.Hidden">
+    <FluentDialogHeader>
+      <FluentTextField Immediate ImmediateDelay="500"
+                       @bind-Value=@this.SeachTerm
+                       Label="Paieškos frazė"
+                       Required />
+    </FluentDialogHeader>
+    <FluentDialogBody>
+
+      @if (this.MinTermLength == 0 || (!string.IsNullOrWhiteSpace(this.SeachTerm) && this.SeachTerm.Length >= this.MinTermLength))
+      {
+        <ExpList ParamSource=@(
+             this.db.Set<T>()
+             
+             .Select(persona => new {
+              persona.Id,
+              Name = persona.ToString()
+             })
+             )>
+          <Wrapper Context="rows">
+            <table class="bord">
+              @rows
+            </table>
+          </Wrapper>
+          <IfSome Context="model">
+            <tr>
+              <td>@model.Name</td>
+              <td>
+                <FluentButton OnClick=@(async () => await this.Choose(model.Id))>
+                  Choose
+                </FluentButton>
+              </td>
+            </tr>
+          </IfSome>
+          <IfNone>
+            @{
+              var n = new T() {
+              };
+            }
+            <DynamicComponent Type=@(typeof(TBinder)) Parameters="@BinderParameters(n)" />
+            
+            <FluentLabel Typo=@Typography.Subject>Sukurti naują @(typeof(T).Name):</FluentLabel>
+            
+          </IfNone>
+        </ExpList>
+      }
+      else
+      {
+        @if (this.MinTermLength > 0)
+        {
+          <span class="muted">Įveskite bent @this.MinTermLength raides paieškoje, kad surasti asmenį.</span>
+        }
+      }
+    </FluentDialogBody>
+    <FluentDialogFooter>
+      <FluentButton OnClick=@(() => this.Hidden = true)>Cancel</FluentButton>
+    </FluentDialogFooter>
+  </FluentDialog>
+}
+@code {
+  private IDictionary<string, object> BinderParameters(T n) => new Dictionary<string, object>()
+  {
+    { nameof(_Binder<T>.model), n },
+    { nameof(_Binder<T>.OnValidSubmitCallback), EventCallback.Factory.Create(this, (T n) => Choose(n))},
+    { nameof(_Binder<T>.ChildContent), "Sukurti naują" }
+  };
+}
+
+@code {
+  private async Task Choose(TKey id)
+  {
+    var existing = await this.db.Set<T>()
+      .Where(item => item.Id!.Equals(id))
+      .FirstOrDefaultAsync();
+    if (existing == null)
+      return;
+    await Choose(existing);
+  }
+  private async Task Choose(T choice)
+  {
+    this.SeachTerm = string.Empty;
+    this.Hidden = true;
+    await this.valueChanged.InvokeAsync(choice);
+  }
+}

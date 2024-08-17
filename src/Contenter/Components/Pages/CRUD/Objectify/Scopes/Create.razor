@@ -1,0 +1,13 @@
+﻿@page "/create/o/s"
+@rendermode InteractiveServer
+@code
+{
+}
+<h3>Create Scope</h3>
+@inject NavigationManager navigationManager
+<_Create
+  OnAfterSave=@(async (Scope model) => {
+    this.navigationManager.NavigateTo($"/o/s/{model.Id}");
+  })>
+  Create
+</_Create>

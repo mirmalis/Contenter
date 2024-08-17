@@ -1,0 +1,33 @@
+﻿@inherits _Binder<ThingDefinition>
+@rendermode InteractiveServer
+@code {
+  override protected async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+  }
+}
+<EditForm Model=@this.model OnValidSubmit=@this.OnValidSubmit FormName="create">
+  <DataAnnotationsValidator />
+  <FluentValidationSummary />
+
+  <FluentStack Orientation="@Orientation.Vertical">
+    <div>
+      <FluentInputLabel Label="Scope" Required>
+        <ChildContent>
+          <ChooseScope @bind-value=@this.model.Scope />
+          @this.model.Scope
+        </ChildContent>
+      </FluentInputLabel>
+    </div>
+    <div>
+      <FluentTextField @bind-Value=@this.model.Name Label="Name" Required />
+    </div>
+    <div>
+      <Contenter.Views.Components.BindFlags @bind-value=@this.model.Flags />
+    </div>
+    @if (ChildContent != null)
+    {
+      <FluentButton Type=@ButtonType.Submit Appearance=@Appearance.Accent>@ChildContent</FluentButton>
+    }
+  </FluentStack>
+</EditForm>

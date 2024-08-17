@@ -1,0 +1,7 @@
+﻿@code {
+  [Parameter] public Models.Objectify.Scope value { get; set; }
+  [Parameter] public EventCallback<Models.Objectify.Scope> valueChanged { get; set; }
+}
+<ChooseT TKey=Guid T=Models.Objectify.Scope TBinder=Objectify.Scopes._Bind value=@value valueChanged=@valueChanged />
+
+

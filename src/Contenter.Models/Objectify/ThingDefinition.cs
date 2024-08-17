@@ -2,7 +2,7 @@
 
 namespace Contenter.Models.Objectify;
 [Flags]
-public enum ThingDefinitionFlags
+public enum ThingDefinitionFlags: Int64
 {
   None = 0,
   ListedAtContent = 1 << 0,

@@ -1,0 +1,25 @@
+﻿@inherits _Creator<ThingDefinition>
+@rendermode InteractiveServer
+@code {
+  [Parameter]
+  public Guid? ScopeId { get; set; }
+  //[Parameter]
+  //public Guid? YId { get; set; }
+  override protected async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+    if (this.ScopeId != null)
+    {
+      this.model.Scope = await this.db.Scopes
+        .FirstOrDefaultAsync(item => item.Id == this.ScopeId)
+      ?? null! // not found
+      ;
+    }
+    //if (this.YId != null)
+    //{
+    //}
+  }
+}
+<_Bind model=@this.model OnValidSubmitCallback=@(async (model) => await this.DoCreate(this.model))>
+  @ChildContent
+</_Bind>

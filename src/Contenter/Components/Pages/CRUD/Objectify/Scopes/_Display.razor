@@ -1,0 +1,19 @@
+﻿@inherits _Displayer<Scope, Guid>
+
+<ExpList
+  ParamExpectedCount="1"
+  ParamSource=@(
+    this.Source.Select(item => new {
+
+    })
+  )
+>
+  <IfSome Context="model">
+    <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
+      &raquo;
+    </FluentStack>
+    @Before
+    @model
+    @After
+  </IfSome>
+</ExpList>

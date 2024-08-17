@@ -1,0 +1,78 @@
+﻿@typeparam T where T : struct, System.Enum
+@code {
+  [Parameter] public T value { get; set; }
+  [Parameter] public EventCallback<T> valueChanged { get; set; }
+}
+<table class="w-100">
+  @foreach (var item in Enum.GetValues<T>())
+  {
+    var isNone = item.Equals(none);
+    <tr>
+      <td>
+        <label>
+          <input type="checkbox"
+                 disabled="@(!isNone && this.value.HasFlag(all) && (!item.Equals(all)))"
+                 checked="@((!isNone && this.value.HasFlag(item)) || (isNone && intValue == 0))"
+                 @onclick=@(() => ToggleFlag(item)) />
+          @item
+        </label>
+      </td>
+    </tr>
+  }
+</table>
+@code {
+  private const Int64 max = Int64.MaxValue;
+  private T none = toEnum(0);
+  private T all = toEnum(max);
+  Int64 intValue => toLong(this.value);
+  private static Int64 toLong(T enumValue)
+  {
+    return System.Runtime.CompilerServices.Unsafe.As<T, Int64>(ref enumValue);
+  }
+  private static T toEnum(Int64 enumValue)
+  {
+    return System.Runtime.CompilerServices.Unsafe.As<Int64, T>(ref enumValue);
+  }
+  private void ToggleFlag(T flag)
+  {
+    if (flag.Equals(none))
+    {
+      this.value = none;
+    }
+    else if (flag.Equals(all))
+    {
+      if (this.value.HasFlag(all))
+      {
+        this.value = none;
+      }
+      else
+      {
+        this.value = all;
+      }
+    }
+    else if (this.value.HasFlag(flag))
+    {
+      this.value = none;
+    }
+    else
+    {
+      this.value = toEnum(toLong(this.value) | toLong(flag));
+    }
+
+    //if (this.intValue == Int64.MaxValue)
+    //{
+    //  this.value = toEnum(0);
+    //  //this.value = (T)0;
+    //}
+    //else if (toLong(flag) == Int64.MaxValue)
+    //{
+    //  this.value = flag;
+    //}
+    //else
+    //{
+    //  //this.value ^= flag;
+    //  this.value = toEnum(toLong(this.value) ^ toLong(flag));
+    //}
+    this.valueChanged.InvokeAsync(this.value);
+  }
+}

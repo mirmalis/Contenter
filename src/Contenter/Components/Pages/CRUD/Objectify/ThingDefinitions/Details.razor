@@ -1,0 +1,15 @@
+﻿@page "/o/td/{id:guid}"
+@code {
+  [Parameter]
+  public Guid Id { get; set; }
+}
+<FluentLabel Typo=@Typography.H5>
+  ThingDefinition
+</FluentLabel>
+<_Display Id=@this.Id />
+
+<div>
+  <a href="/edit/o/td/@this.Id">Edit</a>
+  |
+  <a href="/delete/o/td/@this.Id">Delete</a>
+</div>

@@ -1,0 +1,16 @@
+﻿@page "/create/o/td"
+@rendermode InteractiveServer
+@code
+{
+  [Parameter]
+  public Guid? ScopeId { get; set; }
+}
+<h3>Create ThingDefinition</h3>
+@inject NavigationManager navigationManager
+<_Create
+  ScopeId=@this.ScopeId
+  OnAfterSave=@(async (ThingDefinition model) => {
+    this.navigationManager.NavigateTo($"/o/td/{model.Id}");
+  })>
+  Create
+</_Create>
