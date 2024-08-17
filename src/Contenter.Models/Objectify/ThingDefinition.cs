@@ -9,6 +9,8 @@ public enum ThingDefinitionFlags: Int64
 }
 public class ThingDefinition: IIded<Guid>
 {
+  public override string ToString() => this.Name;
+
   public Guid Id { get; set; }
   public ThingDefinitionFlags Flags { get; set; }
   [Required]

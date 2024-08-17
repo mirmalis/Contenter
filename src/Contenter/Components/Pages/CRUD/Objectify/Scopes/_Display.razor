@@ -4,16 +4,31 @@
   ParamExpectedCount="1"
   ParamSource=@(
     this.Source.Select(item => new {
-
+      Parent = true ? null : new { Id = Guid.Empty, Name = string.Empty },
+      item.Name,
+      ThingDefinitions = item.ThingDefinitions.Select(td => new {
+        td.Id,
+        td.Name
+      })
     })
   )
 >
   <IfSome Context="model">
     <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
-      &raquo;
+      @if(model.Parent is not null)
+      {
+        <a href="/o/s/@model.Parent.Id">@model.Parent.Name</a>
+        <text>&raquo;</text>
+      }
+      @model.Name
     </FluentStack>
     @Before
-    @model
+    <div>
+      ThingDefinitions (<a href="/create/o/td?ScopeId=@this.Id">add</a>):
+      <OneOrMany ParamList=@model.ThingDefinitions Context="td" >
+        <a href="/o/td/@td.Id">@td.Name</a>
+      </OneOrMany>
+    </div>
     @After
   </IfSome>
 </ExpList>
