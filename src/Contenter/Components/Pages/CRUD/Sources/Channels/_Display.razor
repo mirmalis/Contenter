@@ -92,9 +92,13 @@
               },
               Guests = source.Content.GuestPersonaAssignments
               .OrderBy(item => item.IndexA)
-              .Select(ass => new PersonaView {
+              .Select(ass => new ThingView {
                 Id = ass.Guest.Id,
                 Name = ass.Guest.Name,
+                Definition = ass.Guest.ThingDefinitionId == null ? null : new (){
+                  Id = ass.Guest.ThingDefinitionId!.Value,
+                  Name = ass.Guest.ThingDefinition!.Name
+                }
               })
             }
           })
@@ -136,7 +140,7 @@
               <td>
                 <OneOrMany ParamList=@source.Content.Guests Context="guest">
                   <ChildContent>
-                    <InnerLinkPersona Model=@guest />
+                    <InnerLinkThing Model=@guest />
                   </ChildContent>
                   <IfNone></IfNone>
                 </OneOrMany>

@@ -27,9 +27,13 @@
           Name = item.Content.Fam.Name,
         },
         Guests = item.Content.GuestPersonaAssignments
-        .Select(guestAss => new PersonaView {
+        .Select(guestAss => new ThingView {
           Id = guestAss.Guest.Id,
           Name = guestAss.Guest.Name,
+          Definition = guestAss.Guest.ThingDefinitionId == null ? null : new (){
+            Id = guestAss.Guest.ThingDefinitionId!.Value,
+            Name = guestAss.Guest.ThingDefinition!.Name
+          }
         })
       }
     })
@@ -59,7 +63,7 @@
         <OneOrMany ParamList=@model.Content.Guests Context="guest" Many>
           <IfNone></IfNone>
           <ChildContent>
-            <InnerLinkPersona Model=@guest />
+            <InnerLinkThing Model=@guest />
           </ChildContent>
         </OneOrMany>
       </div>

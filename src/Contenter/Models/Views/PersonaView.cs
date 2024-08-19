@@ -1,7 +1,0 @@
-﻿namespace Contenter.Models.Views;
-
-public class PersonaView
-{
-  public required Guid Id { get; set; }
-  public required string Name { get; set; }
-}

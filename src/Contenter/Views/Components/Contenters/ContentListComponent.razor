@@ -21,9 +21,13 @@
       },
       Guests = ct.GuestPersonaAssignments
         .OrderBy(item => item.IndexA).ThenBy(item => item.Guest.Name)
-        .Select(ass => new PersonaView {
+        .Select(ass => new ThingView {
           Id = ass.Guest.Id,
           Name = ass.Guest.Name,
+          Definition = ass.Guest.ThingDefinitionId == null ? null : new (){
+            Id = ass.Guest.ThingDefinitionId!.Value,
+            Name = ass.Guest.ThingDefinition!.Name
+          }
         }),
       Sources = ct.Sources
         .OrderByDescending(s => s.CreatedAt)
@@ -72,7 +76,7 @@
           <IfNone></IfNone>
           <Before></Before>
           <ChildContent>
-            <InnerLinkPersona Model=@guest />
+            <InnerLinkThing Model=@guest />
           </ChildContent>
         </OneOrMany>
       </td>

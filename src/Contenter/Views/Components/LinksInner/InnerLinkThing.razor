@@ -1,0 +1,19 @@
+﻿@code {
+  [EditorRequired]
+  [Parameter]
+  public ThingView? Model { get; set; }
+
+  [Parameter]
+  public bool NoDefinition { get; set; }
+}
+@if (this.Model != null)
+{
+  if(!this.NoDefinition && this.Model.Definition != null)
+  {
+    @this.Model.Definition.Name
+  }
+  <AnchorBase
+    href=@($"/o/t/{this.Model.Id}")
+    Text=@this.Model.Name
+  />
+}

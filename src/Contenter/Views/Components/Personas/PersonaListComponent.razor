@@ -8,10 +8,16 @@
     this.db.Things
     .OrderByDescending(fam => fam.ContentAssignments.Count)
     .Where(item => item.ContentAssignments.Count > 0)
+    .Where(item => item.ThingDefinitionId == Ids.TD_PersonaId)
     .Select(persona => new {
-      View = new PersonaView(){
+      View = new ThingView(){
         Id = persona.Id,
         Name = persona.Name,
+        Definition = persona.ThingDefinitionId == null ? null : new()
+        {
+          Id = persona.ThingDefinitionId!.Value,
+          Name = persona.ThingDefinition!.Name
+        }
       },
       Content = new {
         Count = persona.ContentAssignments.Count
@@ -25,7 +31,7 @@
   <IfSome Context="fam">
     <tr>
       <td>
-        <InnerLinkPersona Model=@fam.View />
+        <InnerLinkThing Model=@fam.View NoDefinition />
       </td>
       <td>@fam.Content.Count</td>
     </tr>

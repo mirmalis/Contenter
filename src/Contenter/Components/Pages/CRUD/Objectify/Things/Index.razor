@@ -1,4 +1,4 @@
-﻿@page "/p/personas"
+﻿@page "/o/t"
 @inject Contenter.Data.Database db
 @rendermode InteractiveServer
 <h3>Index</h3>
@@ -13,7 +13,7 @@
 >
   <TemplateColumn Context="model">
     @model
-    <a href="/p/personas/@model.Id">@model</a>
+    <a href="/o/t/@model.Id">@model</a>
   </TemplateColumn>
 </FluentDataGrid>
 <FluentPaginator State=@this.paginationState />

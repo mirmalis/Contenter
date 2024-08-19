@@ -52,9 +52,13 @@
           Id = s.Content.Fam!.Id,
           Name = s.Content.Fam.Name,
         },
-        Guests = s.Content.GuestPersonaAssignments.OrderBy(item => item.IndexA).Select(gass => new PersonaView {
+        Guests = s.Content.GuestPersonaAssignments.OrderBy(item => item.IndexA).Select(gass => new ThingView {
           Id = gass.GuestId,
           Name = gass.Guest.Name,
+          Definition = gass.Guest.ThingDefinitionId == null ? null : new (){
+            Id = gass.Guest.ThingDefinitionId!.Value,
+            Name = gass.Guest.ThingDefinition!.Name
+          }
         })
       }
     })
@@ -88,7 +92,7 @@
           {
             <text> &raquo; </text>
             <OneOrMany ParamList=@model.Content.Guests Context="guest">
-              <a href="/p/personas/@guest.Id">@guest.Name</a>
+              <a href="/o/t/@guest.Id">@guest.Name</a>
             </OneOrMany>
           }
         }

@@ -1,4 +1,4 @@
-﻿@page "/p/personas/{id:guid}"
+﻿@page "/o/t/{id:guid}"
 @attribute [Microsoft.AspNetCore.Authorization.AllowAnonymous]
 @code {
   [Parameter]
@@ -10,9 +10,9 @@
 <AuthorizeView Policy="AdminSuper">
   <Authorized>
     <div>
-      <a href="/edit/p/personas/@this.Id">Edit</a>
+      <a href="/edit/o/t/@this.Id">Edit</a>
       |
-      <a href="/delete/p/personas/@this.Id">Delete</a>
+      <a href="/delete/o/t/@this.Id">Delete</a>
     </div>
   </Authorized>
 </AuthorizeView>

@@ -41,9 +41,13 @@
     ParamSource=@(
       this.db.Things
       .Where(item => item.Name == this.model.Name)
-      .Select(persona => new PersonaView {
+      .Select(persona => new ThingView {
         Id = persona.Id,
         Name = persona.Name,
+        Definition = persona.ThingDefinitionId == null ? null : new (){
+          Id = persona.ThingDefinitionId!.Value,
+          Name = persona.ThingDefinition!.Name
+        }
       })
     )
   >
@@ -55,7 +59,7 @@
     </Wrapper>
     <IfSome Context="persona">
       <li>
-        <InnerLinkPersona Model=@persona />
+        <InnerLinkThing Model=@persona />
       </li>
     </IfSome>
     <IfNone>no duplicates</IfNone>

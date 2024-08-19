@@ -89,9 +89,9 @@
                 (this.thingDefinition == null || thing.ThingDefinitionId == this.thingDefinition.Id)
               ) 
               // TODO: neranda su didžiosiomis LT raidėmis
-              .Select(persona => new {
-                persona.Id,
-                persona.Name
+              .Select(thing => new {
+                thing.Id,
+                thing.Name
               })
           )
         >
@@ -118,9 +118,9 @@
               };
             }
             <FluentLabel Typo=@Typography.Subject>Sukurti naują asmenį:</FluentLabel>
-            <Contenter.Components.Pages.CRUD.People.Personas._Bind model=@n OnValidSubmitCallback=@(async (val) => await this.Choose(val) )>
+            <Contenter.Components.Pages.CRUD.Objectify.Things._Bind model=@n OnValidSubmitCallback=@(async (val) => await this.Choose(val) )>
               Sukurti naują
-            </Contenter.Components.Pages.CRUD.People.Personas._Bind>
+            </Contenter.Components.Pages.CRUD.Objectify.Things._Bind>
           </IfNone>
         </ExpList>
       }
@@ -161,6 +161,8 @@
   {
     this.SeachTerm = string.Empty;
     this.Hidden = true;
+    this.scope = null;
+    this.thingDefinition = null;
     await this.valueChanged.InvokeAsync(choice);
   }
 }

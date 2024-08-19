@@ -1,4 +1,4 @@
-﻿@page "/create/p/personas"
+﻿@page "/create/o/t"
 @attribute [Microsoft.AspNetCore.Authorization.AllowAnonymous]
 @rendermode InteractiveServer
 @code
@@ -12,7 +12,7 @@
     if(this.BackToContentCreation){
          this.navigationManager.NavigateTo($"/create/c/contents");
     } else {
-      this.navigationManager.NavigateTo($"/p/personas/{model.Id}");
+      this.navigationManager.NavigateTo($"/o/t/{model.Id}");
     }
   })>
   Create

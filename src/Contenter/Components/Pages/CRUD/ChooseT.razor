@@ -42,9 +42,9 @@
         <ExpList ParamSource=@(
              this.db.Set<T>()
              
-             .Select(persona => new {
-              persona.Id,
-              Name = persona.ToString()
+             .Select(thing => new {
+              thing.Id,
+              Name = thing.ToString()
              })
              )>
           <Wrapper Context="rows">
