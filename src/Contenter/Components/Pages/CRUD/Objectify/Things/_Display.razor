@@ -3,9 +3,17 @@
 <ExpList
   ParamExpectedCount="1"
   ParamSource=@(
-    this.Source.Select(persona => new {
-      persona.Name,
-      Contents = persona.ContentAssignments
+    this.Source.Select(thing => new {
+      thing.Name,
+      Definition = thing.ThingDefinitionId == null ? null : new ThingDefinitionView(){
+        Id = thing.ThingDefinitionId!.Value,
+        Scope = new() {
+          Id = thing.ThingDefinition!.ScopeId,
+          Name = thing.ThingDefinition!.Scope.Name,
+        },
+        Name = thing.ThingDefinition!.Name,
+      },
+      Contents = thing.ContentAssignments
         .OrderByDescending(ass => ass.Content.PublishedAt)
         .Select(ass => new ContentView {
           Id = ass.Content.Id,
@@ -47,6 +55,7 @@
     <PageTitle>@model.Name - sars.lt</PageTitle>
     <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
       <FluentLabel Typo=@Typography.H5>
+        <InnerLinkThingDefinition Model=@model.Definition NoScope />
         @model.Name
       </FluentLabel>
     </FluentStack>

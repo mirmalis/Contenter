@@ -1,0 +1,16 @@
+﻿@code {
+  [EditorRequired]
+  [Parameter]
+  public ILinkable Model { get; set; }
+  [Parameter]
+  public bool More { get; set; }
+}
+@if (this.Model != null)
+{
+  <AnchorBase href=@($"/o/s/{this.Model.GetId()}")
+              Text=@this.Model.ToString() />
+  @if (this.More)
+  {
+    <text>&raquo;</text>
+  }
+}

@@ -4,13 +4,11 @@
   public ISourceViewInner? Model { get; set; }
 
   [Parameter]
-  public string? Name{ get; set; }
+  public string? Name { get; set; }
 }
 
 @if (this.Model != null)
 {
-  <AnchorBase 
-    href=@($"/s/sources/{this.Model.Id}") 
-    Text=@(this.Name ?? this.Model.Name) 
-  />
+  <AnchorBase href=@($"/s/sources/{this.Model.Id}")
+              Text=@(this.Name ?? this.Model.Name) />
 }

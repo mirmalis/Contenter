@@ -5,14 +5,19 @@
 
   [Parameter]
   public bool NoScope { get; set; }
+  [Parameter]
+  public bool More { get; set; }
 }
 @if (this.Model != null)
 {
   @if (!NoScope)
   {
-    @this.Model.Scope.Name
-    <text>&raquo;</text>
-  } 
+    <InnerLinkScope Model=@this.Model.Scope More />
+  }
   <AnchorBase href=@($"/o/td/{this.Model.Id}")
               Text=@this.Model.Name />
+  @if (this.More)
+  {
+    <text>&raquo;</text>
+  }
 }
