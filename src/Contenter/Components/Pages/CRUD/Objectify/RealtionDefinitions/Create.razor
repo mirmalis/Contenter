@@ -1,0 +1,18 @@
+﻿@page "/create/o/rd"
+@rendermode InteractiveServer
+@code
+{
+  [SupplyParameterFromQuery]
+  public Guid? FromId { get; set; }
+  [SupplyParameterFromQuery]
+  public Guid? ToId { get; set; }
+}
+<h3>Create RelationDefinition</h3>
+@inject NavigationManager navigationManager
+<_Create
+  FromId=@this.FromId ToId=@this.ToId
+  OnAfterSave=@(async (RelationDefinition model) => {
+    this.navigationManager.NavigateTo($"/o/rd/{model.Id}");
+  })>
+  Create
+</_Create>

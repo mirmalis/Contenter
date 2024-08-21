@@ -16,7 +16,8 @@
         Definition = persona.ThingDefinitionId == null ? null : new()
         {
           Id = persona.ThingDefinitionId!.Value,
-          Name = persona.ThingDefinition!.Name
+          Name = persona.ThingDefinition!.Name,
+          PluralName = persona.ThingDefinition.Plural,
         }
       },
       Content = new {

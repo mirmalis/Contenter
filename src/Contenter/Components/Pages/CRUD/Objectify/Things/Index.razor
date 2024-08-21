@@ -9,11 +9,30 @@
 <FluentDataGrid Pagination=@this.paginationState
   Items=@(
     this.db.Set<Thing>()
+      .Select(t => new {
+        t.Id,
+        t.Name,
+        Definition = t.ThingDefinitionId == null ? null : new ThingDefinitionView {
+          Id = t.ThingDefinitionId!.Value,
+          Scope = new (){
+            Id = t.ThingDefinition!.ScopeId,
+            Name = t.ThingDefinition.Scope.Name,
+          },
+          Name = t.ThingDefinition!.Name
+        }
+      })
   )
 >
   <TemplateColumn Context="model">
-    @model
-    <a href="/o/t/@model.Id">@model</a>
+    @if (model.Definition != null)
+    {
+      <InnerLinkThingDefinition Model=@model.Definition />
+    }
+  </TemplateColumn>
+  <TemplateColumn Context="model">
+    <a href="/o/t/@model.Id">@model.Name</a>
+    | <a href="/edit/o/t/@model.Id">Edit</a>
+    | <a href="/delete/o/t/@model.Id">Delete</a>
   </TemplateColumn>
 </FluentDataGrid>
 <FluentPaginator State=@this.paginationState />

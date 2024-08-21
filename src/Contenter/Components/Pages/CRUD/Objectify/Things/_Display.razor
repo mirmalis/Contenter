@@ -7,38 +7,39 @@
       persona.Name,
       Contents = persona.ContentAssignments
         .OrderByDescending(ass => ass.Content.PublishedAt)
-         .Select(ass => new ContentView {
-            Id = ass.Content.Id,
-            PublishedAt = ass.Content.PublishedAt,
-            Name = ass.Content.Name,
-            Fam = ass.Content.FamId == null ? null : new FamView {
-              Id = ass.Content.Fam!.Id,
-              Name = ass.Content.Fam!.Name,
-            },
-            Guests = ass.Content.GuestPersonaAssignments
-              .OrderBy(gass => gass.Guest.Name)
-              .Where(item => item.GuestId != this.Id)
-              .Select(gass => new ThingView{
-                Id = gass.GuestId,
-                Name = gass.Guest.Name,
-                Definition = gass.Guest.ThingDefinitionId == null ? null : new (){
-                  Id = gass.Guest.ThingDefinitionId!.Value,
-                  Name = gass.Guest.ThingDefinition!.Name
-                }
-              }),
-            Sources = ass.Content.Sources.Select(source => new SourceView {
-              Id = source.Id,
-              Href = source.Href,
-              IconPath = source.PlatformId == null ? null : source.Platform!.IconPath,
-              DefinitionUid = source.DefinitionUid,
-              Name = null,
-              Channel = null,
-              Content = null,
-              PublishedAt = null,
+        .Select(ass => new ContentView {
+          Id = ass.Content.Id,
+          PublishedAt = ass.Content.PublishedAt,
+          Name = ass.Content.Name,
+          Fam = ass.Content.FamId == null ? null : new FamView {
+            Id = ass.Content.Fam!.Id,
+            Name = ass.Content.Fam!.Name,
+          },
+          Things = ass.Content.GuestPersonaAssignments
+            .OrderBy(gass => gass.Guest.Name)
+            .Where(item => item.GuestId != this.Id)
+            .Select(gass => new ThingView{
+              Id = gass.GuestId,
+              Name = gass.Guest.Name,
+              Definition = gass.Guest.ThingDefinitionId == null ? null : new (){
+                Id = gass.Guest.ThingDefinitionId!.Value,
+                Name = gass.Guest.ThingDefinition!.Name,
+                PluralName = gass.Guest.ThingDefinition!.Plural
+              }
             }),
+          Sources = ass.Content.Sources
+          .OrderBy(item => item.PublishedAt)
+          .Select(source => new SourceView {
+            Id = source.Id,
+            Href = source.Href,
+            PublishedAt = source.PublishedAt,
+            IconPath = source.PlatformId == null ? null : source.Platform!.IconPath,
+            DefinitionUid = source.DefinitionUid,
+            Name = source.Name,
+            Channel = null,
+            Content = null,
+          }),
         }),
-
-
     })
   )
 >
@@ -61,12 +62,13 @@
             <td><InnerLinkContent Model=@ct/></td>
             <td>
               <OneOrMany ParamList=@(ct.Sources) Context="source">
-                <OuterLinkSource Model=@source Name=@source.DefinitionUid />
+                @source.PublishedAt?.ToShortDateString()
+                <OuterLinkSource Model=@source />
               </OneOrMany>
             </td>
 
             <td>
-              <OneOrMany ParamList="ct.Guests" Context="guest">
+              <OneOrMany ParamList="ct.Things" Context="guest">
                 <IfNone></IfNone>
                 <ChildContent>
                   <InnerLinkThing Model=@guest />

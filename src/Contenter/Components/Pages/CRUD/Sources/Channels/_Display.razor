@@ -90,14 +90,15 @@
                 Id = source.Content.Fam!.Id,
                 Name = source.Content.Fam.Name,
               },
-              Guests = source.Content.GuestPersonaAssignments
+              Things = source.Content.GuestPersonaAssignments
               .OrderBy(item => item.IndexA)
-              .Select(ass => new ThingView {
-                Id = ass.Guest.Id,
-                Name = ass.Guest.Name,
-                Definition = ass.Guest.ThingDefinitionId == null ? null : new (){
-                  Id = ass.Guest.ThingDefinitionId!.Value,
-                  Name = ass.Guest.ThingDefinition!.Name
+              .Select(gass => new ThingView {
+                Id = gass.Guest.Id,
+                Name = gass.Guest.Name,
+                Definition = gass.Guest.ThingDefinitionId == null ? null : new (){
+                  Id = gass.Guest.ThingDefinitionId!.Value,
+                  Name = gass.Guest.ThingDefinition!.Name,
+                  PluralName = gass.Guest.ThingDefinition.Plural,
                 }
               })
             }
@@ -138,7 +139,7 @@
               }
               <td><InnerLinkContent Model=@source.Content /></td>
               <td>
-                <OneOrMany ParamList=@source.Content.Guests Context="guest">
+                <OneOrMany ParamList=@source.Content.Things Context="guest">
                   <ChildContent>
                     <InnerLinkThing Model=@guest />
                   </ChildContent>

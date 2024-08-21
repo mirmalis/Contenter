@@ -1,0 +1,46 @@
+﻿@page "/o/rd"
+@inject Contenter.Data.Database db
+<h3>Index</h3>
+
+@code {
+  private PaginationState paginationState = new();
+}
+<FluentDataGrid Pagination=@this.paginationState
+  Items=@(
+    this.db.Set<RelationDefinition>().Select(rd => new {
+      rd.Id,
+      From = new ThingDefinitionView() {
+        Id = rd.FromId,
+        Scope = new (){
+          Id = rd.From.ScopeId,
+          Name = rd.From.Scope.Name,
+        },
+        Name = rd.From.Name,
+      },
+      F = new {
+        Word = rd.ForwardWord,
+        Name = rd.ForwardName,
+      },
+      To = new ThingDefinitionView() {
+        Id = rd.ToId,
+        Scope = new (){
+          Id = rd.To.ScopeId,
+          Name = rd.To.Scope.Name,
+        },
+        Name = rd.To.Name,
+      },
+
+    })
+  )
+>
+  <TemplateColumn Context="rd">
+    <InnerLinkThingDefinition Model=@rd.From />
+  </TemplateColumn>
+  <TemplateColumn Context="model">
+    <a href="/o/rd/@model.Id">@model.F.Word @model.F.Name</a>
+  </TemplateColumn>
+  <TemplateColumn Context="rd">
+    <InnerLinkThingDefinition Model=@rd.To />
+  </TemplateColumn>
+</FluentDataGrid>
+<FluentPaginator State=@this.paginationState />

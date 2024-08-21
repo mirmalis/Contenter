@@ -18,5 +18,8 @@ public class ThingDefinition: IIded<Guid>
   public Guid ScopeId { get; set; }
 
   public string Name { get; set; } = default!;
+  public string Plural { get; set; } = default!;
   public List<Thing> Instances { get; set; } = [];
+  public List<RelationDefinition> RelationDefinitionsFrom { get; set; } = [];
+  public List<RelationDefinition> RelationDefinitionsTo { get; set; } = [];
 }

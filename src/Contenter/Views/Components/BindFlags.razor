@@ -2,18 +2,32 @@
 @code {
   [Parameter] public T value { get; set; }
   [Parameter] public EventCallback<T> valueChanged { get; set; }
+  [Parameter]
+  public string? Label { get; set; } = "Flags";
 }
+<FluentInputLabel Label="@this.Label" />
 <table class="w-100">
-  @foreach (var item in Enum.GetValues<T>())
+  <tr>
+    <td>
+      <label>
+        <FluentSwitch ValueChanged=@(val => ToggleFlag(this.none)) 
+          Disabled=@(this.value.Equals(this.none))
+          Value="@(this.value.Equals(this.none))" />
+        @this.none
+      </label>
+    </td>
+  </tr>
+  @foreach (var item in Enum.GetValues<T>().Where(item => !item.Equals(this.none)))
   {
-    var isNone = item.Equals(none);
+    @* var isNone = item.Equals(none); *@
     <tr>
       <td>
         <label>
-          <input type="checkbox"
+          <FluentSwitch ValueChanged=@(val => ToggleFlag(item)) Value="@(this.value.HasFlag(item))" />
+          @* <input type="checkbox"
                  disabled="@(!isNone && this.value.HasFlag(all) && (!item.Equals(all)))"
                  checked="@((!isNone && this.value.HasFlag(item)) || (isNone && intValue == 0))"
-                 @onclick=@(() => ToggleFlag(item)) />
+                 @onclick=@(() => ToggleFlag(item)) /> *@
           @item
         </label>
       </td>
@@ -33,7 +47,7 @@
   {
     return System.Runtime.CompilerServices.Unsafe.As<Int64, T>(ref enumValue);
   }
-  private void ToggleFlag(T flag)
+  private void ToggleFlag(T flag, bool? newState = null)
   {
     if (flag.Equals(none))
     {
@@ -52,7 +66,10 @@
     }
     else if (this.value.HasFlag(flag))
     {
-      this.value = none;
+      int intValue = Convert.ToInt32(value);
+      int intFlag = Convert.ToInt32(flag);
+      int result = intValue & ~intFlag;
+      value = (T)Enum.ToObject(typeof(T), result);
     }
     else
     {

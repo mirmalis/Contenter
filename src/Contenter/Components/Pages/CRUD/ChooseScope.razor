@@ -2,6 +2,22 @@
   [Parameter] public Models.Objectify.Scope value { get; set; }
   [Parameter] public EventCallback<Models.Objectify.Scope> valueChanged { get; set; }
 }
-<ChooseT TKey=Guid T=Models.Objectify.Scope TBinder=Objectify.Scopes._Bind value=@value valueChanged=@valueChanged />
+@if(this.value == null)
+{
+  
+<ChooseT 
+  TKey=Guid T=Models.Objectify.Scope TBinder=Objectify.Scopes._Bind 
+
+  value=@value 
+  valueChanged=@valueChanged 
+  />
+} else
+{
+  <Contenter.Views.Bases.ButtonBase 
+    OnClick="@(async () => {
+      await this.valueChanged.InvokeAsync(null);
+    })"
+    Text="@this.value.ToString()" />
+}
 
 

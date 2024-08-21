@@ -12,6 +12,11 @@
 
   <FluentStack Orientation="@Orientation.Vertical">
     <div>
+      <FluentInputLabel Label="Definition" >
+        <ChooseThingDefinition @bind-value=@this.model.ThingDefinition />
+      </FluentInputLabel>
+    </div>
+    <div>
       <FluentTextField @bind-Value=@this.model.Name Label="Name" Required />
     </div>
     <div>
@@ -40,13 +45,16 @@
   <ExpList 
     ParamSource=@(
       this.db.Things
+      .Where(item => item.Id != this.model.Id)
       .Where(item => item.Name == this.model.Name)
+
       .Select(persona => new ThingView {
         Id = persona.Id,
         Name = persona.Name,
         Definition = persona.ThingDefinitionId == null ? null : new (){
           Id = persona.ThingDefinitionId!.Value,
-          Name = persona.ThingDefinition!.Name
+          Name = persona.ThingDefinition!.Name,
+         PluralName = persona.ThingDefinition.Plural,
         }
       })
     )

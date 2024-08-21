@@ -1,0 +1,42 @@
+﻿@inherits _Displayer<RelationDefinition, Guid>
+
+<ExpList
+  ParamExpectedCount="1"
+  ParamSource=@(
+    this.Source.Select(rd => new {
+      From = new ThingDefinitionView(){
+        Id = rd.FromId,
+        Scope = new (){
+          Id = rd.From.ScopeId,
+          Name = rd.From.Scope.Name,
+        },
+        Name = rd.From.Name,
+      },
+      F = new {
+        Word = rd.ForwardWord,
+        Name = rd.ForwardName,
+      },
+      To = new ThingDefinitionView {
+        Id = rd.ToId,
+        Scope = new (){
+          Id = rd.To.ScopeId,
+          Name = rd.To.Scope.Name,
+        },
+        Name= rd.To.Name,
+      },
+      rd.Flags
+    })
+  )
+>
+  <IfSome Context="model">
+    <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
+      <InnerLinkThingDefinition Model=@model.From />
+      <u>@model.F.Word @model.F.Name</u>
+      <InnerLinkThingDefinition Model=@model.To />
+    </FluentStack>
+    @Before
+    @* @model *@
+    @model.Flags
+    @After
+  </IfSome>
+</ExpList>

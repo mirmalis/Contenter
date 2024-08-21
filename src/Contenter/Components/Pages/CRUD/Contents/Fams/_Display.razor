@@ -20,12 +20,13 @@
         Name = ct.Name,
         PublishedAt = ct.PublishedAt,
         Guests = ct.GuestPersonaAssignments.OrderBy(ass => ass.IndexB)
-        .Select(ass => new ThingView {
-          Id = ass.Guest.Id,
-          Name = ass.Guest.Name,
-          Definition = ass.Guest.ThingDefinitionId == null ? null : new (){
-            Id = ass.Guest.ThingDefinitionId!.Value,
-            Name = ass.Guest.ThingDefinition!.Name
+        .Select(gass => new ThingView {
+          Id = gass.Guest.Id,
+          Name = gass.Guest.Name,
+          Definition = gass.Guest.ThingDefinitionId == null ? null : new (){
+            Id = gass.Guest.ThingDefinitionId!.Value,
+            Name = gass.Guest.ThingDefinition!.Name,
+            PluralName = gass.Guest.ThingDefinition.Plural
           }
         })
         ,

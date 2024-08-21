@@ -2,20 +2,19 @@
 
 namespace Contenter.Data;
 
-public class Database(DbContextOptions<Database> options): DbContext(options)
+public partial class Database(DbContextOptions<Database> options): DbContext(options)
 {
   public DbSet<Contenter.Models.Contents.Content> Contents => this.Set<Contenter.Models.Contents.Content>();
   public DbSet<Contenter.Models.Contents.ContentFam> ContentFams => this.Set<Contenter.Models.Contents.ContentFam>();
   public DbSet<Contenter.Models.Contents.ContentSave> ContentSaves => this.Set<Contenter.Models.Contents.ContentSave>();
-  public DbSet<Contenter.Models.Objectify.Scope> Scopes => this.Set<Contenter.Models.Objectify.Scope>();
-  public DbSet<Contenter.Models.Objectify.ThingDefinition> ThingDefinitions => this.Set<Contenter.Models.Objectify.ThingDefinition>();
-  public DbSet<Contenter.Models.Objectify.Thing> Things => this.Set<Contenter.Models.Objectify.Thing>();
+  
   public DbSet<Contenter.Models.Sources.Source> Sources => this.Set<Contenter.Models.Sources.Source>();
   public DbSet<Contenter.Models.Sources.SourcePlatform> Platforms => this.Set<Contenter.Models.Sources.SourcePlatform>();
   public DbSet<Contenter.Models.Sources.Channel> Channels => this.Set<Contenter.Models.Sources.Channel>();
   protected override void OnModelCreating(ModelBuilder mb)
   {
     base.OnModelCreating(mb);
+    this.ConfigureObjectify(mb);
     #region Contents
     mb.Entity<Contenter.Models.Contents.ContentSave>(save => {
       save.ToTable("ContentSaves");
@@ -39,20 +38,6 @@ public class Database(DbContextOptions<Database> options): DbContext(options)
           r => r.HasOne(item => item.ContentFam).WithMany(item => item.SourceChannelsAssignments)
         );
     });
-    #endregion
-    #region Objectify
-    mb.Entity<Contenter.Models.Objectify.Scope>(scopes => {
-      scopes.ToTable("Scopes");
-    });
-    mb.Entity<Contenter.Models.Objectify.ThingDefinition>(thingdefinitions => {
-      thingdefinitions.ToTable("ThingDefinitions");
-    });
-    mb.Entity<Contenter.Models.Objectify.Thing>(things => {
-      things.ToTable("Things");
-      things.Property(item => item.Links).HasDefaultValue(new List<string>());
-    });
-    #endregion
-    #region Persons
     #endregion
     #region Sources
     mb.Entity<Contenter.Models.Sources.Source>(source => {

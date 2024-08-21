@@ -1,0 +1,31 @@
+﻿@inherits _Creator<RelationDefinition>
+@rendermode InteractiveServer
+@code {
+  [Parameter]
+  public Guid? FromId { get; set; }
+  [Parameter]
+  public Guid? ToId { get; set; }
+  override protected async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+    if (this.FromId != null)
+    {
+      this.model.From = await this.db.ThingDefinitions
+        .Where(item => item.Id == this.FromId)
+        .FirstOrDefaultAsync()
+      ?? null! // not found
+      ;
+    }
+    if (this.ToId != null)
+    {
+      this.model.To = await this.db.ThingDefinitions
+        .Where(item => item.Id == this.ToId)
+        .FirstOrDefaultAsync()
+      ?? null! // not found
+      ;
+    }
+  }
+}
+<_Bind model=@this.model OnValidSubmitCallback=@(async (model) => await this.DoCreate(this.model))>
+  @ChildContent
+</_Bind>

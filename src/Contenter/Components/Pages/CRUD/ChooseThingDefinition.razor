@@ -1,0 +1,39 @@
+﻿@code {
+  [Parameter] public Models.Objectify.ThingDefinition value { get; set; }
+  [Parameter] public EventCallback<Models.Objectify.ThingDefinition> valueChanged { get; set; }
+}
+@code
+{
+  Models.Objectify.Scope? scope { get; set; }
+}
+
+@if(this.value is null || this.scope != null){
+  <ChooseScope value=@this.scope
+               valueChanged=@(async val => {
+             this.scope = val;
+             await this.valueChanged.InvokeAsync(null);
+             }) />
+}
+@if (this.value is null)
+{
+  
+
+  @if (this.scope != null)
+  {
+    <ChooseT TKey=Guid T=Models.Objectify.ThingDefinition TBinder=Objectify.ThingDefinitions._Bind
+             FilterExpression="@(td => td.ScopeId == this.scope.Id)"
+             value=@value
+             valueChanged=@valueChanged 
+             Open
+    />
+  }
+}
+else
+{
+  <Contenter.Views.Bases.ButtonBase 
+    OnClick=@(async () => {
+      await this.valueChanged.InvokeAsync(null);
+    })
+    Text="@this.value.ToString()"
+  />
+}

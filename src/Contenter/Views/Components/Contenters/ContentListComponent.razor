@@ -19,14 +19,15 @@
         Id = ct.FamId!.Value,
         Name = ct.Fam!.Name,
       },
-      Guests = ct.GuestPersonaAssignments
+      Things = ct.GuestPersonaAssignments
         .OrderBy(item => item.IndexA).ThenBy(item => item.Guest.Name)
-        .Select(ass => new ThingView {
-          Id = ass.Guest.Id,
-          Name = ass.Guest.Name,
-          Definition = ass.Guest.ThingDefinitionId == null ? null : new (){
-            Id = ass.Guest.ThingDefinitionId!.Value,
-            Name = ass.Guest.ThingDefinition!.Name
+        .Select(gass => new ThingView {
+          Id = gass.Guest.Id,
+          Name = gass.Guest.Name,
+          Definition = gass.Guest.ThingDefinitionId == null ? null : new (){
+            Id = gass.Guest.ThingDefinitionId!.Value,
+            Name = gass.Guest.ThingDefinition!.Name,
+            PluralName = gass.Guest.ThingDefinition.Plural,
           }
         }),
       Sources = ct.Sources
@@ -72,7 +73,7 @@
         </OneOrMany>
       </td>
       <td>
-        <OneOrMany ParamList=@(model.Guests) Context="guest">
+        <OneOrMany ParamList=@(model.Things) Context="guest">
           <IfNone></IfNone>
           <Before></Before>
           <ChildContent>

@@ -14,10 +14,19 @@
   [Parameter]
   public RenderFragment ChildContent { get; set; } =@<text>Ieškoti</text>;
   [Parameter]
+  public System.Linq.Expressions.Expression<Func<T, bool>> FilterExpression { get; set; } = item => true;
+  [Parameter]
   public int MinTermLength { get; set; } = 0;
+  [Parameter]
+  public bool Open { get; set; } = false;
 }
 
 @code {
+  override protected async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+    this.Hidden = !this.Open;
+  }
   private string SeachTerm { get; set; } = string.Empty;
   private bool Hidden { get; set; } = true;
 }
@@ -41,6 +50,7 @@
       {
         <ExpList ParamSource=@(
              this.db.Set<T>()
+               .Where(this.FilterExpression)
              
              .Select(thing => new {
               thing.Id,

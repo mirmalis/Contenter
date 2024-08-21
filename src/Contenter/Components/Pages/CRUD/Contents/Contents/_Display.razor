@@ -17,10 +17,12 @@
         Name = ass.Guest.Name,
         Definition = ass.Guest.ThingDefinitionId == null ? null : new (){
           Id = ass.Guest.ThingDefinitionId!.Value,
-          Name = ass.Guest.ThingDefinition!.Name
+          Name = ass.Guest.ThingDefinition!.Name,
+          PluralName = ass.Guest.ThingDefinition.Plural
         }
       }),
       Sources = item.Sources
+      .OrderBy(item => item.PublishedAt)
       .Select(source => new SourceView () {
         Id = source.Id,
         Href = source.Href,
@@ -61,10 +63,10 @@
       Sources (<a href="/create/s/sources?ContentId=@this.Id">add</a>): 
       <OneOrMany ParamList=@(model.Sources) Context="source" Many>
         <ChildContent>
+          <OuterLinkSource Model=@source Name="@source.DefinitionUid" />
+          |
           <InnerLinkChannel Model=@source.Channel After />
           <InnerLinkSource Model=@source />
-          |
-          <OuterLinkSource Model=@source Name="@source.DefinitionUid" />
         </ChildContent>
       </OneOrMany>
     </div>

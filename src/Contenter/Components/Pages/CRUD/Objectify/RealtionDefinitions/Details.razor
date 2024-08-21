@@ -1,0 +1,15 @@
+﻿@page "/o/rd/{id:guid}"
+@code {
+  [Parameter]
+  public Guid Id { get; set; }
+}
+<FluentLabel Typo=@Typography.H5>
+  RelationDefinition
+</FluentLabel>
+<_Display Id=@this.Id />
+
+<div>
+  <a href="/edit/o/rd/@this.Id">Edit</a>
+  |
+  <a href="/delete/o/rd/@this.Id">Delete</a>
+</div>

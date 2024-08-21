@@ -1,0 +1,34 @@
+﻿@inherits _Binder<RelationDefinition>
+@rendermode InteractiveServer
+@code {
+  override protected async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+  }
+}
+<EditForm Model=@this.model OnValidSubmit=@this.OnValidSubmit FormName="create">
+  <DataAnnotationsValidator />
+  <FluentValidationSummary />
+
+  <FluentStack Orientation="@Orientation.Vertical">
+    <div>
+      <FluentInputLabel Label="From" Required>
+        <ChooseThingDefinition @bind-value=@this.model.From />
+      </FluentInputLabel>
+      <FluentTextField @bind-Value=@this.model.ForwardWord Label="Word forward" />
+      <FluentTextField @bind-Value=@this.model.ForwardName Label="Name forward" Required />
+
+      <FluentInputLabel Label="To" Required>
+        <ChooseThingDefinition @bind-value=@this.model.To />
+      </FluentInputLabel>
+      <FluentTextField @bind-Value=@this.model.BackWord Label="Word back" />
+      <FluentTextField @bind-Value=@this.model.BackName Label="Name back" />
+
+      <Contenter.Views.Components.BindFlags @bind-value=@this.model.Flags Label="Flags" />
+    </div>
+    @if (ChildContent != null)
+    {
+      <FluentButton Type=@ButtonType.Submit Appearance=@Appearance.Accent>@ChildContent</FluentButton>
+    }
+  </FluentStack>
+</EditForm>

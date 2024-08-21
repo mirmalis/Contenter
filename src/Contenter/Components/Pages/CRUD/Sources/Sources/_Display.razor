@@ -26,13 +26,14 @@
           Id = item.Content.Fam!.Id,
           Name = item.Content.Fam.Name,
         },
-        Guests = item.Content.GuestPersonaAssignments
-        .Select(guestAss => new ThingView {
-          Id = guestAss.Guest.Id,
-          Name = guestAss.Guest.Name,
-          Definition = guestAss.Guest.ThingDefinitionId == null ? null : new (){
-            Id = guestAss.Guest.ThingDefinitionId!.Value,
-            Name = guestAss.Guest.ThingDefinition!.Name
+        Things = item.Content.GuestPersonaAssignments
+        .Select(gass => new ThingView {
+          Id = gass.Guest.Id,
+          Name = gass.Guest.Name,
+          Definition = gass.Guest.ThingDefinitionId == null ? null : new (){
+            Id = gass.Guest.ThingDefinitionId!.Value,
+            Name = gass.Guest.ThingDefinition!.Name,
+            PluralName = gass.Guest.ThingDefinition.Plural,
           }
         })
       }
@@ -60,7 +61,7 @@
       <div>
         <InnerLinkFam Model=@model.Content.Fam After />
         <InnerLinkContent Model=@model.Content />
-        <OneOrMany ParamList=@model.Content.Guests Context="guest" Many>
+        <OneOrMany ParamList=@model.Content.Things Context="guest" Many>
           <IfNone></IfNone>
           <ChildContent>
             <InnerLinkThing Model=@guest />

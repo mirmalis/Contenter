@@ -1,0 +1,18 @@
+﻿@code {
+  [EditorRequired]
+  [Parameter]
+  public ThingDefinitionView? Model { get; set; }
+
+  [Parameter]
+  public bool NoScope { get; set; }
+}
+@if (this.Model != null)
+{
+  @if (!NoScope)
+  {
+    @this.Model.Scope.Name
+    <text>&raquo;</text>
+  } 
+  <AnchorBase href=@($"/o/td/{this.Model.Id}")
+              Text=@this.Model.Name />
+}
