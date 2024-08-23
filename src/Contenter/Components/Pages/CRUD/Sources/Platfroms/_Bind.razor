@@ -1,0 +1,46 @@
+﻿@inherits _Binder<SourcePlatform>
+@rendermode InteractiveServer
+@code {
+  override protected async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+  }
+  private string IconPath() => "./wwwroot" + this.model.IconPath;
+  private bool IconAlreadyExists() => System.IO.File.Exists(this.IconPath());
+}
+
+<EditForm Model=@this.model OnValidSubmit=@this.OnValidSubmit FormName="create">
+  <DataAnnotationsValidator />
+  <FluentValidationSummary />
+
+  <FluentStack Orientation="@Orientation.Vertical">
+    <div>
+      <FluentTextField Label="Id" Required
+        Value=@this.model.Id
+        ValueChanged=@(val => {
+          this.model.Id = val;
+          this.model.IconPath = $"/images/source/platforms/{val.ToLower()}.ico";
+        }) />
+      <FluentTextField Label="Name" Required @bind-Value=@this.model.Name /> 
+      <FluentTextField @bind-Value=@this.model.IconPath Label="IconPath" Required />
+      @if (!string.IsNullOrWhiteSpace(this.model.Name))
+      {
+        <div>
+          @if (this.IconAlreadyExists())
+          {
+            <span class="muted">Icon already exists</span>
+          }
+          else
+          {
+            <span class="muted">Dont forget to upload the icon</span>
+          }
+        </div>
+      }
+      <FluentTextField @bind-Value=@this.model.ChannelName Label="Default channel name" Required />
+    </div>
+    @if (ChildContent != null)
+    {
+      <FluentButton Type=@ButtonType.Submit Appearance=@Appearance.Accent>@ChildContent</FluentButton>
+    }
+  </FluentStack>
+</EditForm>

@@ -1,0 +1,22 @@
+﻿@code {
+  [EditorRequired]
+  [Parameter]
+  public IPlatformViewInner? Model { get; set; }
+
+  [Parameter]
+  public string? Name { get; set; }
+
+  [Parameter]
+  public int? MaxLength { get; set; }
+}
+
+@if (this.Model != null)
+{
+  <Contenter.Views.Bases.AnchorBase
+    href=@($"/s/platforms/{Model.Id}")
+    IconStart=@(this.Model.IconPath)
+    NoText="no-name"
+    Text="@(this.Name ?? this.Model.Name)"
+    MaxLength=@this.MaxLength
+  />
+}

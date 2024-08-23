@@ -1,0 +1,13 @@
+﻿@page "/create/s/platforms"
+@rendermode InteractiveServer
+@code
+{
+}
+<h3>Create Platform</h3>
+@inject NavigationManager navigationManager
+<_Create
+  OnAfterSave=@(async (SourcePlatform model) => {
+    this.navigationManager.NavigateTo($"/s/platforms/{model.Id}");
+  })>
+  Create
+</_Create>

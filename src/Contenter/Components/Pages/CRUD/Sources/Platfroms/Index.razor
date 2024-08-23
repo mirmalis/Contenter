@@ -1,0 +1,26 @@
+﻿@page "/s/platforms"
+@using Contenter.Views.Components
+@rendermode InteractiveServer
+@inject Contenter.Data.Database db
+<h3>Platforms Index</h3>
+
+@code {
+  private PaginationState paginationState = new() {
+    ItemsPerPage = 30
+  };
+}
+<FluentDataGrid Pagination=@this.paginationState
+  Items=@(
+    this.db.Set<SourcePlatform>()
+      .Select(pl => new PlatformView() {
+        Id = pl.Id,
+        Name = pl.Name,
+        IconPath = pl.IconPath,
+      })
+  )
+>
+  <TemplateColumn Context="model">
+    <InnerLinkPlatfrom Model=@model />
+  </TemplateColumn>
+</FluentDataGrid>
+<FluentPaginator State=@this.paginationState />

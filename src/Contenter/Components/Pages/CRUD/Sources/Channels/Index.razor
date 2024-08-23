@@ -1,18 +1,23 @@
 ﻿@page "/s/channels"
+@rendermode InteractiveServer
 @inject Contenter.Data.Database db
-<h3>Index</h3>
-
+<h3>Channels Index</h3>
 @code {
   private PaginationState paginationState = new();
 }
 <FluentDataGrid Pagination=@this.paginationState
   Items=@(
     this.db.Set<Contenter.Models.Sources.Channel>()
+      .Select(ch => new ChannelView() {
+        Id = ch.Id,
+        Name = ch.Title ?? ch.Name,
+        IconPath = ch.Platform.IconPath,
+        Href = ch.Href,
+      })
   )
 >
   <TemplateColumn Context="model">
-    @model
-    <a href="/s/channels/@model.Id">@model</a>
+    <InnerLinkChannel Model=@model />
   </TemplateColumn>
 </FluentDataGrid>
 <FluentPaginator State=@this.paginationState />

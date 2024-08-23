@@ -1,19 +1,35 @@
 ﻿@page "/s/sources"
-@inject Contenter.Data.Database db
 @rendermode InteractiveServer
-<h3>Index</h3>
+@inject Contenter.Data.Database db
+<h3>Sources Index</h3>
 
 @code {
   private PaginationState paginationState = new();
 }
-<FluentDataGrid Pagination=@this.paginationState
+<FluentDataGrid 
+  Pagination=@this.paginationState
   Items=@(
     this.db.Set<Contenter.Models.Sources.Source>()
-  )
->
+    .Select(s => new SourceView() {
+      Id = s.Id,
+      Name = s.Name,
+      Channel = s.ChannelUid == null ? null : new ChannelView(){
+        Id = s.Channel!.Id,
+        Href = s.Channel.Href,
+        IconPath =  s.Channel.Platform.IconPath,
+        Name = s.Channel.Title ?? s.Channel.Name,
+      },
+      //
+      Content = null,
+      Href  = null,
+      IconPath = null,
+      DefinitionUid = null,
+      PublishedAt = null,
+    })
+  )>
   <TemplateColumn Context="model">
-    @model
-    <a href="/s/sources/@model.Id">@model</a>
+    <InnerLinkChannel Model=@model.Channel After />
+    <InnerLinkSource Model=@model />
   </TemplateColumn>
 </FluentDataGrid>
 <FluentPaginator State=@this.paginationState />

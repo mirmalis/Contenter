@@ -1,0 +1,20 @@
+﻿@inherits _Displayer<SourcePlatform, string>
+
+<ExpList
+  ParamExpectedCount="1"
+  ParamSource=@(
+    this.Source.Select(item => new {
+      item.Name,
+      item.IconPath,
+    })
+  )
+>
+  <IfSome Context="model">
+    <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
+      <Contenter.Views.Bases.ImageBase Source=@model.IconPath Height="16px" Width="16px" />
+      @model.Name
+    </FluentStack>
+    @Before
+    @After
+  </IfSome>
+</ExpList>

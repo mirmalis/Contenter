@@ -9,10 +9,14 @@
 
   [Parameter]
   public int? MaxLength { get; set; }
+
+  [Parameter]
+  public bool NoIcon { get; set; }
 }
 @if (this.Model != null)
 {
-  <Contenter.Views.Bases.AnchorBase
+  <Contenter.Views.Bases.AnchorBase 
+    IconStart=@(this.NoIcon ? null : Model.IconPath)
     href=@($"s/channels/{this.Model.Id}") 
     Text=@this.Model.Name
     MaxLength=@this.MaxLength
