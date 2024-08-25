@@ -11,32 +11,33 @@
         Id = item.FamId!.Value,
         Name = item.Fam!.Name,
       },
-      Guests =  item.GuestPersonaAssignments.OrderBy(item => item.IndexB)
-      .Select(ass => new ThingView {
-        Id = ass.GuestId,
-        Name = ass.Guest.Name,
-        Definition = ass.Guest.ThingDefinitionId == null ? null : new (){
-          Id = ass.Guest.ThingDefinitionId!.Value,
-          Name = ass.Guest.ThingDefinition!.Name,
-          PluralName = ass.Guest.ThingDefinition.Plural
-        }
-      }),
+      Guests =  item.GuestPersonaAssignments
+        .OrderBy(item => item.IndexB)
+        .Select(ass => new ThingView {
+          Id = ass.GuestId,
+          Name = ass.Guest.Name,
+          Definition = ass.Guest.ThingDefinitionId == null ? null : new (){
+            Id = ass.Guest.ThingDefinitionId!.Value,
+            Name = ass.Guest.ThingDefinition!.Name,
+            PluralName = ass.Guest.ThingDefinition.Plural
+          }
+        }),
       Sources = item.Sources
-      .OrderBy(item => item.PublishedAt)
-      .Select(source => new SourceView () {
-        Id = source.Id,
-        Href = source.Href,
-        Name = source.Name,
-        Channel = source.ChannelUid == null ? null : new ChannelView {
-          Id = source.Channel!.Id,
-          Name = source.Channel.Title ?? source.Channel.Name,
-          IconPath = source.Channel!.Platform.IconPath,
-          Href = source.Channel.Href,
-        },
-        Content = null,
-        IconPath = source.PlatformId == null ? null : source.Platform!.IconPath,
-        DefinitionUid = source.DefinitionUid,
-      }),
+        .OrderBy(item => item.PublishedAt)
+        .Select(source => new SourceView () {
+          Id = source.Id,
+          Href = source.Href,
+          Name = source.Name,
+          Channel = source.ChannelUid == null ? null : new ChannelView {
+            Id = source.Channel!.Id,
+            Name = source.Channel.Title ?? source.Channel.Name,
+            IconPath = source.Channel!.Platform.IconPath,
+            Href = source.Channel.Href,
+          },
+          Content = null,
+          IconPath = source.PlatformId == null ? null : source.Platform!.IconPath,
+          DefinitionUid = source.DefinitionUid,
+        }),
     })
   )
 >
@@ -54,10 +55,8 @@
       </div>
     }
     <div>
-      Guests: 
-      <OneOrMany ParamList=@(model.Guests) Context="guest" Many>
-        <InnerLinkThing Model=@guest />
-      </OneOrMany>
+      Relatees:
+      <Contenter.Components.Pages.CRUD.Objectify.Things.ViewThings List=@model.Guests />
     </div>
     <div>
       Sources (<a href="/create/s/sources?ContentId=@this.Id">add</a>): 
@@ -65,7 +64,7 @@
         <ChildContent>
           <OuterLinkSource Model=@source Name="@source.DefinitionUid" />
           |
-          <InnerLinkChannel Model=@source.Channel After />
+          <InnerLinkChannel Model=@source.Channel After NoIcon />
           <InnerLinkSource Model=@source />
         </ChildContent>
       </OneOrMany>

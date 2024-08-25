@@ -61,12 +61,7 @@
       <div>
         <InnerLinkFam Model=@model.Content.Fam After />
         <InnerLinkContent Model=@model.Content />
-        <OneOrMany ParamList=@model.Content.Things Context="guest" Many>
-          <IfNone></IfNone>
-          <ChildContent>
-            <InnerLinkThing Model=@guest />
-          </ChildContent>
-        </OneOrMany>
+        <Contenter.Components.Pages.CRUD.Objectify.Things.ViewThings List=@model.Content.Things />
       </div>
     }
     <AuthorizeView Policy="AdminSuper">

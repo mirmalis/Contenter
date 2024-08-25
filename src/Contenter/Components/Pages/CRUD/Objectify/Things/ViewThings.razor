@@ -1,0 +1,60 @@
+﻿@code {
+  [EditorRequired]
+  [Parameter]
+  public IEnumerable<ThingView> List { get; set; } = default!;
+}
+@{
+  var groups = this.List.GroupBy(item => item.Definition?.Id);
+}
+@if (groups.Count() == 0)
+{
+  <span class="muted">none</span>
+}
+else if (groups.Count() == 1)
+{
+  @foreach (var gr in groups)
+  {
+    var first = gr.First();
+    @if (gr.Count() == 1)
+    {
+      <InnerLinkThing Model=@first />
+    }
+    else
+    {
+      @if (first.Definition is not null)
+      {
+        @first.Definition?.PluralName
+        <text>: </text>
+      }
+      <OneOrMany ParamList=@(gr) Context="guest" Many>
+        <InnerLinkThing Model=@guest NoDefinition />
+      </OneOrMany>
+    }
+  }
+}
+else
+{
+  <ul>
+    @foreach (var gr in groups)
+    {
+      var first = gr.First();
+      <li>
+        @if (gr.Count() == 1)
+        {
+          <InnerLinkThing Model=@first />
+        }
+        else
+        {
+          @if (first.Definition is not null)
+          {
+            @first.Definition?.PluralName
+            <text>: </text>
+          }
+          <OneOrMany ParamList=@(gr) Context="guest" Many>
+            <InnerLinkThing Model=@guest NoDefinition />
+          </OneOrMany>
+        }
+      </li>
+    }
+  </ul>
+}

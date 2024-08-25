@@ -6,14 +6,14 @@ Running on raspberry pi and reachable at [sars.lt](https://sars.lt).
 ##### Flow
 ```mermaid
 flowchart LR
-Contenter.App --"youtube data"--> Aper.Api --> YouTube.Api
+app(Contenter.App) ---> api(Aper.Api) --> yt("YouTube Data APIv3")
 subgraph Contenter
-Contenter.App
+app
 end
 subgraph Aper
-Aper.Api
+    api
 end
 subgraph External
-YouTube.Api
+    yt
 end
 ```

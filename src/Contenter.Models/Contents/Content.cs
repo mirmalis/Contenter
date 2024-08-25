@@ -2,7 +2,7 @@
 
 namespace Contenter.Models.Contents;
 [Flags]
-public enum ContentFlags
+public enum ContentFlags: UInt64
 {
   Everywhere = 0,
   NotAtMain = 1,

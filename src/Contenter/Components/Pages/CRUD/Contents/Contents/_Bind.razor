@@ -29,6 +29,9 @@
         />
         <FluentTimePicker  @bind-Value=@model.PublishedAt @bind-Value:format="MM:hh" />
       </div>
+      <div>
+        <Contenter.Views.Components.BindFlags @bind-value=@this.model.Flags />
+      </div>
     </div>
     <div>
       <FluentInputLabel Label="Laida: ">

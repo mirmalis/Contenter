@@ -10,7 +10,9 @@
 {
   if(!this.NoDefinition && this.Model.Definition != null)
   {
-    @this.Model.Definition.Name
+    <text>
+      @(this.Model.Definition.Name)&nbsp;
+    </text>
   }
   <AnchorBase
     href=@($"/o/t/{this.Model.Id}")

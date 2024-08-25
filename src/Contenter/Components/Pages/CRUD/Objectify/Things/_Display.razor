@@ -75,14 +75,8 @@
                 <OuterLinkSource Model=@source />
               </OneOrMany>
             </td>
-
             <td>
-              <OneOrMany ParamList="ct.Things" Context="guest">
-                <IfNone></IfNone>
-                <ChildContent>
-                  <InnerLinkThing Model=@guest />
-                </ChildContent>
-              </OneOrMany>
+              <ViewThings List=@ct.Things />
             </td>
           </tr>
         }

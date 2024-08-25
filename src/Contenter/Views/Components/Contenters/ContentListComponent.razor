@@ -38,15 +38,7 @@
           Href = s.Href,
           DefinitionUid = s.DefinitionUid,
           IconPath = s.PlatformId == null ? null : s.Platform!.IconPath,
-          Channel = 
-          null
-          //s.ChannelUid == null ? null: new ChannelView {
-          //  Id = s.Channel!.Id,
-          //  Name = s.Channel.Title ?? s.Channel.Name,
-          //  IconPath = s.Channel.Platform.IconPath,
-          //}
-          ,
-          
+          Channel = null,
           Content = null,
         })
     })
@@ -65,21 +57,10 @@
       <td>
         <OneOrMany ParamList=@(model.Sources) Context="source">
           <OuterLinkSource Model=@source Name=@source.DefinitionUid />
-          @if (source.Channel != null)
-          {
-            @* <text> &raquo; </text>
-            <InnerLinkChannel Model=@source.Channel /> *@
-          }
         </OneOrMany>
       </td>
       <td>
-        <OneOrMany ParamList=@(model.Things) Context="guest">
-          <IfNone></IfNone>
-          <Before></Before>
-          <ChildContent>
-            <InnerLinkThing Model=@guest />
-          </ChildContent>
-        </OneOrMany>
+        <Contenter.Components.Pages.CRUD.Objectify.Things.ViewThings List=@model.Things />
       </td>
     </tr>
   </IfSome>

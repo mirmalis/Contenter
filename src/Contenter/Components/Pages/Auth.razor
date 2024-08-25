@@ -7,29 +7,40 @@
 <AuthorizeView>
   <table class="bord">
     <tr>
-      <td>Scopes</td>
-      <td><a href="o/s">Index</a></td>
+      <td rowspan="1">Other</td>
+      <td colspan="2">
+        <a href="/contents">public</a>
+      </td>
+    </tr>
+    <tr>
+      <td rowspan="4">Objectify</td>
+      <td><a href="o/s">Scopes</a></td>
       <td><a href="create/o/s">Create</a></td>
     </tr>
     <tr>
-      <td>ThingDefinitions</td>
-      <td><a href="o/td">Index</a></td>
+      <td><a href="o/td">ThingDefinitions</a></td>
       <td><a href="create/o/td">Create</a></td>
     </tr>
     <tr>
-      <td>RelationDefinitions</td>
-      <td><a href="o/rd">Index</a></td>
+      <td><a href="o/rd">RelationDefinitions</a></td>
       <td><a href="create/o/rd">Create</a></td>
     </tr>
     <tr>
-      <td>Things</td>
-      <td><a href="o/t">Index</a></td>
+      <td><a href="o/t">Things</a></td>
       <td><a href="create/o/t">Create</a></td>
     </tr>
     <tr>
-      <td><a href="/contents">Contents</a></td>
-      <td><a href="/sources">Sources</a></td>
-      <td><a href="/sources/nocontent">no-content</a></td>
+      <td rowspan="3">Sources</td>
+      <td><a href="/s/platforms">Platforms</a></td>
+      <td><a href="/create/s/platforms">Create</a></td>
+    </tr>
+    <tr>
+      <td><a href="/s/channels">Channels</a></td>
+      <td><a href="/create/s/channels">Create</a></td>
+    </tr>
+    <tr>
+      <td><a href="/s/sources">Sources</a> <a href="/sources">public</a> <a href="/sources/nocontent">no-content</a></td>
+      <td><a href="/create/s/sources">Create</a></td>
     </tr>
   </table>
 </AuthorizeView>
