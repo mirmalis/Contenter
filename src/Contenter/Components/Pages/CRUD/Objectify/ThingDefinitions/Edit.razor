@@ -6,11 +6,12 @@
   protected override IQueryable<ThingDefinition> Includer(IQueryable<ThingDefinition> dbset)
   {
     return base.Includer(dbset)
+    .Include(item => item.Scope)
     ;
   }
 }
 
-<h3>Edit</h3>
+<h3>Edit ThingDefinition</h3>
 @if (this.model != null)
 {
   <_Bind model=@this.model OnValidSubmitCallback=@this.DoUpdate>
