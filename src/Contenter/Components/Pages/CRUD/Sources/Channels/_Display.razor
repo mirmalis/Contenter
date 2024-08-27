@@ -16,10 +16,12 @@
         item.Platform.IconPath,
         item.Platform.ChannelName,
       },
-      ContentFams = item.CotentFamsAssignments.OrderBy(item => item.IndexB).Select(ass => new {
-        ass.ContentFam.Id,
-        ass.ContentFam.Name,
-      })
+      ContentFams = item.CotentFamsAssignments
+        .OrderBy(item => item.IndexB)
+        .Select(ass => new {
+          ass.ContentFam.Id,
+          ass.ContentFam.Name,
+        })
     })
   )
 >
@@ -139,12 +141,7 @@
               }
               <td><InnerLinkContent Model=@source.Content /></td>
               <td>
-                <OneOrMany ParamList=@source.Content.Things Context="guest">
-                  <ChildContent>
-                    <InnerLinkThing Model=@guest />
-                  </ChildContent>
-                  <IfNone></IfNone>
-                </OneOrMany>
+                <Contenter.Components.Pages.CRUD.Objectify.Things.ViewThings List=@source.Content.Things />
               </td>
             }
           </tr>

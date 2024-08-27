@@ -19,7 +19,7 @@
         Id = ct.Id,
         Name = ct.Name,
         PublishedAt = ct.PublishedAt,
-        Guests = ct.GuestPersonaAssignments.OrderBy(ass => ass.IndexB)
+        Things = ct.GuestPersonaAssignments.OrderBy(ass => ass.IndexB)
         .Select(gass => new ThingView {
           Id = gass.Guest.Id,
           Name = gass.Guest.Name,
@@ -93,14 +93,10 @@
                 <Name ParamHref=@($"/c/contents/{ct.Id}") ParamName="@ct.Name" />
               </td>
               <td>
-                <OneOrMany ParamList=@ct.Guests Context="guest">
-                  <InnerLinkThing Model=@guest NoDefinition />
-                </OneOrMany>
+                <Contenter.Components.Pages.CRUD.Objectify.Things.ViewThings List=@ct.Things />
               </td>
               <td>
-                <OneOrMany ParamList=@ct.Sources Context="source">
-                  <OuterLinkSource Model=@source Name="@source.DefinitionUid" />
-                </OneOrMany>
+                <Contenter.Components.Pages.CRUD.Sources.Sources.ViewSources List=@ct.Sources />
               </td>
             </tr>
           }

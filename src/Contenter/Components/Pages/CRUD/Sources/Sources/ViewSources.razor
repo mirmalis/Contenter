@@ -1,0 +1,32 @@
+﻿@code {
+  [EditorRequired]
+  [Parameter]
+  public IEnumerable<SourceView> List { get; set; } = default!;
+
+  [Parameter]
+  public bool NoDate { get; set; }
+  [Parameter]
+  public bool NoChannel { get; set; }
+  [Parameter]
+  public bool NoSource { get; set; }
+}
+<OneOrMany ParamList=@(this.List) Context="source">
+  @if (!this.NoDate && source.PublishedAt is not null)
+  {
+    <text>
+      @(source.PublishedAt?.ToShortDateString())
+      @(" ")
+    </text>
+  }
+  <OuterLinkSource Model=@source Name=@source.DefinitionUid />
+  @if (!this.NoSource)
+  {
+    <text> | </text>
+    @if (!this.NoChannel)
+    {
+      <InnerLinkChannel Model=@source.Channel After />
+    }
+    <InnerLinkSource Model=@source />
+  }
+  
+</OneOrMany>

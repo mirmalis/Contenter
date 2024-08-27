@@ -2,13 +2,19 @@
   [EditorRequired]
   [Parameter]
   public IEnumerable<ThingView> List { get; set; } = default!;
+
+  [Parameter]
+  public bool NoNone { get; set; }
 }
 @{
   var groups = this.List.GroupBy(item => item.Definition?.Id);
 }
 @if (groups.Count() == 0)
 {
-  <span class="muted">none</span>
+  @if (!this.NoNone)
+  {
+    <span class="muted">none</span>
+  }
 }
 else if (groups.Count() == 1)
 {

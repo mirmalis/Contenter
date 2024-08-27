@@ -28,6 +28,7 @@
           Id = source.Id,
           Href = source.Href,
           Name = source.Name,
+          PublishedAt = source.PublishedAt,
           Channel = source.ChannelUid == null ? null : new ChannelView {
             Id = source.Channel!.Id,
             Name = source.Channel.Title ?? source.Channel.Name,
@@ -60,14 +61,7 @@
     </div>
     <div>
       Sources (<a href="/create/s/sources?ContentId=@this.Id">add</a>): 
-      <OneOrMany ParamList=@(model.Sources) Context="source" Many>
-        <ChildContent>
-          <OuterLinkSource Model=@source Name="@source.DefinitionUid" />
-          |
-          <InnerLinkChannel Model=@source.Channel After NoIcon />
-          <InnerLinkSource Model=@source />
-        </ChildContent>
-      </OneOrMany>
+      <Contenter.Components.Pages.CRUD.Sources.Sources.ViewSources List=@model.Sources />
     </div>
     @After
   </IfSome>

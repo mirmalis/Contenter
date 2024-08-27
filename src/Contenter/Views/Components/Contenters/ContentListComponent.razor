@@ -55,9 +55,7 @@
         <InnerLinkContent Model=@model MaxLength="100" />
       </td>
       <td>
-        <OneOrMany ParamList=@(model.Sources) Context="source">
-          <OuterLinkSource Model=@source Name=@source.DefinitionUid />
-        </OneOrMany>
+        <Contenter.Components.Pages.CRUD.Sources.Sources.ViewSources List=@model.Sources NoChannel NoSource />
       </td>
       <td>
         <Contenter.Components.Pages.CRUD.Objectify.Things.ViewThings List=@model.Things />

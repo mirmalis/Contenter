@@ -6,6 +6,39 @@
   ParamSource=@(
     this.Source
     .Select(item => new {
+      View = new SourceView(){
+        Id = item.Id,
+        Href = item.Href,
+        Name = item.Name,
+        IconPath = item.Platform == null ? null : item.Platform.IconPath,
+        PublishedAt = item.PublishedAt,
+        DefinitionUid = item.DefinitionUid,
+        Channel = item.ChannelUid == null ? null : new ChannelView{
+          Href = item.Channel!.Href,
+          IconPath =  item.Channel.Platform.IconPath,
+          Id = item.Channel.Id,
+          Name = item.Channel.Name,
+        },
+        Content = item.ContentId == null ? null : new ContentView(){
+          Fam = item.Content.FamId == null ? null : new FamView(){
+            Id = item.Content.FamId.Value,
+            Name = item.Content.Fam!.Name
+          },
+          Id = item.ContentId.Value,
+          Name = item.Content.Name,
+          PublishedAt = item.Content.PublishedAt,
+          Sources = null,
+          Things = item.Content.GuestPersonaAssignments.Select(tass => new ThingView(){
+            Id = tass.GuestId,
+            Name = tass.Guest.Name,
+            Definition = tass.Guest.ThingDefinitionId == null ? null : new ThingView.ThingDefinitionView(){
+              Id = tass.Guest.ThingDefinition!.Id,
+              Name = tass.Guest.ThingDefinition.Name,
+              PluralName = tass.Guest.ThingDefinition.Plural,
+            }
+          }),
+        }
+      },
       item.Name,
       item.Href,
       item.Flags,
@@ -53,7 +86,7 @@
           </div>
         }
       }
-      <Contenter.Views.Bases.AnchorBase href=@(model.Href) Text=@(model.Name ?? model.Platform?.DefinitionUid ?? "source") NewTab IconStart=@model.Platform?.IconPath />
+      <OuterLinkSource Model=@model.View />
     </FluentStack>
     @Before
     @if (model.Content != null)
@@ -61,7 +94,9 @@
       <div>
         <InnerLinkFam Model=@model.Content.Fam After />
         <InnerLinkContent Model=@model.Content />
-        <Contenter.Components.Pages.CRUD.Objectify.Things.ViewThings List=@model.Content.Things />
+      </div>
+      <div>
+        <Contenter.Components.Pages.CRUD.Objectify.Things.ViewThings List=@model.Content.Things NoNone />
       </div>
     }
     <AuthorizeView Policy="AdminSuper">

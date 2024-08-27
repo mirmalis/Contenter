@@ -25,8 +25,8 @@
           },
           Things = ass.Content.GuestPersonaAssignments
             .OrderBy(gass => gass.Guest.Name)
-            .Where(item => item.GuestId != this.Id)
-            .Select(gass => new ThingView{
+            .Select(gass => new ThingView
+            {
               Id = gass.GuestId,
               Name = gass.Guest.Name,
               Definition = gass.Guest.ThingDefinitionId == null ? null : new (){
@@ -70,10 +70,7 @@
             <td><InnerLinkFam Model=@ct.Fam /></td>
             <td><InnerLinkContent Model=@ct/></td>
             <td>
-              <OneOrMany ParamList=@(ct.Sources) Context="source">
-                @source.PublishedAt?.ToShortDateString()
-                <OuterLinkSource Model=@source />
-              </OneOrMany>
+              <Contenter.Components.Pages.CRUD.Sources.Sources.ViewSources List=@ct.Sources NoChannel NoSource />
             </td>
             <td>
               <ViewThings List=@ct.Things />
