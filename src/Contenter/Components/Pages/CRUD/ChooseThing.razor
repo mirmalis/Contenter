@@ -1,19 +1,20 @@
 ﻿@inject IDialogService DialogService
 @using Contenter.Models.Objectify
 @code {
-  [EditorRequired]
   [Parameter] 
   public Thing? value { get; set; } 
-  [EditorRequired]
   [Parameter] 
   public EventCallback<Thing?> valueChanged { get; set; }
 
   [Parameter]
   public RenderFragment ChildContent { get; set; } =@<text>Ieškoti</text>;
+
+  [Parameter]
+  public Guid? ParamThingDefinitionId { get; set; }
 }
 
 @code {
-  private string SeachTerm { get; set; } = string.Empty;
+  private string SearchTerm { get; set; } = string.Empty;
   [Parameter] public int MinTermLength { get; set; } = 0;
   private bool Hidden { get; set; } = true;
 }
@@ -21,7 +22,6 @@
 <FluentButton OnClick=@(() => this.Hidden = !this.Hidden)>
   @ChildContent
 </FluentButton>
-
 @code {
   private Scope? scope { get; set; }
   private void SetScope(Scope? value)
@@ -36,55 +36,68 @@
   <FluentDialog Hidden="@this.Hidden">
     <FluentDialogHeader>
       <FluentTextField Immediate ImmediateDelay="500" 
-        @bind-Value=@this.SeachTerm 
+        @bind-Value=@this.SearchTerm 
         Label="Paieškos frazė"
         Required
       />
-      <FluentInputLabel Label="">
-        @if (this.scope != null)
-        {
-          <FluentButton Appearance="Appearance.Accent" OnClick=@(() => this.SetScope(null))>@scope?.Name</FluentButton>
-          <text>&raquo;</text>
-          @if (this.thingDefinition == null)
+
+      @if (this.ParamThingDefinitionId == null)
+      {
+        <FluentInputLabel Label="">
+          @if (this.scope != null)
           {
-            <ExpList ParamSource=@(
-               this.db.Entry(this.scope).Collection(scope => scope.ThingDefinitions).Query()
-               )>
-              <IfSome Context="td">
-                <FluentButton OnClick=@(() => this.thingDefinition = td)>
-                  @td.Name
+            <FluentButton Appearance="Appearance.Accent" OnClick=@(() => this.SetScope(null))>@scope?.Name</FluentButton>
+            <text>&raquo;</text>
+            @if (this.thingDefinition == null)
+            {
+              <ExpList ParamSource=@(
+                 this.db.Entry(this.scope).Collection(scope => scope.ThingDefinitions).Query()
+                 )>
+                <IfSome Context="td">
+                  <FluentButton OnClick=@(() => this.thingDefinition = td)>
+                    @td.Name
+                  </FluentButton>
+                </IfSome>
+              </ExpList>
+            }
+            else
+            {
+              <FluentButton Appearance="Appearance.Accent" OnClick=@(() => this.thingDefinition = null)>
+                @this.thingDefinition?.Name
+              </FluentButton>
+            }
+          }
+          else
+          {
+            <ExpList ParamSource=@(this.db.Scopes)>
+              <IfSome Context="sc">
+                <FluentButton OnClick=@(() => this.SetScope(sc))>
+                  @sc.Name
                 </FluentButton>
               </IfSome>
             </ExpList>
           }
-          else
-          {
-            <FluentButton Appearance="Appearance.Accent" OnClick=@(() => this.thingDefinition = null)>
-              @this.thingDefinition?.Name
-            </FluentButton>
-          }
-        }
-        else
-        {
-          <ExpList ParamSource=@(this.db.Scopes)>
-            <IfSome Context="sc">
-              <FluentButton OnClick=@(() => this.SetScope(sc))>
-                @sc.Name
-              </FluentButton>
-            </IfSome>
-          </ExpList>
-        }
-      </FluentInputLabel>
+        </FluentInputLabel>
+      }
     </FluentDialogHeader>
     <FluentDialogBody>
       
-      @if (this.MinTermLength == 0 || (!string.IsNullOrWhiteSpace(this.SeachTerm) && this.SeachTerm.Length >= this.MinTermLength))
+      @if (
+        this.MinTermLength == 0
+        ||
+        (
+          !string.IsNullOrWhiteSpace(this.SearchTerm)
+          && this.SearchTerm.Length >= this.MinTermLength
+        )
+      )
       {
         <ExpList 
           ParamSource=@(
             this.db.Things
               .Where(thing => 
-                (thing.Name == this.SeachTerm || thing.Name.ToLower().Contains(this.SeachTerm.ToLower()))
+                (this.ParamThingDefinitionId == null || thing.ThingDefinitionId == this.ParamThingDefinitionId)
+                &&
+                (thing.Name == this.SearchTerm || thing.Name.ToLower().Contains(this.SearchTerm.ToLower()))
                 && 
                 (this.thingDefinition == null || thing.ThingDefinitionId == this.thingDefinition.Id)
               ) 
@@ -112,9 +125,10 @@
           </IfSome>
           <IfNone>
             @{
-              var n = new Contenter.Models.Objectify.Thing() {
-                Name = this.SeachTerm,
-                ThingDefinition = this.thingDefinition
+              var n = new Contenter.Models.Objectify.Thing()
+              {
+                Name = this.SearchTerm,
+                ThingDefinition = this.thingDefinition,
               };
             }
             <FluentLabel Typo=@Typography.Subject>Sukurti naują asmenį:</FluentLabel>
@@ -140,14 +154,6 @@
 
 
 @code {
-  public void Enter(KeyboardEventArgs e)
-  {
-    Console.WriteLine(e.Code);
-    if (e.Code == "Enter" || e.Code == "NumpadEnter")
-    {
-      // ...
-    }
-  }
   private async Task Choose(Guid id)
   {
     var existing = await this.db.Things
@@ -159,7 +165,7 @@
   }
   private async Task Choose(Thing choice)
   {
-    this.SeachTerm = string.Empty;
+    this.SearchTerm = string.Empty;
     this.Hidden = true;
     this.scope = null;
     this.thingDefinition = null;

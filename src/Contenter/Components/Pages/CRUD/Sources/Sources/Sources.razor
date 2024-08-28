@@ -55,8 +55,8 @@
         Things = s.Content.GuestPersonaAssignments.OrderBy(item => item.IndexA).Select(gass => new ThingView {
           Id = gass.GuestId,
           Name = gass.Guest.Name,
-          Definition = gass.Guest.ThingDefinitionId == null ? null : new (){
-            Id = gass.Guest.ThingDefinitionId!.Value,
+          Definition = new (){
+            Id = gass.Guest.ThingDefinitionId,
             Name = gass.Guest.ThingDefinition!.Name,
             PluralName = gass.Guest.ThingDefinition.Plural,
           }

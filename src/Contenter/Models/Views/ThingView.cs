@@ -8,7 +8,7 @@ public class ThingView
     public required string Name { get; set; }
     public required string PluralName { get; set; }
   }
-  public required ThingDefinitionView? Definition { get; set; }
+  public required ThingDefinitionView Definition { get; set; }
   public required Guid Id { get; set; }
   public required string Name { get; set; }
 }

@@ -24,6 +24,12 @@ public partial class Database
     mb.Entity<Contenter.Models.Objectify.Thing>(things => {
       things.ToTable("OThings");
       things.Property(item => item.Links).HasDefaultValue(new List<string>());
+      things.HasMany(item => item.RelationsFrom).WithOne(item => item.From);
+      things.HasMany(item => item.RelationsTo).WithOne(item => item.To);
+    });
+    mb.Entity<Contenter.Models.Objectify.Relation>(relations => {
+      relations.ToTable("ORelations");
+
     });
   }
 }

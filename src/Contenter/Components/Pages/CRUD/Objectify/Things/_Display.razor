@@ -5,8 +5,8 @@
   ParamSource=@(
     this.Source.Select(thing => new {
       thing.Name,
-      Definition = thing.ThingDefinitionId == null ? null : new ThingDefinitionView(){
-        Id = thing.ThingDefinitionId!.Value,
+      Definition = new ThingDefinitionView(){
+        Id = thing.ThingDefinitionId,
         Scope = new() {
           Id = thing.ThingDefinition!.ScopeId,
           Name = thing.ThingDefinition!.Scope.Name,
@@ -29,8 +29,8 @@
             {
               Id = gass.GuestId,
               Name = gass.Guest.Name,
-              Definition = gass.Guest.ThingDefinitionId == null ? null : new (){
-                Id = gass.Guest.ThingDefinitionId!.Value,
+              Definition = new (){
+                Id = gass.Guest.ThingDefinitionId,
                 Name = gass.Guest.ThingDefinition!.Name,
                 PluralName = gass.Guest.ThingDefinition!.Plural
               }

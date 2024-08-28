@@ -1,5 +1,5 @@
 ﻿@typeparam TKey
-@typeparam T where T: class, IIded<TKey>, new()
+@typeparam T where T : class, IIded<TKey>, Contenter.Models.INameable, new()
 @typeparam TBinder where TBinder: _Binder<T>
 @inject IDialogService DialogService
 @using Contenter.Models.Objectify
@@ -12,13 +12,18 @@
   public EventCallback<T?> valueChanged { get; set; }
 
   [Parameter]
-  public RenderFragment ChildContent { get; set; } =@<text>Ieškoti</text>;
+  public RenderFragment? ChildContent { get; set; }
   [Parameter]
-  public System.Linq.Expressions.Expression<Func<T, bool>> FilterExpression { get; set; } = item => true;
+  public System.Linq.Expressions.Expression<Func<T, bool>>? FilterExpression { get; set; }
+  System.Linq.Expressions.Expression<Func<T, bool>> defaultFilterExpression { get; set; } = item => true;
+
   [Parameter]
   public int MinTermLength { get; set; } = 0;
   [Parameter]
   public bool Open { get; set; } = false;
+
+  [Parameter]
+  public bool NoCreate { get; set; }
 }
 
 @code {
@@ -32,31 +37,38 @@
 }
 @inject Data.Database db
 <FluentButton OnClick=@(() => this.Hidden = !this.Hidden)>
-  @ChildContent
+  @if (this.ChildContent is null)
+  {
+    <text>Ieškoti</text>;
+  }
+  else
+  {
+    @ChildContent
+  }
 </FluentButton>
 
 @if (!this.Hidden)
 {
   <FluentDialog Hidden="@this.Hidden">
     <FluentDialogHeader>
-      <FluentTextField Immediate ImmediateDelay="500"
-                       @bind-Value=@this.SeachTerm
-                       Label="Paieškos frazė"
-                       Required />
+      <FluentTextField Immediate ImmediateDelay="500" Label="Paieškos frazė"
+        @bind-Value=@this.SeachTerm
+        Required
+      />
     </FluentDialogHeader>
     <FluentDialogBody>
 
       @if (this.MinTermLength == 0 || (!string.IsNullOrWhiteSpace(this.SeachTerm) && this.SeachTerm.Length >= this.MinTermLength))
       {
-        <ExpList ParamSource=@(
-             this.db.Set<T>()
-               .Where(this.FilterExpression)
-             
-             .Select(thing => new {
-              thing.Id,
-              Name = thing.ToString()
-             })
-             )>
+        <ExpList 
+          ParamSource=@(
+            this.db.Set<T>()
+              .Where(this.FilterExpression ?? this.defaultFilterExpression)
+              .Select(thing => new { 
+                thing.Id, 
+                Name = thing.ToString()
+              })
+          )>
           <Wrapper Context="rows">
             <table class="bord">
               @rows
@@ -73,14 +85,17 @@
             </tr>
           </IfSome>
           <IfNone>
-            @{
-              var n = new T() {
-              };
+            @if(!this.NoCreate)
+            {
+              var n = new T() {};
+              <DynamicComponent Type=@(typeof(TBinder)) Parameters="@BinderParameters(n)" />
+              <FluentLabel Typo=@Typography.Subject>Sukurti naują @(typeof(T).Name):</FluentLabel>
+            } else
+            {
+              <span class="muted">
+                No instances of @(typeof(T).Name) found.
+              </span>
             }
-            <DynamicComponent Type=@(typeof(TBinder)) Parameters="@BinderParameters(n)" />
-            
-            <FluentLabel Typo=@Typography.Subject>Sukurti naują @(typeof(T).Name):</FluentLabel>
-            
           </IfNone>
         </ExpList>
       }
@@ -102,7 +117,7 @@
   {
     { nameof(_Binder<T>.model), n },
     { nameof(_Binder<T>.OnValidSubmitCallback), EventCallback.Factory.Create(this, (T n) => Choose(n))},
-    { nameof(_Binder<T>.ChildContent), "Sukurti naują" }
+    // { nameof(_Binder<T>.ChildContent), "Sukurti naują" }
   };
 }
 

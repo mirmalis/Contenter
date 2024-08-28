@@ -31,8 +31,8 @@
           Things = item.Content.GuestPersonaAssignments.Select(tass => new ThingView(){
             Id = tass.GuestId,
             Name = tass.Guest.Name,
-            Definition = tass.Guest.ThingDefinitionId == null ? null : new ThingView.ThingDefinitionView(){
-              Id = tass.Guest.ThingDefinition!.Id,
+            Definition = new ThingView.ThingDefinitionView(){
+              Id = tass.Guest.ThingDefinitionId,
               Name = tass.Guest.ThingDefinition.Name,
               PluralName = tass.Guest.ThingDefinition.Plural,
             }
@@ -63,8 +63,8 @@
         .Select(gass => new ThingView {
           Id = gass.Guest.Id,
           Name = gass.Guest.Name,
-          Definition = gass.Guest.ThingDefinitionId == null ? null : new (){
-            Id = gass.Guest.ThingDefinitionId!.Value,
+          Definition = new (){
+            Id = gass.Guest.ThingDefinitionId,
             Name = gass.Guest.ThingDefinition!.Name,
             PluralName = gass.Guest.ThingDefinition.Plural,
           }

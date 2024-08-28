@@ -12,7 +12,7 @@
 
   <FluentStack Orientation="@Orientation.Vertical">
     <div>
-      <FluentInputLabel Label="Definition" >
+      <FluentInputLabel Label="Definition" Required >
         <ChooseThingDefinition @bind-value=@this.model.ThingDefinition />
       </FluentInputLabel>
     </div>
@@ -33,6 +33,45 @@
       })> Add link
       </FluentButton>
     </div>
+    @if (model.ThingDefinition != null)
+    {
+      <div>
+        <ChooseRelationDefinition NoCreate
+          FilterExpression=@(rd => rd.FromId == model.ThingDefinition.Id)
+          value=@null
+          valueChanged=@(
+            (RelationDefinition rd) =>
+            {
+              model.RelationsFrom ??= [];
+              var r = new Relation()
+              {
+                Definition = rd
+              };
+              model.RelationsFrom.Add(r);
+            }
+          )
+        >
+        Add Relation
+        </ChooseRelationDefinition>
+        @if(model.RelationsFrom != null && model.RelationsFrom.Any())
+        {
+          <Listmanager Context="r" @bind-list=@model.RelationsFrom>
+            <td>
+              @r.Definition.ForwardWord
+              @r.Definition.Name
+            </td>
+            <td>
+              <ChooseThing
+                @bind-value=@r.To
+                MinTermLength="0"
+                ParamThingDefinitionId=@r.Definition.ToId
+              />
+            </td>
+            <td>@(r.To)</td>
+          </Listmanager>
+        }
+      </div>
+    }
     @if (ChildContent != null)
     {
       <FluentButton Type=@ButtonType.Submit Appearance=@Appearance.Accent>@ChildContent</FluentButton>
@@ -47,14 +86,13 @@
       this.db.Things
       .Where(item => item.Id != this.model.Id)
       .Where(item => item.Name == this.model.Name)
-
       .Select(persona => new ThingView {
         Id = persona.Id,
         Name = persona.Name,
-        Definition = persona.ThingDefinitionId == null ? null : new (){
-          Id = persona.ThingDefinitionId!.Value,
+        Definition = new (){
+          Id = persona.ThingDefinitionId,
           Name = persona.ThingDefinition!.Name,
-         PluralName = persona.ThingDefinition.Plural,
+          PluralName = persona.ThingDefinition.Plural,
         }
       })
     )

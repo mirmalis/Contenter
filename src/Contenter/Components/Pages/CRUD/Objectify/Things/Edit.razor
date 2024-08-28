@@ -5,7 +5,7 @@
   protected override IQueryable<Thing> Includer(IQueryable<Thing> dbset)
   {
     return base.Includer(dbset)
-    .Include(item => item.ThingDefinition)
+    .Include(item => item.ThingDefinition!)
     ;
   }
 }

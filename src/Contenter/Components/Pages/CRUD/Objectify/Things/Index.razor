@@ -12,8 +12,8 @@
       .Select(t => new {
         t.Id,
         t.Name,
-        Definition = t.ThingDefinitionId == null ? null : new ThingDefinitionView {
-          Id = t.ThingDefinitionId!.Value,
+        Definition = new ThingDefinitionView {
+          Id = t.ThingDefinitionId,
           Scope = new (){
             Id = t.ThingDefinition!.ScopeId,
             Name = t.ThingDefinition.Scope.Name,

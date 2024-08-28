@@ -24,8 +24,8 @@
         .Select(gass => new ThingView {
           Id = gass.Guest.Id,
           Name = gass.Guest.Name,
-          Definition = gass.Guest.ThingDefinitionId == null ? null : new (){
-            Id = gass.Guest.ThingDefinitionId!.Value,
+          Definition = new (){
+            Id = gass.Guest.ThingDefinitionId,
             Name = gass.Guest.ThingDefinition!.Name,
             PluralName = gass.Guest.ThingDefinition.Plural,
           }

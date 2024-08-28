@@ -14,7 +14,7 @@
       },
       F = new {
         Word = rd.ForwardWord,
-        Name = rd.ForwardName,
+        Name = rd.Name,
       },
       To = new ThingDefinitionView {
         Id = rd.ToId,
@@ -32,6 +32,7 @@
     <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
       <InnerLinkThingDefinition Model=@model.From />
       <u>@model.F.Word @model.F.Name</u>
+      of type
       <InnerLinkThingDefinition Model=@model.To />
     </FluentStack>
     @Before
