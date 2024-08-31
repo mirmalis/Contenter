@@ -13,9 +13,9 @@ public partial class PlaylistService: AbstractFoundryService<Playlist, string>, 
   {
   }
   #endregion
-  protected override async ValueTask<Playlist?> DoSelect(string id) => await this.GetOneById(id);
-  protected override async ValueTask<Playlist> DoInsert(Playlist playlist) => await this.CreateOne(playlist);
-  protected override async ValueTask<Playlist> DoUpdate(Playlist playlist) => await this.UpdateOne(playlist);
+  protected override async ValueTask<Playlist?> DoSelect(string id) => await this.db.GetOneById<Playlist, string>(id);
+  protected override async ValueTask<Playlist> DoInsert(Playlist playlist) => await this.db.InsertPlaylistAsync(playlist);
+  protected override async ValueTask<Playlist> DoUpdate(Playlist playlist) => await this.db.UpdatePlaylistAsync(playlist);
 
   
 }

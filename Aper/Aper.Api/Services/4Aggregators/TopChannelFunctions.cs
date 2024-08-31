@@ -28,6 +28,7 @@ public class TopChannelFunctions: ITopChannelFunctions
     if(channel is null)
       throw new Exception($"Channel (id={channelId}) doesn't exist");
 
-    return await this.playlists.GetPlaylistsLatestVideos(channel.UploadsPlaylistId!);
+    var result = await this.playlists.GetPlaylistsLatestVideos(channel.UploadsPlaylistId!);
+    return result;
   }
 }
