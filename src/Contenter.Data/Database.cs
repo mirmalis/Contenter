@@ -1,8 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿
+
+using Contenter.Models.Sources;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace Contenter.Data;
 
-public partial class Database(DbContextOptions<Database> options): DbContext(options)
+public partial class Database(DbContextOptions<Database> options): DbContext(options), IStorageBroker
 {
   public DbSet<Contenter.Models.Contents.Content> Contents => this.Set<Contenter.Models.Contents.Content>();
   public DbSet<Contenter.Models.Contents.ContentFam> ContentFams => this.Set<Contenter.Models.Contents.ContentFam>();
@@ -63,4 +67,6 @@ public partial class Database(DbContextOptions<Database> options): DbContext(opt
     #endregion
   }
   private static readonly string SQL_DATETIME_NOW = "datetime('now')";
+
+  
 }

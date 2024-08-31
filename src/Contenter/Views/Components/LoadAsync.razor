@@ -1,0 +1,25 @@
+﻿@typeparam T
+
+@code {
+  [EditorRequired]
+  [Parameter]
+  public Task<IEnumerable<T>?> ParamSource { get; set; } = default!;
+  private IEnumerable<T>? list{ get; set; }
+  override protected async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+    this.list = await this.ParamSource;
+
+  }
+}
+@if(this.list == null){
+  <span>Loading...</span>
+} else
+{
+  <ul>
+    @foreach(var item in this.list)
+    {
+      <li>@item</li>
+    }
+  </ul>
+}

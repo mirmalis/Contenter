@@ -1,4 +1,5 @@
-﻿using Contenter.Brokers.Youtube;
+﻿
+using Contenter.Brokers.Youtube;
 using Contenter.Models.Configurations;
 using Contenter.Models.Views;
 
@@ -12,7 +13,7 @@ public class YoutubeBroker: IYoutubeBroker
   {
     this.httpClient = httpClient;
     var apiConfiguration =
-        configuration.Get<LocalConfiguration>()?.ApiConfiguration 
+        configuration.Get<LocalConfiguration>()?.ApiConfiguration
         ?? throw new Exception("Configuration exception");
     this.httpClient.BaseAddress = new Uri(apiConfiguration.Url);
   }
@@ -21,6 +22,12 @@ public class YoutubeBroker: IYoutubeBroker
   {
     var v = YoutubeHelpers.ExtractV(identifier);
     var result = await httpClient.GetFromJsonAsync<YoutubeVideo>($"/YoutubeVideo?videoId={v}");
+    return result;
+  }
+
+  public async Task<IEnumerable<Models.PlaylistItem>?> GetAllChannelVideos(string channelId)
+  {
+    var result = await httpClient.GetFromJsonAsync<IEnumerable<Models.PlaylistItem>?>($"/ChannelVideos?channelId={channelId}");
     return result;
   }
 }

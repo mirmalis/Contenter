@@ -5,6 +5,7 @@ public class Channel: IIded<Guid>
 {
   public override string? ToString() => this.Title ?? this.Name ?? this.Handle;
   public Guid Id { get; set; }
+  public DateTimeOffset? FullScrapedAt { get; set; }
 
   public SourcePlatform Platform { get; set; } = default!;
   public string PlatformId { get; set; } = default!;

@@ -22,7 +22,7 @@ public class TopChannelFunctions: ITopChannelFunctions
   }
   #endregion
 
-  public async ValueTask<IEnumerable<object>> GetChannelsLatestVideos(string channelId)
+  public async ValueTask<IEnumerable<object>?> GetChannelsLatestVideos(string channelId)
   {
     var channel = await this.channels.GetChannel(channelId:  channelId);
     if(channel is null)

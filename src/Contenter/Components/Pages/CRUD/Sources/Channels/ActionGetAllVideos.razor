@@ -1,0 +1,53 @@
+﻿@using Contenter.Brokers.Youtube
+@using Contenter.Data
+@code
+{
+  [EditorRequired]
+  [Parameter]
+  public Guid ChannelId { get; set; } = default!;
+  [EditorRequired]
+  [Parameter]
+  public string ChannelUid { get; set; } = default!;
+}
+@inject IYoutubeBroker yt
+@inject IStorageBroker db
+
+@code {
+  private bool Loading { get; set; }
+
+  private async Task Scrape()
+  {
+    try
+    {
+      this.Loading = true;
+      var videos = await this.yt.GetAllChannelVideos(this.ChannelUid)
+        ?? throw new Exception("Failed to get Videos");
+      var cores = videos.Select(v => 
+        new Models.Sources.Source()
+        {
+          ChannelUid = this.ChannelUid,
+          PlatformId = "yt",
+          DefinitionUid = "video",
+          Flags = SourceFlags.Scraped,
+          Href = v.Href,
+          Name = v.Title,
+          PublishedAt = v.PublishedAt.DateTime,
+          Channel = null,
+          Platform = null,
+          CreatedAt = default,
+          Id = default,
+          Content = null, ContentId = null
+        }
+      );
+      await this.db.CreateOrUpdateMany(cores);
+      await this.db.MarkChannelAsFullScrapedAt(this.ChannelId, DateTimeOffset.Now);
+    }
+    finally
+    {
+      this.Loading = false;
+    }
+  }
+}
+<FluentButton OnClick=@Scrape Disabled=@this.Loading>
+  @(this.Loading ? "Loading..." : "Scrape")
+</FluentButton>

@@ -1,31 +1,57 @@
-﻿@inherits _Displayer<Contenter.Models.Sources.Channel, Guid>
+﻿@using Contenter.Brokers.Youtube
+@inherits _Displayer<Contenter.Models.Sources.Channel, Guid>
 @rendermode InteractiveServer
-<ExpList
-  ParamExpectedCount="1"
-  ParamSource=@(
-    this.Source.Select(item => new {
-      item.Id,
-      item.Title,
-      item.Name,
-      item.Handle,
-      item.Uid,
-      item.Href,
-      Platform = new {
-        Id = item.PlatformId,
-        item.Platform.Name,
-        item.Platform.IconPath,
-        item.Platform.ChannelName,
-      },
-      ContentFams = item.CotentFamsAssignments
-        .OrderBy(item => item.IndexB)
-        .Select(ass => new {
-          ass.ContentFam.Id,
-          ass.ContentFam.Name,
-        })
-    })
-  )
->
+<ExpList ParamExpectedCount="1"
+         ParamSource=@(
+         this.Source.Select(item => new {
+         item.Id,
+         item.Title,
+         item.Name,
+         item.Handle,
+         item.Uid,
+         item.Href,
+         item.FullScrapedAt,
+         Platform = new {
+         Id = item.PlatformId,
+         item.Platform.Name,
+         item.Platform.IconPath,
+         item.Platform.ChannelName,
+         },
+         ContentFams = item.CotentFamsAssignments
+         .OrderBy(item => item.IndexB)
+         .Select(ass => new {
+         ass.ContentFam.Id,
+         ass.ContentFam.Name,
+         })
+         })
+         )>
   <IfSome Context="model">
+    <AuthorizeView Policy="AdminSuper">
+      <Authorized>
+        @if (model.Platform.Id == "yt")
+        {
+          <ActionGetAllVideos ChannelUid=@model.Uid ChannelId=@model.Id />
+          @if(model.FullScrapedAt != null)
+          {
+            var dif = (DateTimeOffset.Now - model.FullScrapedAt).Value;
+            <span class="muted">
+              @if(dif.TotalMinutes < 1)
+              {
+                <text>Scraped just now</text>
+              } else if (dif.TotalDays < 1)
+              {
+                <text>Scraped today</text>
+              }
+              else {
+                <text>
+                  Scraped @Math.Floor(dif.TotalDays) Days ago
+                </text>
+              }
+            </span>
+          }
+        }
+      </Authorized>
+    </AuthorizeView>
     <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
       @{
         var name = model.Title ?? model.Name ?? model.Handle;
@@ -35,7 +61,7 @@
         <text>
           @model.Platform.Name
           @model.Platform.ChannelName
-          @if(!string.IsNullOrWhiteSpace(name))
+          @if (!string.IsNullOrWhiteSpace(name))
           {
             <u>@name</u>
           }
@@ -43,9 +69,8 @@
       }
       else
       {
-        <Contenter.Views.Bases.AnchorBase IconStart=@model.Platform.IconPath href=@model.Href NewTab Text=@name  />
+        <Contenter.Views.Bases.AnchorBase IconStart=@model.Platform.IconPath href=@model.Href NewTab Text=@name />
       }
-      
     </FluentStack>
     @Before
     <div>
@@ -71,41 +96,41 @@
     @if (this.ShowAll)
     {
       <MyLoader @ref=@this.SourcesLoader
-        ParamSource=@(
-          this.db.Sources
-          .Where(item => item.Channel != null && item.Channel.Id == this.Id)
-          .Where(this.ChannelContentFilter(model.ContentFams.Select(item => item.Id).ToList()))
-          .OrderByDescending(item => item.PublishedAt)
-          .Select(source => new SourceView {
-            Channel = null,
-            Id = source.Id,
-            PublishedAt = source.PublishedAt == null ? null : source.PublishedAt,
-            Href = source.Href,
-            Name = source.Name,
-            DefinitionUid = source.DefinitionUid,
-            IconPath = source.PlatformId == null ? null : source.Platform!.IconPath,
-            Content = source.ContentId == null ? null : new ContentView {
+                ParamSource=@(
+              this.db.Sources
+              .Where(item => item.Channel != null && item.Channel.Id == this.Id)
+              .Where(this.ChannelContentFilter(model.ContentFams.Select(item => item.Id).ToList()))
+              .OrderByDescending(item => item.PublishedAt)
+              .Select(source => new SourceView {
+              Channel = null,
+              Id = source.Id,
+              PublishedAt = source.PublishedAt == null ? null : source.PublishedAt,
+              Href = source.Href,
+              Name = source.Name,
+              DefinitionUid = source.DefinitionUid,
+              IconPath = source.PlatformId == null ? null : source.Platform!.IconPath,
+              Content = source.ContentId == null ? null : new ContentView {
               Sources = null,
               Id = source.Content!.Id,
               Name = source.Content.Name,
               Fam = source.Content.FamId == null ? null : new FamView {
-                Id = source.Content.Fam!.Id,
-                Name = source.Content.Fam.Name,
+              Id = source.Content.Fam!.Id,
+              Name = source.Content.Fam.Name,
               },
               Things = source.Content.GuestPersonaAssignments
               .OrderBy(item => item.IndexA)
               .Select(gass => new ThingView {
-                Id = gass.Guest.Id,
-                Name = gass.Guest.Name,
-                Definition = new (){
-                  Id = gass.Guest.ThingDefinitionId,
-                  Name = gass.Guest.ThingDefinition!.Name,
-                  PluralName = gass.Guest.ThingDefinition.Plural,
-                }
+              Id = gass.Guest.Id,
+              Name = gass.Guest.Name,
+              Definition = new (){
+              Id = gass.Guest.ThingDefinitionId,
+              Name = gass.Guest.ThingDefinition!.Name,
+              PluralName = gass.Guest.ThingDefinition.Plural,
+              }
               })
-            }
-          })
-        )>
+              }
+              })
+              )>
         <Wrapper Context="rows">
           <table class="bord">@rows</table>
         </Wrapper>
@@ -131,9 +156,10 @@
                 &raquo;
                 @source.Name
               </td>
-            } else
+            }
+            else
             {
-              @if(this.X != XX.SpecificFam)
+              @if (this.X != XX.SpecificFam)
               {
                 <td>
                   <InnerLinkFam Model=@source.Content.Fam />

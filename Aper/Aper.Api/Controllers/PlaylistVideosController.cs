@@ -23,12 +23,12 @@ public class PlaylistVideosController: RESTFulSense.Controllers.RESTFulControlle
     return Ok(result);
   }
 
-  [HttpPost]
-  public async Task<ActionResult<IEnumerable<object>>> GetVideosUntill(string playlistId, DateTimeOffset until)
-  {
-    var result = await this.Aggr.UpdatePlaylistUntil(playlistId, until);
-    if (result == null)
-      return BadRequest("Playlist doesn't exist");
-    return Ok(result);
-  }
+  //[HttpPost]
+  //public async Task<ActionResult<IEnumerable<object>>> GetVideosUntill(string playlistId, DateTimeOffset until)
+  //{
+  //  var result = await this.Aggr.UpdatePlaylistUntil(playlistId, until);
+  //  if (result == null)
+  //    return BadRequest("Playlist doesn't exist");
+  //  return Ok(result);
+  //}
 }

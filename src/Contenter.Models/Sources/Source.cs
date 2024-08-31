@@ -8,6 +8,7 @@ public enum SourceFlags
   Preview = 1,
   Paid = 2,
   Unlisted = 4,
+  Scraped = 8,
   
   DoesntHaveContentIntentionally = 8,
   DoesntHaveContentForNow = DoesntHaveContentIntentionally | 16,

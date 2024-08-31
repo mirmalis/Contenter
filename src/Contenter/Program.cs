@@ -27,6 +27,7 @@ public class Program
     builder.Services.AddScoped<IYoutubeBroker, YoutubeBroker>();
     builder.Services.AddScoped<IContentBroker, ContentBroker>();
     builder.Services.AddScoped<ISourceBroker, SourceBroker>();
+    builder.Services.AddScoped<Data.IStorageBroker, Data.Database>();
     builder.Services.AddCascadingAuthenticationState();
     builder.Services.AddScoped<Contenter.Components.Account.IdentityUserAccessor>();
     builder.Services.AddScoped<Contenter.Components.Account.IdentityRedirectManager>();

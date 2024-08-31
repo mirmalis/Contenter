@@ -17,17 +17,17 @@ public class TopPlaylistFunctions: ITopPlaylistFunctions
   
 
 
-  public async ValueTask<IEnumerable<object>> UpdatePlaylistUntil(string playlistId, DateTimeOffset since)
-  {
-    await this.playlists.EnsurePlaylistUpToDateUntil(playlistId, since);
-    var result = await this.videos.GetExistingVideosByPlaylistIdAsync(playlistId);
-    return result.Select(Selectors.videoSelector);
-  }
-  public async ValueTask<IEnumerable<object>> GetPlaylistsLatestVideos(string playlistId)
+  //public async ValueTask<IEnumerable<object>> UpdatePlaylistUntil(string playlistId, DateTimeOffset since)
+  //{
+  //  await this.playlists.EnsurePlaylistUpToDateUntil(playlistId, since);
+  //  var result = await this.videos.GetExistingVideosByPlaylistIdAsync(playlistId);
+  //  return result?.Select(Selectors.videoSelector);
+  //}
+  public async ValueTask<IEnumerable<object>?> GetPlaylistsLatestVideos(string playlistId)
   {
     await this.playlists.EnsurePlaylistUpToDate(playlistId);
     var result = await this.videos.GetExistingVideosByPlaylistIdAsync(playlistId);
-    return result.Select(Selectors.videoSelector);
+    return result?.Select(Selectors.videoSelector);
   }
 
   public async ValueTask<Playlist?> EnsureExists(string playlistId)
