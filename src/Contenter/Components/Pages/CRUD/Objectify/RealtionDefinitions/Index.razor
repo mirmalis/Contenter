@@ -5,6 +5,7 @@
 @code {
   private PaginationState paginationState = new();
 }
+<a href="/create/o/rd">Create</a>
 <FluentDataGrid Pagination=@this.paginationState
   Items=@(
     this.db.Set<RelationDefinition>().Select(rd => new {
@@ -34,12 +35,14 @@
   )
 >
   <TemplateColumn Context="rd">
+    <InnerLinkScope Model=@rd.From.Scope More />
     <InnerLinkThingDefinition Model=@rd.From />
   </TemplateColumn>
   <TemplateColumn Context="model">
     <a href="/o/rd/@model.Id">@model.F.Word @model.F.Name</a>
   </TemplateColumn>
   <TemplateColumn Context="rd">
+    <InnerLinkScope Model=@rd.To.Scope More />
     <InnerLinkThingDefinition Model=@rd.To />
   </TemplateColumn>
 </FluentDataGrid>

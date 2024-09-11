@@ -30,9 +30,11 @@
 >
   <IfSome Context="model">
     <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
+      <InnerLinkScope Model=@model.From.Scope More />
       <InnerLinkThingDefinition Model=@model.From />
       <u>@model.F.Word @model.F.Name</u>
       of type
+      <InnerLinkScope Model=@model.To.Scope More />
       <InnerLinkThingDefinition Model=@model.To />
     </FluentStack>
     @Before

@@ -14,6 +14,7 @@
 
 @code {
   private bool Loading { get; set; }
+  private bool Done { get; set; } = false;
 
   private async Task Scrape()
   {
@@ -41,6 +42,7 @@
       );
       await this.db.CreateOrUpdateMany(cores);
       await this.db.MarkChannelAsFullScrapedAt(this.ChannelId, DateTimeOffset.Now);
+      this.Done = true;
     }
     finally
     {
@@ -48,6 +50,16 @@
     }
   }
 }
-<FluentButton OnClick=@Scrape Disabled=@this.Loading>
-  @(this.Loading ? "Loading..." : "Scrape")
-</FluentButton>
+<AuthorizeView Policy="AdminSuper">
+  <Authorized>
+    @if (this.Done)
+    {
+      <span class="muted">now</span>
+    } else
+    {
+      <FluentButton OnClick=@Scrape Disabled=@this.Loading>
+        @(this.Loading ? "Loading..." : "Scrape")
+      </FluentButton>
+    }
+  </Authorized>
+</AuthorizeView>

@@ -1,21 +1,15 @@
 ﻿@code {
   [EditorRequired]
   [Parameter]
-  public ThingView? Model { get; set; }
+  public ILinkable? Model { get; set; }
 
   [Parameter]
   public bool NoDefinition { get; set; }
 }
 @if (this.Model != null)
 {
-  if(!this.NoDefinition && this.Model.Definition != null)
-  {
-    <text>
-      @(this.Model.Definition.Name): 
-    </text>
-  }
   <AnchorBase
-    href=@($"/o/t/{this.Model.Id}")
-    Text=@this.Model.Name
+    href=@($"/o/t/{this.Model.GetId()}")
+    Text=@this.Model.ToString()
   />
 }

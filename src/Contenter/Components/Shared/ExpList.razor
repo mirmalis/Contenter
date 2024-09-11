@@ -67,7 +67,7 @@
   {
     @if (this.list == null)
     {
-      <Loading />
+      <text>Loading...</text>
     }
     else if (!this.list.Any() && this.IfNone != null)
     {
@@ -75,7 +75,7 @@
     }
     else if(this.ParamExpectedCount != null && list.Count != this.ParamExpectedCount)
     {
-      <Error> Unexpected count of @list.Count</Error>
+      <span style="color: red;"> Unexpected count of @list.Count</span>
     }
     else
     {

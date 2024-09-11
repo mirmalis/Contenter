@@ -1,0 +1,34 @@
+﻿@inject Contenter.Data.Database db
+@code {
+  private PaginationState paginationState = new();
+}
+<FluentPaginator State=@this.paginationState />
+<FluentDataGrid Pagination=@this.paginationState
+  Items=@(
+    this.db.Set<ThingDefinition>()
+    .Select(
+      td => new ThingDefinitionView(){
+        Id = td.Id,
+        Name = td.Name,
+        Scope = new ThingDefinitionView.ScopeView(){
+          Id = td.ScopeId,
+          Name = td.Scope.Name,
+        }
+      }
+    )
+  )
+>
+  <TemplateColumn Context="model">
+    <InnerLinkScope Model=@model.Scope More/>
+    @model.Name
+  </TemplateColumn>
+  <TemplateColumn Context="model" Title="Actions">
+    <a href="/o/td/@model.Id">Details</a>
+    |
+    <a href="/edit/o/td/@model.Id">Edit</a>
+    |
+    <a href="/delete/o/td/@model.Id">Delete</a>
+    |
+    <a href="/create/o/t?ThingDefinitionId=@model.Id">Create instance</a>
+  </TemplateColumn>
+</FluentDataGrid>

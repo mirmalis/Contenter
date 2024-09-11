@@ -1,4 +1,6 @@
 ﻿@page "/channels"
+@rendermode InteractiveServer
+
 @using Contenter.Models.Views
 @code {
   [SupplyParameterFromQuery]
@@ -23,6 +25,11 @@
       },
       Sources = new {
         LastCreatedAt = channel.Sources.Max(item => item.CreatedAt),
+        Channel = new {
+          channel.FullScrapedAt,
+          channel.Id,
+          channel.Uid,
+        },
         Count = channel.Sources.Count,
         UnclasifiedCount = channel.Sources.Where(item => item.ContentId == null).Count(),
       },
@@ -54,6 +61,13 @@
       <td>@model.Fams.Count</td>
       <td>
         @model.Sources.LastCreatedAt.ToShortDateString()
+      </td>
+      <td>
+        @model.Sources.Channel.FullScrapedAt
+        <Contenter.Components.Pages.CRUD.Sources.Channels.ActionGetAllVideos 
+          ChannelId=@model.Sources.Channel.Id 
+          ChannelUid=@model.Sources.Channel.Uid
+        />
       </td>
     </tr>
   </IfSome>

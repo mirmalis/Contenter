@@ -250,3 +250,6 @@ ol {
 table.bord{
   margin-bottom: 0px;
 }
+.nobr {
+  white-space: nowrap;
+}

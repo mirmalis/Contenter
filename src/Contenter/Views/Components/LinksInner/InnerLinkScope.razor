@@ -1,16 +1,30 @@
 ﻿@code {
+  [Parameter]
+  public Guid? Id { get; set; }
+  [Parameter]
+  public string? Name{ get; set; }
   [EditorRequired]
   [Parameter]
-  public ILinkable Model { get; set; }
+  public ILinkable? Model { get; set; }
   [Parameter]
   public bool More { get; set; }
 }
-@if (this.Model != null)
+@code {
+  private string? GetId() => this.Model?.GetId() ?? this.Id?.ToString();
+  private string? GetName() => this.Model?.ToString() ?? this.Name;
+}
+
+@if (this.GetId() != null)
 {
-  <AnchorBase href=@($"/o/s/{this.Model.GetId()}")
-              Text=@this.Model.ToString() />
+  <AnchorBase href=@($"/o/s/{this.GetId()}")
+              Text=@this.GetName()
+              />
   @if (this.More)
   {
-    <text>&raquo;</text>
+    <text>
+      &raquo;</text>
   }
+
+} else {
+  <SDP.Error>Thing definition undentifieble</SDP.Error>
 }

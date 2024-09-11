@@ -4,10 +4,13 @@
 @code
 {
   [SupplyParameterFromQuery]
+  public Guid? ThingDefinitionId { get; set; }
+  [SupplyParameterFromQuery]
   public bool BackToContentCreation { get; set; } = false;
 }
 @inject NavigationManager navigationManager
 <_Create
+  ThingDefinitionId=@ThingDefinitionId
   OnAfterSave=@(async (Thing model) => {
     if(this.BackToContentCreation){
          this.navigationManager.NavigateTo($"/create/c/contents");

@@ -1,0 +1,55 @@
+﻿@inject Contenter.Data.Database db
+@rendermode InteractiveServer
+@code {
+  [Parameter]
+  public Guid? ThingDefinitionId { get; set; }
+}
+@code {
+  override protected async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+  }
+  private PaginationState paginationState { get; set; } = new();
+}
+
+<FluentPaginator State=@this.paginationState />
+@if (this.ThingDefinitionId != null)
+{
+  <a href="/create/o/t?thingDefinitionId=@this.ThingDefinitionId">Create</a>
+}
+<FluentDataGrid Pagination=@this.paginationState
+  Items=@(
+    this.db.Set<Thing>()
+      .Where(item => 
+        (this.ThingDefinitionId == null || item.ThingDefinitionId == this.ThingDefinitionId)
+      )
+      .Select(t => new {
+        t.Id,
+        t.Name,
+        Definition = new ThingDefinitionView(){
+          Id = t.ThingDefinitionId,
+          Name = t.ThingDefinition!.Name,
+          Scope = new ThingDefinitionView.ScopeView(){
+            Id = t.ThingDefinition!.ScopeId,
+            Name = t.ThingDefinition.Scope.Name,
+          }
+        }
+      })
+  )
+>
+  <TemplateColumn Context="model" Title="Definition">
+    @if (model.Definition != null)
+    {
+      <InnerLinkScope Model=@model.Definition.Scope More />
+      <InnerLinkThingDefinition Model=@model.Definition />
+    }
+  </TemplateColumn>
+  <PropertyColumn Property=@(x => x.Name)>
+
+  </PropertyColumn>
+  <TemplateColumn Context="model" Title="Actions">
+    <a href="/o/t/@model.Id">Details</a>
+    | <a href="/edit/o/t/@model.Id">Edit</a>
+    | <a href="/delete/o/t/@model.Id">Delete</a>
+  </TemplateColumn>
+</FluentDataGrid>

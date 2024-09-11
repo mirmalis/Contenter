@@ -1,0 +1,38 @@
+﻿@inject Contenter.Data.Database db
+<ExpList 
+  ParamSource=@(
+    db.Set<Contenter.Models.Objectify.Scope>()
+    .OrderBy(item => item.Name)
+    .Select(scope => new {
+      scope.Id,
+      scope.Name,
+      ThingDefinitions = scope.ThingDefinitions!
+      .OrderBy(item => item.Name)
+      .Select(td => new ThingDefinitionView {
+        Id = td.Id,
+        Name = td.Name,
+        Scope = null
+      })
+    })
+  )
+>
+  <Wrapper Context="rows">
+    <ul>@rows</ul>
+  </Wrapper>
+  <IfSome Context="scope">
+    <li>
+      <InnerLinkScope Model=null Id=@scope.Id Name=@scope.Name />
+      @if (scope.ThingDefinitions.Any())
+      {
+        <ul>
+          @foreach (var td in scope.ThingDefinitions)
+          {
+            <li>
+              <InnerLinkThingDefinition Model=@td />
+            </li>
+          }
+        </ul>
+      }
+    </li>
+  </IfSome>
+</ExpList>
