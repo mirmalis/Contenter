@@ -1,9 +1,21 @@
 ﻿@inherits _Creator<Thing>
 @rendermode InteractiveServer
 @code {
+  [Parameter]
+  public Guid? ThingDefinitionId { get; set; }
   override protected async Task OnParametersSetAsync()
   {
     await base.OnParametersSetAsync();
+    if(this.ThingDefinitionId != null)
+    {
+      model.ThingDefinition = 
+        await this.db.ThingDefinitions
+        .Include(item => item.Scope)
+        .FirstOrDefaultAsync(item => item.Id == this.ThingDefinitionId)
+        ?? null!
+      ;
+      
+    }
   }
 }
 <_Bind model=@this.model OnValidSubmitCallback=@(async (model) => await this.DoCreate(this.model))>

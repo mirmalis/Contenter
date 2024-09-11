@@ -7,7 +7,9 @@ public partial class Database
   public DbSet<Contenter.Models.Objectify.ThingDefinition> ThingDefinitions => this.Set<Contenter.Models.Objectify.ThingDefinition>();
   public DbSet<Contenter.Models.Objectify.RelationDefinition> RelationDefinitions => this.Set<Contenter.Models.Objectify.RelationDefinition>();
   public DbSet<Contenter.Models.Objectify.Thing> Things => this.Set<Contenter.Models.Objectify.Thing>();
-  
+  public DbSet<Contenter.Models.Objectify.Sets.Set> Set => this.Set<Contenter.Models.Objectify.Sets.Set>();
+  public DbSet<Contenter.Models.Objectify.Sets.IntersectionMemberAssignment> IntersectionAssignments => this.Set<Contenter.Models.Objectify.Sets.IntersectionMemberAssignment>();
+
   protected void ConfigureObjectify(ModelBuilder mb)
   {
     mb.Entity<Contenter.Models.Objectify.Scope>(scopes => {
@@ -29,7 +31,12 @@ public partial class Database
     });
     mb.Entity<Contenter.Models.Objectify.Relation>(relations => {
       relations.ToTable("ORelations");
-
+    });
+    mb.Entity<Contenter.Models.Objectify.Sets.Set>(sets => {
+      sets.ToTable("OSets");
+    });
+    mb.Entity<Contenter.Models.Objectify.Sets.IntersectionMemberAssignment>(sets => {
+      sets.ToTable("OSetsIntersectionMember");
     });
   }
 }

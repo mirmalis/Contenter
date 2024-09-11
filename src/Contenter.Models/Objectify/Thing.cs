@@ -18,4 +18,7 @@ public class Thing: IIded<Guid>, INameable
   public List<Relation>? RelationsFrom { get; set; }
   public List<Relation>? RelationsTo { get; set; }
   public List<ContentGuests<Thing>>? ContentAssignments { get; set; }
+
+  public List<Sets.Set>? IsSets { get; set; }
+  public List<Sets.IntersectionMemberAssignment>? IsIntersectedAssignments { get; set; }
 }

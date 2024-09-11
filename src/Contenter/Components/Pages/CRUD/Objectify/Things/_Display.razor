@@ -13,7 +13,21 @@
         },
         Name = thing.ThingDefinition!.Name,
       },
-      Contents = thing.ContentAssignments
+      IsSets = thing.IsSets!
+      .Select(set => new {
+        set.Id,
+        Intersections = set.Intersections!
+        .Select(intersection => new ThingView(){
+          Id = intersection.ThingId,
+          Name = intersection.Thing.Name,
+          Definition = new ThingView.ThingDefinitionView(){
+            Id = intersection.Thing.ThingDefinitionId,
+            Name = intersection.Thing.ThingDefinition.Name,
+            PluralName = intersection.Thing.ThingDefinition.Plural,
+          },
+        })
+      }),
+      Contents = thing.ContentAssignments!
         .OrderByDescending(ass => ass.Content.PublishedAt)
         .Select(ass => new ContentView {
           Id = ass.Content.Id,
@@ -55,11 +69,32 @@
     <PageTitle>@model.Name - sars.lt</PageTitle>
     <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
       <FluentLabel Typo=@Typography.H5>
-        <InnerLinkThingDefinition Model=@model.Definition NoScope />
+        <InnerLinkThingDefinition Model=@model.Definition />
         @model.Name
       </FluentLabel>
     </FluentStack>
     @Before
+    @if (model.IsSets.Any())
+    {
+      <div>
+        <ol>
+          @foreach(var set in model.IsSets)
+          {
+            <li style="border: solid 1px grey;">
+              <ul>
+                @foreach(var intersection in set.Intersections)
+                {
+                  <li>
+                    <InnerLinkThingDefinition Model=@intersection.Definition More />
+                    <InnerLinkThing Model=@intersection />
+                  </li>
+                }
+              </ul>
+            </li>
+          }
+        </ol>
+      </div>
+    }
     @if (model.Contents.Any())
     {
       <table class="bord">
