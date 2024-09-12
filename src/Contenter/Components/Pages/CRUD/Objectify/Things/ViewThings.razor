@@ -23,7 +23,8 @@ else if (groups.Count() == 1)
     var first = gr.First();
     @if (gr.Count() == 1)
     {
-      <InnerLinkThingDefinition Model=@first.Definition More />
+      @first.Definition.Name
+      <text>: </text>
       <InnerLinkThing Model=@first />
     }
     else

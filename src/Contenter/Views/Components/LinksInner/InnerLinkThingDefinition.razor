@@ -4,12 +4,20 @@
   public ILinkable? Model { get; set; }
 
   [Parameter]
+  public string? Name { get; set; }
+  [Parameter]
+  public Guid? Id{ get; set; }
+
+  private string? GetName() => this.Name ?? this.Model?.ToString();
+  private string? GetId() => this.Id?.ToString() ?? this.Model?.GetId();
+
+  [Parameter]
   public bool More { get; set; }
 }
-@if (this.Model != null)
+@if (this.Model != null || this.Id != null)
 {
-  <AnchorBase href=@($"/o/td/{this.Model.GetId()}")
-              Text=@this.Model.ToString() />
+  <AnchorBase href=@($"/o/td/{this.GetId()}")
+              Text=@this.GetName() />
   @if (this.More)
   {
     <text>
