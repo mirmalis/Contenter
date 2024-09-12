@@ -8,7 +8,7 @@
     return base.Includer(dbset)
     .Include(item => item.Fam)
     .Include(item => item.Sources).ThenInclude(item => item.Definition).ThenInclude(item => item.Platform)
-    .Include(item => item.GuestPersonaAssignments).ThenInclude(item => item.Guest)
+    .Include(item => item.GuestPersonaAssignments).ThenInclude(item => item.Guest).ThenInclude(item => item.ThingDefinition).ThenInclude(item => item.Scope)
     ;
   }
 }

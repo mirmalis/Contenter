@@ -10,7 +10,7 @@
     .Include(item => item.Definition)
     .Include(item => item.Channel)
     .Include(item => item.Content).ThenInclude(item => item!.Fam)
-    .Include(item => item.Content).ThenInclude(item => item!.GuestPersonaAssignments).ThenInclude(item => item.Guest)
+    .Include(item => item.Content).ThenInclude(item => item!.GuestPersonaAssignments).ThenInclude(item => item.Guest).ThenInclude(item => item.ThingDefinition).ThenInclude(item => item.Scope)
     ;
   }
 }

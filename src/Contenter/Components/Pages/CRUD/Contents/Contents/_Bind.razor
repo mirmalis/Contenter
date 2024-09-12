@@ -97,10 +97,8 @@
         >Pridėti svečią</ChooseThing>
       </FluentInputLabel>
       <Listmanager @bind-list=@model.GuestPersonaAssignments Context="ass" >
+        <td>@ass.Guest.ThingDefinition.Scope&raquo;@ass.Guest.ThingDefinition</td>
         <td>@ass.Guest</td>
-        <td>
-          <FluentNumberField @bind-Value=@ass.Percentage Style="min-width:60px;"/>
-        </td>
       </Listmanager>
     </div>
     @if (ChildContent != null)
