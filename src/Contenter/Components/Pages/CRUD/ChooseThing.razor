@@ -83,8 +83,8 @@
     <FluentDialogBody>
       
       @if (
-        this.MinTermLength == 0
-        ||
+        this.MinTermLength == 0 ||
+        this.thingDefinition != null ||
         (
           !string.IsNullOrWhiteSpace(this.SearchTerm)
           && this.SearchTerm.Length >= this.MinTermLength
