@@ -158,6 +158,7 @@
   {
     var existing = await this.db.Things
       .Where(item => item.Id == id)
+      .Include(thing => thing.ThingDefinition.Scope)
       .FirstOrDefaultAsync();
     if (existing == null)
       return;
