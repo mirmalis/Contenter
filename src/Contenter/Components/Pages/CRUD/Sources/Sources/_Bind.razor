@@ -37,7 +37,7 @@
             @if (this.model.Channel != null)
             {
               <FluentButton OnClick=@(() => this.model.Channel = null)>
-                @this.model.Channel?.Name
+                @(this.model.Channel?.Title ?? this.model.Channel?.Name)
               </FluentButton>
             } else 
             {
