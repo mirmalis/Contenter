@@ -14,6 +14,7 @@
   <FluentStack Orientation="@Orientation.Vertical">
     <div>
       <FluentTextField @bind-Value=@model.Name Label="Pavadinimas" Style="width:100%;" />
+      
       <div>
         <FluentInputLabel Label="Paskelbimo data" Required />
         <FluentDatePicker Culture="@cultureInfo" 
@@ -80,6 +81,30 @@
       </FluentInputLabel>
       
     </div>
+    <div class="border">
+      <FluentInputLabel Label="Groups" />
+      <ChooseSlot
+        FilterExpression=@(slot => !model.SlotAssignments!.Select(item => item.Slot).Contains(slot))
+        value=@null
+        valueChanged=@(
+          val => {
+            model.SlotAssignments ??= [];
+            model.SlotAssignments.Add
+            (
+              new Content_ContentSlot()
+              {
+                IndexA = (model.SlotAssignments?.Count ?? 0)+1,
+                IndexB = 0,
+                Slot = val
+              }
+            );
+          }
+        )
+      >Add Group</ChooseSlot>
+      <Listmanager @bind-list=@model.SlotAssignments Context="ass">
+        <td>@ass.Slot</td>
+      </Listmanager>
+    </div>
     <div>
       <FluentInputLabel Label="Svečiai: ">
         <ChooseThing MinTermLength="3" 
@@ -97,9 +122,22 @@
           })
         >Pridėti svečią</ChooseThing>
       </FluentInputLabel>
-      <Listmanager @bind-list=@model.GuestPersonaAssignments Context="ass" >
+      @{
+         IEnumerable<Slot?> modelSlots = [null, .. model.SlotAssignments!.Select(item => item.Slot)];
+      }
+      <Listmanager 
+        T=@(ContentGuests<Models.Objectify.Thing>)
+        @bind-list=@model.GuestPersonaAssignments 
+        Context="ass"
+      >
         <td>@ass.Guest.ThingDefinition?.Scope&raquo;@ass.Guest?.ThingDefinition</td>
         <td>@ass.Guest</td>
+        <td>
+          <FluentSelect 
+            @bind-SelectedOption=@ass.Slot 
+            Items=@modelSlots
+          />
+        </td>
       </Listmanager>
     </div>
     @if (ChildContent != null)

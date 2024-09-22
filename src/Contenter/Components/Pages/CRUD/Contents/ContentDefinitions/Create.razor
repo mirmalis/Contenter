@@ -1,0 +1,13 @@
+﻿@page "/create/c/contentdefinitions"
+@rendermode InteractiveServer
+@code
+{
+}
+<h3>Create ContentDefinition</h3>
+@inject NavigationManager navigationManager
+<_Create
+  OnAfterSave=@(async (ContentDefinition model) => {
+    this.navigationManager.NavigateTo($"/c/contentdefinitions/{model.Id}");
+  })>
+  Create
+</_Create>

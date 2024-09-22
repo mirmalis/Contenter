@@ -7,6 +7,9 @@
   {
     return base.Includer(dbset)
     .Include(item => item.Fam)
+    .Include(item => item.Slots)
+    .Include(item => item.SlotAssignments!).ThenInclude(item => item.ThingAssignments)
+    .Include(item => item.SlotAssignments!).ThenInclude(item => item.Slot)
     .Include(item => item.Sources).ThenInclude(item => item.Definition).ThenInclude(item => item.Platform)
     .Include(item => item.GuestPersonaAssignments).ThenInclude(item => item.Guest).ThenInclude(item => item.ThingDefinition).ThenInclude(item => item.Scope)
     ;

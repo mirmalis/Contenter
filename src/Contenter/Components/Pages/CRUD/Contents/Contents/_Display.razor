@@ -22,6 +22,29 @@
             PluralName = ass.Guest.ThingDefinition.Plural
           }
         }),
+      Slots = item.SlotAssignments!.OrderBy(item => item.IndexA).Select(sass => new {
+        sass.Slot.Id,
+        sass.Slot.Name,
+        sass.Slot.NamePlural,
+      }),
+      Things = item.GuestPersonaAssignments!
+        .Select(gass => new {
+          Slot = gass.SlotId == null ? null : new {
+            Id = gass.SlotId,
+          },
+          Thing = new {
+            gass.Guest.Id,
+            gass.Guest.Name,
+            Scope = new {
+              gass.Guest.ThingDefinition.Scope.Name
+            },
+            Definition = new 
+            {
+              gass.Guest.ThingDefinition.Id,
+              gass.Guest.ThingDefinition.Name
+            }
+          }
+        }),
       Sources = item.Sources
         .OrderBy(item => item.PublishedAt)
         .Select(source => new SourceView () {
@@ -44,6 +67,9 @@
 >
   <IfSome Context="model">
     <PageTitle>Content: @model.Name - sars.lt</PageTitle>
+    <FluentLabel Typo=@Typography.H5>
+      Content
+    </FluentLabel>
     <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
       <InnerLinkFam Model=@model.Fam After />
       <Name ParamName=@model.Name />
@@ -56,13 +82,79 @@
       </div>
     }
     <div>
-      Relatees:
-      <Contenter.Components.Pages.CRUD.Objectify.Things.ViewThings List=@model.Guests />
-    </div>
-    <div>
       Sources (<a href="/create/s/sources?ContentId=@this.Id">add</a>): 
       <Contenter.Components.Pages.CRUD.Sources.Sources.ViewSources List=@model.Sources />
     </div>
+    <hr/>
+    @if (model.Things.Any())
+    {
+      var unclasifiedThings = model.Things.Where(item => item.Slot == null).Select(item => item.Thing);
+      <div>
+        <ul>
+          @if (model.Slots.Any())
+          {
+            @foreach(var slot in model.Slots)
+            {
+              var things = model.Things.Where(item => item.Slot != null && item.Slot.Id == slot.Id).Select(item => item.Thing);
+              <li>
+              
+                @if(things.Count() == 0)
+                {
+                } else {
+                  if(things.Count() == 1)
+                  {
+                    var thing = things.First();
+                    @slot.Name
+                    <text>: 
+
+                    @thing.Definition.Name&raquo;<a href="/o/t/@thing.Id">@thing.Name</a>
+                    </text>
+
+                  } else
+                  {
+                    @slot.NamePlural
+                    <text>: </text>
+                    <ul>
+                      @foreach (var thing in things)
+                      {
+                        <li>
+                          @thing.Definition.Name&raquo;<a href="/o/t/@thing.Id">@thing.Name</a>
+                        </li>
+                      }
+                    </ul>
+                  }
+                }
+            </li>
+          }
+        }
+          @if (unclasifiedThings.Any())
+          {
+            @if (model.Slots.Any())
+            {
+              <li>
+                Other:
+                <ul>
+                  @foreach(var thing in unclasifiedThings){
+                    <li>
+                      @thing.Definition.Name&raquo;@thing.Name
+                    </li>
+                  }
+                </ul>
+              </li>
+            }
+            else
+            {
+              @foreach (var thing in unclasifiedThings)
+              {
+                <li>
+                  @thing.Definition.Name&raquo;@thing.Name
+                </li>
+              }
+            }
+          }
+        </ul>
+      </div>
+    }
     @After
   </IfSome>
 </ExpList>

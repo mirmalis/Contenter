@@ -15,6 +15,9 @@
   [Parameter]
   public bool Backwards { get; set; } = false;
 
+  [Parameter]
+  public Func<T, bool> disabledFunc { get; set; } = item => false;
+
   private int GetIndex(T item)
   {
     if(this.Backwards)
@@ -23,7 +26,7 @@
   }
 }
 
-@if (this.list.Any())
+@if (this.list != null && this.list.Any())
 {
   <table class="bord">
     @this.TableHeader
@@ -39,9 +42,15 @@
           <FluentButton IconEnd="@(new Icons.Regular.Size16.ArrowCircleDown())"
                         OnClick="@(async () => await this.MoveDown(ass))"
                         Disabled="@(GetIndex(ass) == this.list.Count)" />
-          <FluentButton IconEnd="@(new Icons.Regular.Size16.Delete())"
-                        OnClick="@(async () => await this.Remove(ass))"
-                        Disabled="@(GetIndex(ass) < this.list.Count)" />
+          @if (disabledFunc(ass))
+          {
+            <FluentIcon Value="@(new Icons.Regular.Size20.ShieldDismiss())" />
+          } else
+          {
+            <FluentButton IconEnd="@(new Icons.Regular.Size16.Delete())"
+                          OnClick="@(async () => await this.Remove(ass))"
+                          Disabled="@(GetIndex(ass) < this.list.Count)" />
+          }
         </td>
       </tr>
     }

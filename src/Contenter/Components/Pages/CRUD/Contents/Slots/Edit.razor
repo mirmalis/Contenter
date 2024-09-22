@@ -1,0 +1,19 @@
+﻿@inherits _Editor<Slot, string>
+@page "/edit/c/slots/{id}"
+@rendermode InteractiveServer
+
+@code {
+  protected override IQueryable<Slot> Includer(IQueryable<Slot> dbset)
+  {
+    return base.Includer(dbset)
+    ;
+  }
+}
+
+<h3>Edit</h3>
+@if (this.model != null)
+{
+  <_Bind model=@this.model OnValidSubmitCallback=@this.DoUpdate>
+    Save
+  </_Bind>
+}

@@ -8,9 +8,7 @@ namespace Contenter.Data;
 
 public partial class Database(DbContextOptions<Database> options): DbContext(options), IStorageBroker
 {
-  public DbSet<Contenter.Models.Contents.Content> Contents => this.Set<Contenter.Models.Contents.Content>();
-  public DbSet<Contenter.Models.Contents.ContentFam> ContentFams => this.Set<Contenter.Models.Contents.ContentFam>();
-  public DbSet<Contenter.Models.Contents.ContentSave> ContentSaves => this.Set<Contenter.Models.Contents.ContentSave>();
+  
   
   public DbSet<Contenter.Models.Sources.Source> Sources => this.Set<Contenter.Models.Sources.Source>();
   public DbSet<Contenter.Models.Sources.SourcePlatform> Platforms => this.Set<Contenter.Models.Sources.SourcePlatform>();
@@ -18,31 +16,8 @@ public partial class Database(DbContextOptions<Database> options): DbContext(opt
   protected override void OnModelCreating(ModelBuilder mb)
   {
     base.OnModelCreating(mb);
+    this.ConfigureContents(mb);
     this.ConfigureObjectify(mb);
-    #region Contents
-    mb.Entity<Contenter.Models.Contents.ContentSave>(save => {
-      save.ToTable("ContentSaves");
-      save.HasKey(item => new { item.ContentId, item.ApplicationUserId });
-      save.Property(item => item.CreatedAt).HasDefaultValueSql(SQL_DATETIME_NOW);
-    });
-    mb.Entity<Contenter.Models.Contents.Content>(content => {
-      content.ToTable("Content");
-      content.Property(item => item.CreatedAt).HasDefaultValueSql(SQL_DATETIME_NOW);
-
-    });
-    mb.Entity<Contenter.Models.Contents.ContentGuests<Contenter.Models.Objectify.Thing >> (personaGuestAss => {
-
-      personaGuestAss.HasKey(item => new { item.ContentId, item.GuestId });
-    });
-    mb.Entity<Contenter.Models.Contents.ContentFam>(contentFam => {
-      contentFam.ToTable("ContentFam");
-      contentFam.HasMany(item => item.SourceChannels).WithMany(item => item.CotentFams)
-        .UsingEntity<Models.Contents.ContentFamChannel>(
-          l => l.HasOne(item => item.Channel).WithMany(item => item.CotentFamsAssignments),
-          r => r.HasOne(item => item.ContentFam).WithMany(item => item.SourceChannelsAssignments)
-        );
-    });
-    #endregion
     #region Sources
     mb.Entity<Contenter.Models.Sources.Source>(source => {
       source.ToTable("Source");

@@ -17,4 +17,8 @@ public class ContentGuests<TGuest>: ILister
 	[Required]
 	[Range(0, 100)]
 	public int? Percentage { get; set; }
+
+	public Slot? Slot { get; set; }
+  public Content_ContentSlot? SlotAss { get; set; }
+  public string? SlotId { get; set; }
 }

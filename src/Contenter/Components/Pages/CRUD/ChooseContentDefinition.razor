@@ -1,0 +1,32 @@
+﻿@code {
+  [Parameter] public Models.Contents.ContentDefinition value { get; set; }
+  [Parameter] public EventCallback<Models.Contents.ContentDefinition> valueChanged { get; set; }
+  [Parameter]
+  public System.Linq.Expressions.Expression<Func<Models.Contents.ContentDefinition, bool>>? FilterExpression { get; set; }
+
+  [Parameter]
+  public RenderFragment? ChildContent { get; set; }
+
+  [Parameter]
+  public bool NoCreate { get; set; }
+}
+
+@if (this.value is null)
+{
+  <ChooseT TKey=Guid T=Models.Contents.ContentDefinition TBinder=Contents.ContentDefinitions._Bind
+    value=@value
+    valueChanged=@valueChanged
+    FilterExpression=@this.FilterExpression
+    ChildContent=@this.ChildContent
+    NoCreate=@this.NoCreate
+  />
+}
+else
+{
+  <Contenter.Views.Bases.ButtonBase
+    OnClick=@(async () => {
+      await this.valueChanged.InvokeAsync(null);
+    })
+    Text="@this.value.ToString()" 
+  />
+}

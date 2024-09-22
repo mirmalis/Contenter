@@ -60,6 +60,10 @@ public partial class _Bind: _Binder<Contenter.Models.Sources.Source>
       Fam = fam,
       GuestPersonaAssignments = [],
       PublishedAt = this.model.PublishedAt,
+      SlotAssignments = [],
+      Slots = [],
+      Definitions = [],
+      Sources = [],
     };
   }
 }

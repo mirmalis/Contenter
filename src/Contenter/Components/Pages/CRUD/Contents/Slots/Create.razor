@@ -1,0 +1,13 @@
+﻿@page "/create/c/slots"
+@rendermode InteractiveServer
+@code
+{
+}
+<h3>Create Slot</h3>
+@inject NavigationManager navigationManager
+<_Create
+  OnAfterSave=@(async (Slot model) => {
+    this.navigationManager.NavigateTo($"/c/slots/{model.Id}");
+  })>
+  Create
+</_Create>

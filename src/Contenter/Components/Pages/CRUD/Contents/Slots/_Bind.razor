@@ -1,0 +1,24 @@
+﻿@inherits _Binder<Slot>
+@rendermode InteractiveServer
+@code {
+  override protected async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+  }
+}
+<EditForm Model=@this.model OnValidSubmit=@this.OnValidSubmit FormName="create">
+  <DataAnnotationsValidator />
+  <FluentValidationSummary />
+
+  <FluentStack Orientation="@Orientation.Vertical">
+    <div>
+      <FluentTextField Label="Id" @bind-Value=@model.Id Required />
+      <FluentTextField Label="Name" @bind-Value=@model.Name Required />
+      <FluentTextField Label="Name (plural)" @bind-Value=@model.NamePlural Required />
+    </div>
+    @if (ChildContent != null)
+    {
+      <FluentButton Type=@ButtonType.Submit Appearance=@Appearance.Accent>@ChildContent</FluentButton>
+    }
+  </FluentStack>
+</EditForm>

@@ -1,0 +1,32 @@
+﻿@code {
+  [Parameter] public Models.Contents.Slot value { get; set; }
+  [Parameter] public EventCallback<Models.Contents.Slot> valueChanged { get; set; }
+  [Parameter]
+  public System.Linq.Expressions.Expression<Func<Models.Contents.Slot, bool>>? FilterExpression { get; set; }
+
+  [Parameter]
+  public RenderFragment? ChildContent { get; set; }
+
+  [Parameter]
+  public bool NoCreate { get; set; }
+}
+
+@if (this.value is null)
+{
+  <ChooseT TKey=string T=Models.Contents.Slot TBinder=Contents.Slots._Bind
+    value=@value
+    valueChanged=@valueChanged
+    FilterExpression=@this.FilterExpression
+    ChildContent=@this.ChildContent
+    NoCreate=@this.NoCreate
+  />
+}
+else
+{
+  <Contenter.Views.Bases.ButtonBase
+    OnClick=@(async () => {
+      await this.valueChanged.InvokeAsync(null);
+    })
+    Text="@this.value.ToString()" 
+  />
+}

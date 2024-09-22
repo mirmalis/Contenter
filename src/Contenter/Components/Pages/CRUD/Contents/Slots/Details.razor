@@ -1,0 +1,15 @@
+﻿@page "/c/slots/{id}"
+@code {
+  [Parameter]
+  public string Id { get; set; }
+}
+<FluentLabel Typo=@Typography.H5>
+  Slot
+</FluentLabel>
+<_Display Id=@this.Id />
+
+<div>
+  <a href="/edit/c/slots/@this.Id">Edit</a>
+  |
+  <a href="/delete/c/slots/@this.Id">Delete</a>
+</div>

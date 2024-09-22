@@ -14,6 +14,8 @@ public class Content: IIded<Guid>
   public DateTime CreatedAt { get; set; }
   public DateTime? PublishedAt { get; set; }
 
+  public List<ContentDefinition>? Definitions { get; set; }
+
   public ContentFam? Fam { get; set; } 
   public Guid? FamId { get; set; }
 
@@ -21,6 +23,8 @@ public class Content: IIded<Guid>
 
   public ContentFlags Flags { get; set; }
 
+  public List<Slot>? Slots { get; set; }
+  public List<Content_ContentSlot>? SlotAssignments { get; set; }
   public List<ContentGuests<Thing>> GuestPersonaAssignments { get; set; } = [];
   public List<Sources.Source> Sources { get; set; } = [];
 }

@@ -1,0 +1,15 @@
+﻿@page "/c/contentdefinitions/{id:guid}"
+@code {
+  [Parameter]
+  public Guid Id { get; set; }
+}
+<FluentLabel Typo=@Typography.H5>
+  ContentDefinition
+</FluentLabel>
+<_Display Id=@this.Id />
+
+<div>
+  <a href="/edit/c/contentdefinitions/@this.Id">Edit</a>
+  |
+  <a href="/delete/c/contentdefinitions/@this.Id">Delete</a>
+</div>
