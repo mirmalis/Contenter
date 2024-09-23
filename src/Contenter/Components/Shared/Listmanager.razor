@@ -44,12 +44,13 @@
                         Disabled="@(GetIndex(ass) == this.list.Count)" />
           @if (disabledFunc(ass))
           {
-            <FluentIcon Value="@(new Icons.Regular.Size20.ShieldDismiss())" />
+            <FluentIcon Value=@(new Icons.Regular.Size20.ShieldDismiss()) 
+            />
           } else
           {
-            <FluentButton IconEnd="@(new Icons.Regular.Size16.Delete())"
-                          OnClick="@(async () => await this.Remove(ass))"
-                          Disabled="@(GetIndex(ass) < this.list.Count)" />
+            <FluentButton IconEnd=@(new Icons.Regular.Size16.Delete())
+                          OnClick=@(async () => await this.Remove(ass))
+            />
           }
         </td>
       </tr>
