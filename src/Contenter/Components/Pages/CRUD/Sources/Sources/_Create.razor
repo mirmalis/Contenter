@@ -21,6 +21,7 @@
       var content = await this.db.Set<Contenter.Models.Contents.Content>()
         .Include(item => item.Sources)
         .Include(item => item.Fam)
+        .Include(item => item.SlotAssignments)
         .Include(item => item.ThingAssignments).ThenInclude(item => item.Guest)
         .FirstOrDefaultAsync(item => item.Id == this.ContentId);
       if (content != null)
