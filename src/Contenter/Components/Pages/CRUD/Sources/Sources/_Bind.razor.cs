@@ -58,7 +58,7 @@ public partial class _Bind: _Binder<Contenter.Models.Sources.Source>
     this.model.Content = new() {
       Name = this.model.Name,
       Fam = fam,
-      GuestPersonaAssignments = [],
+      ThingAssignments = [],
       PublishedAt = this.model.PublishedAt,
       SlotAssignments = [],
       Slots = [],

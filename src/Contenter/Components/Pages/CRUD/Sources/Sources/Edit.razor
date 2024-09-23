@@ -11,8 +11,8 @@
       .Include(item => item.Channel)
       .Include(item => item.Content).ThenInclude(item => item.SlotAssignments!).ThenInclude(item => item.Slot)
       .Include(item => item.Content).ThenInclude(item => item!.Fam)
-      .Include(item => item.Content).ThenInclude(item => item!.GuestPersonaAssignments).ThenInclude(item => item.Guest).ThenInclude(item => item.ThingDefinition).ThenInclude(item => item.Scope)
-      .Include(item => item.Content).ThenInclude(item => item.GuestPersonaAssignments).ThenInclude(item => item.Slot)
+      .Include(item => item.Content).ThenInclude(item => item!.ThingAssignments).ThenInclude(item => item.Guest).ThenInclude(item => item.ThingDefinition).ThenInclude(item => item.Scope)
+      .Include(item => item.Content).ThenInclude(item => item.ThingAssignments).ThenInclude(item => item.Slot)
     ;
   }
 }

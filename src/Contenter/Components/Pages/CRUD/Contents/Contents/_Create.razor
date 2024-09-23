@@ -14,7 +14,7 @@
   {
     await base.OnParametersSetAsync();
     model.SlotAssignments ??= [];
-    model.GuestPersonaAssignments ??= [];
+    model.ThingAssignments ??= [];
     if (this.SourceId != null)
     {
       var source = await this.db.Sources.FirstOrDefaultAsync(item => item.Id == this.SourceId);

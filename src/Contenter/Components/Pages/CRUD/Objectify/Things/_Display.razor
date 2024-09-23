@@ -37,7 +37,7 @@
             Id = ass.Content.Fam!.Id,
             Name = ass.Content.Fam!.Name,
           },
-          Things = ass.Content.GuestPersonaAssignments
+          Things = ass.Content.ThingAssignments
             .OrderBy(gass => gass.Guest.Name)
             .Select(gass => new ThingView
             {

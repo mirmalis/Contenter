@@ -52,7 +52,7 @@
           Id = s.Content.Fam!.Id,
           Name = s.Content.Fam.Name,
         },
-        Things = s.Content.GuestPersonaAssignments.OrderBy(item => item.IndexA).Select(gass => new ThingView {
+        Things = s.Content.ThingAssignments.OrderBy(item => item.IndexA).Select(gass => new ThingView {
           Id = gass.GuestId,
           Name = gass.Guest.Name,
           Definition = new (){

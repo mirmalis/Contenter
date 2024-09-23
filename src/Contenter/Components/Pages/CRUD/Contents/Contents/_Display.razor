@@ -17,7 +17,7 @@
         Id = item.FamId!.Value,
         Name = item.Fam!.Name,
       },
-      Guests =  item.GuestPersonaAssignments
+      Guests =  item.ThingAssignments
         .OrderBy(item => item.IndexB)
         .Select(ass => new ThingView {
           Id = ass.GuestId,

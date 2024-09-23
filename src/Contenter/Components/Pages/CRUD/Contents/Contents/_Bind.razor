@@ -112,9 +112,9 @@
           valueChanged=@(val => {
             if(val == null)
               return;
-            this.model.GuestPersonaAssignments.Add(
+            this.model.ThingAssignments.Add(
               new() {
-                IndexA = this.model.GuestPersonaAssignments.Any() ? this.model.GuestPersonaAssignments.Max(item => item.IndexA) + 1 : 1,
+                IndexA = this.model.ThingAssignments.Any() ? this.model.ThingAssignments.Max(item => item.IndexA) + 1 : 1,
                 Guest = val,
                 Percentage = 100,
               }
@@ -125,9 +125,9 @@
       @{
          IEnumerable<Slot?> modelSlots = [null, .. model.SlotAssignments!.Select(item => item.Slot)];
       }
-      <Listmanager 
+      <Listmanager
         T=@(ContentGuests<Models.Objectify.Thing>)
-        @bind-list=@model.GuestPersonaAssignments 
+        @bind-list=@model.ThingAssignments 
         Context="ass"
       >
         <td>@ass.Guest.ThingDefinition?.Scope&raquo;@ass.Guest?.ThingDefinition</td>

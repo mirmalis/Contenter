@@ -117,7 +117,7 @@
               Id = source.Content.Fam!.Id,
               Name = source.Content.Fam.Name,
               },
-              Things = source.Content.GuestPersonaAssignments
+              Things = source.Content.ThingAssignments
               .OrderBy(item => item.IndexA)
               .Select(gass => new ThingView {
               Id = gass.Guest.Id,

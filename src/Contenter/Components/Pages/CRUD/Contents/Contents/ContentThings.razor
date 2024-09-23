@@ -21,7 +21,7 @@
           sass.Slot.Name,
           sass.Slot.NamePlural,
         }),
-        Things = ct.GuestPersonaAssignments!
+        Things = ct.ThingAssignments!
         .Select(gass => new {
           Slot = gass.SlotId == null ? null : new {
             Id = gass.SlotId

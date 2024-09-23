@@ -19,7 +19,7 @@
         Id = ct.Id,
         Name = ct.Name,
         PublishedAt = ct.PublishedAt,
-        Things = ct.GuestPersonaAssignments.OrderBy(ass => ass.IndexB)
+        Things = ct.ThingAssignments.OrderBy(ass => ass.IndexB)
         .Select(gass => new ThingView {
           Id = gass.Guest.Id,
           Name = gass.Guest.Name,

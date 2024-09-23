@@ -28,7 +28,7 @@
           Name = item.Content.Name,
           PublishedAt = item.Content.PublishedAt,
           Sources = null,
-          Things = item.Content.GuestPersonaAssignments.Select(tass => new ThingView(){
+          Things = item.Content.ThingAssignments.Select(tass => new ThingView(){
             Id = tass.GuestId,
             Name = tass.Guest.Name,
             Definition = new ThingView.ThingDefinitionView(){
