@@ -26,4 +26,12 @@
     <ProjectReference Include="..\Contenter.Data\Contenter.Data.csproj" />
     <ProjectReference Include="..\Contenter.Models\Contenter.Models.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="Bookmarklets\yt_video-post-source_creation.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Bookmarklets\yt_video-open-source_creation.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

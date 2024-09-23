@@ -1,10 +1,9 @@
 ﻿@page "/bookmarklets"
+@using Contenter.Bookmarklets
 @attribute [StreamRendering]
-
 
 <div style="max-width:60ch;">
   Norėdami pridėti paspauskite ant <b>Code</b> stulpelyje esančios nuorodos ir ją įtempkite į <i>bookmark</i> juostą.
-
 </div>
 <table class="bord">
   <tr>
@@ -19,6 +18,16 @@
     <td>
       <a href=@Js.YoutubeVideo target="">
         sars-yt
+      </a>
+    </td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>Create Source w/o open</td>
+    <td>Youtube Video</td>
+    <td>
+      <a href=@Js.YoutubePostVideo target="">
+        sars-yt-api
       </a>
     </td>
     <td>1</td>
