@@ -25,6 +25,6 @@ public class Content: IIded<Guid>
 
   public List<Slot>? Slots { get; set; }
   public List<Content_ContentSlot>? SlotAssignments { get; set; }
-  public List<ContentGuests<Thing>> GuestPersonaAssignments { get; set; } = [];
+  public List<ContentGuests<Thing>> ThingAssignments { get; set; } = [];
   public List<Sources.Source> Sources { get; set; } = [];
 }
