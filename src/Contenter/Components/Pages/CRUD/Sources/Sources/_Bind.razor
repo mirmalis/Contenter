@@ -96,7 +96,11 @@
     </div>
     @if (ChildContent != null)
     {
-      <ExpList ParamSource=@(this.db.Sources.Where(item => item.Id != this.model.Id && item.Href == this.model.Href).Select(item => new {item.Id, item.Name}))>
+      <ExpList 
+        ParamSource=@(this.db.Sources
+          .Where(item => item.Id != this.model.Id && item.Href == this.model.Href)
+          .Select(item => new {item.Id, item.Name}))
+      >
         <Wrapper Context="rows">
           <div>
             Sources with same Href:
