@@ -73,15 +73,6 @@
       <OuterLinkSource Model=@model.View />
     </FluentStack>
     @Before
-
-    @if (model.Content != null)
-    {
-      <Contenter.Components.Pages.CRUD.Contents.Contents._Display
-        Id=@model.Content.Id
-        CallerSourceId=@this.Id
-        LinkToSelf
-      />
-    }
     <AuthorizeView Policy="AdminSuper">
       <Authorized>
         @if (model.Flags.HasFlag(Models.Sources.SourceFlags.HiddenFromMain))
@@ -100,6 +91,14 @@
         }
       </Authorized>
     </AuthorizeView>
+    @if (model.Content != null)
+    {
+      <Contenter.Components.Pages.CRUD.Contents.Contents._Display
+        Id=@model.Content.Id
+        CallerSourceId=@this.Id
+        LinkToSelf
+      />
+    }
     @After
   </IfSome>
 </ExpList>

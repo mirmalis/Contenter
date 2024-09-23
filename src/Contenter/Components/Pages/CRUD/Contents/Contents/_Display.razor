@@ -58,11 +58,11 @@
       @if (this.LinkToSelf)
       {
         <InnerLinkContent Name="@model.Name" Id=@this.Id />
-      } else
+      }
+      else
       {
         <Name ParamName=@model.Name />
       }
-      
     </FluentStack>
     @Before
     @if (model.PublishedAt != null)
@@ -72,7 +72,7 @@
       </div>
     }
     <div>
-      Sources (<a href="/create/s/sources?ContentId=@this.Id">add</a>): 
+      @(this.CallerSourceId == null ? "Sources" : "Other sources") (<a href="/create/s/sources?ContentId=@this.Id">add</a>):
       <Contenter.Components.Pages.CRUD.Sources.Sources.ViewSources List=@model.Sources />
     </div>
     <hr/>

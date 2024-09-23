@@ -19,17 +19,7 @@
         Id = ct.Id,
         Name = ct.Name,
         PublishedAt = ct.PublishedAt,
-        Things = ct.ThingAssignments.OrderBy(ass => ass.IndexB)
-        .Select(gass => new ThingView {
-          Id = gass.Guest.Id,
-          Name = gass.Guest.Name,
-          Definition = new (){
-            Id = gass.Guest.ThingDefinitionId,
-            Name = gass.Guest.ThingDefinition!.Name,
-            PluralName = gass.Guest.ThingDefinition.Plural
-          }
-        })
-        ,
+        
         Sources = ct.Sources
         .Select(source => new SourceView {
           Id = source.Id,
@@ -93,10 +83,10 @@
                 <Name ParamHref=@($"/c/contents/{ct.Id}") ParamName="@ct.Name" />
               </td>
               <td>
-                <Contenter.Components.Pages.CRUD.Objectify.Things.ViewThings List=@ct.Things />
+                <Contenter.Components.Pages.CRUD.Sources.Sources.ViewSources List=@ct.Sources />
               </td>
               <td>
-                <Contenter.Components.Pages.CRUD.Sources.Sources.ViewSources List=@ct.Sources />
+                <Contenter.Components.Pages.CRUD.Contents.Contents.ContentThings ContentId=@ct.Id />
               </td>
             </tr>
           }
@@ -104,7 +94,7 @@
       }
       else
       {
-        <span class="muted">none</span>
+        <span class="muted">None</span>
       }
     </div>
     @After

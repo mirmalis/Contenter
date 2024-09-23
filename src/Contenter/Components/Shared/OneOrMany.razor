@@ -10,7 +10,7 @@
   public RenderFragment<T> ChildContent { get; set; } = item => @<text>@item!.ToString()</text>;
 
   [Parameter]
-  public RenderFragment? IfNone { get; set; } = @<span class="muted">none</span>;
+  public RenderFragment? IfNone { get; set; } = @<span class="muted">None</span>;
 
   [Parameter]
   public RenderFragment? Before { get; set; }

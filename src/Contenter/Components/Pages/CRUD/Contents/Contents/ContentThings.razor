@@ -40,10 +40,9 @@
         })
       })
   )
-  
 >
   <IfSome Context="model">
-    @if (!model.Things.Any()){
+    @if (!model.Things.Any() && !model.Slots.Any()){
       <span class="muted">None</span>
     } else 
     {
