@@ -54,7 +54,8 @@
           @foreach(var set in model.IsSets)
           {
             <li>
-              <ChooseThing 
+              <ChooseThing
+                MinTermLength="1"
                 value=@null
                 valueChanged=@(
                   val => {
@@ -148,29 +149,30 @@
       this.db.Things
       .Where(item => item.Id != this.model.Id)
       .Where(item => item.Name == this.model.Name)
-      .Select(persona => new ThingView {
-        Id = persona.Id,
-        Name = persona.Name,
+      .Where(item => model.ThingDefinition == null || item.ThingDefinitionId == model.ThingDefinition.Id)
+      .Select(thing => new ThingView {
+        Id = thing.Id,
+        Name = thing.Name,
         Definition = new (){
-          Id = persona.ThingDefinitionId,
-          Name = persona.ThingDefinition!.Name,
-          PluralName = persona.ThingDefinition.Plural,
+          Id = thing.ThingDefinitionId,
+          Name = thing.ThingDefinition!.Name,
+          PluralName = thing.ThingDefinition.Plural,
         }
       })
     )
   >
     <Wrapper Context="rows">
       <div>
-        Asmenys su tuo pačiu vardu: 
+        Dalykai su tuo pačiu vardu: 
         <ul>@rows</ul>
       </div>
     </Wrapper>
-    <IfSome Context="persona">
+    <IfSome Context="thing">
       <li>
-        <InnerLinkThingDefinition Model=@persona.Definition More />
-        <InnerLinkThing Model=@persona />
+        <InnerLinkThingDefinition Model=@thing.Definition More />
+        <InnerLinkThing Model=@thing />
       </li>
     </IfSome>
-    <IfNone>no duplicates</IfNone>
+    <IfNone></IfNone>
   </ExpList>
 }

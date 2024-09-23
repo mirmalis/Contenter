@@ -19,17 +19,6 @@
         Id = ct.FamId!.Value,
         Name = ct.Fam!.Name,
       },
-      Things = ct.GuestPersonaAssignments
-        .OrderBy(item => item.IndexA).ThenBy(item => item.Guest.Name)
-        .Select(gass => new ThingView {
-          Id = gass.Guest.Id,
-          Name = gass.Guest.Name,
-          Definition = new (){
-            Id = gass.Guest.ThingDefinitionId,
-            Name = gass.Guest.ThingDefinition!.Name,
-            PluralName = gass.Guest.ThingDefinition.Plural,
-          }
-        }),
       Sources = ct.Sources
         .OrderByDescending(s => s.CreatedAt)
         .Select(s => new SourceView {
@@ -60,7 +49,7 @@
         <Contenter.Components.Pages.CRUD.Sources.Sources.ViewSources List=@model.Sources NoChannel NoSource />
       </td>
       <td>
-        <Contenter.Components.Pages.CRUD.Objectify.Things.ViewThings List=@model.Things />
+        <Contenter.Components.Pages.CRUD.Contents.Contents.ContentThings ContentId=@model.Id />
       </td>
     </tr>
   </IfSome>

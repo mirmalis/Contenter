@@ -51,24 +51,8 @@
         },
         item.DefinitionUid,
       },
-      Content = item.ContentId == null ? null : new ContentView {
-        Sources = null,
-        Id = item.Content!.Id,
-        Name = item.Content.Name,
-        Fam = item.Content.FamId == null ? null : new FamView {
-          Id = item.Content.Fam!.Id,
-          Name = item.Content.Fam.Name,
-        },
-        Things = item.Content.GuestPersonaAssignments
-        .Select(gass => new ThingView {
-          Id = gass.Guest.Id,
-          Name = gass.Guest.Name,
-          Definition = new (){
-            Id = gass.Guest.ThingDefinitionId,
-            Name = gass.Guest.ThingDefinition!.Name,
-            PluralName = gass.Guest.ThingDefinition.Plural,
-          }
-        })
+      Content = item.ContentId == null ? null : new {
+        Id = item.ContentId.Value,
       }
     })
   )
@@ -89,22 +73,20 @@
       <OuterLinkSource Model=@model.View />
     </FluentStack>
     @Before
+
     @if (model.Content != null)
     {
-      <div>
-        <InnerLinkFam Model=@model.Content.Fam After />
-        <InnerLinkContent Model=@model.Content />
-      </div>
-      <div>
-        <Contenter.Components.Pages.CRUD.Objectify.Things.ViewThings List=@model.Content.Things NoNone />
-      </div>
+      <Contenter.Components.Pages.CRUD.Contents.Contents._Display
+        Id=@model.Content.Id
+        CallerSourceId=@this.Id
+        LinkToSelf
+      />
     }
     <AuthorizeView Policy="AdminSuper">
       <Authorized>
         @if (model.Flags.HasFlag(Models.Sources.SourceFlags.HiddenFromMain))
         {
           <button @onclick=@(async () => await this.sourceBroker.Shown_at_MainPage(this.Id, true))>show in main</button>
-          
         } else
         {
           <button @onclick=@(async () => await this.sourceBroker.Shown_at_MainPage(this.Id, false))>hide from main</button>

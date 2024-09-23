@@ -1,21 +1,30 @@
 ﻿@code
 {
-  [EditorRequired]
   [Parameter]
   public ContentView? Model { get; set; }
 
+  [Parameter]
+  public Guid? Id { get; set; }
   [Parameter]
   public string? Name { get; set; }
 
   [Parameter]
   public int? MaxLength { get; set; }
 }
+@code {
+  private string GetId()
+  => this.Id?.ToString()
+  ?? this.Model?.Id.ToString()
+  ?? throw new Exception($"Id or Model has to be provided to {nameof(InnerLinkContent)} component.");
 
-@if (this.Model != null)
-{
-  <Contenter.Views.Bases.AnchorBase
-    href=@($"/c/contents/{this.Model.Id}")
-    Text=@(this.Name ?? this.Model.Name)
-    MaxLength=@this.MaxLength 
-  />
+  private string GetName()
+  => this.Name
+  ?? this.Model?.Name
+  ?? throw new Exception($"Name or Model has to be provided to {nameof(InnerLinkContent)} component.");
 }
+
+<Contenter.Views.Bases.AnchorBase
+  href=@($"/c/contents/{this.GetId()}")
+  Text=@(this.GetName())
+  MaxLength=@this.MaxLength 
+/>

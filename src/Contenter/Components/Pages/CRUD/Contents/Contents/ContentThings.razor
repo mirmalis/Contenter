@@ -1,0 +1,120 @@
+﻿@code {
+  [Parameter]
+  public Guid ContentId { get; set; }
+
+  [Parameter]
+  public bool Expanded { get; set; }
+
+  [Parameter]
+  public string ParamText { get; set; } = "Rodyti";
+}
+@inject Contenter.Data.Database db
+<ExpList 
+  ParamText=@ParamText ParamIsExpanded=@this.Expanded
+  ParamExpectedCount="1"
+  ParamSource=@(
+    this.db.Contents
+      .Where(item => item.Id == this.ContentId)
+      .Select(ct => new {
+        Slots = ct.SlotAssignments!.OrderBy(item => item.IndexA).Select(sass => new {
+          sass.Slot.Id,
+          sass.Slot.Name,
+          sass.Slot.NamePlural,
+        }),
+        Things = ct.GuestPersonaAssignments!
+        .Select(gass => new {
+          Slot = gass.SlotId == null ? null : new {
+            Id = gass.SlotId
+          },
+          Thing = new {
+            gass.Guest.Id,
+            gass.Guest.Name,
+            Scope = new {
+              gass.Guest.ThingDefinition.Scope.Name,
+            },
+            Definition = new {
+              gass.Guest.ThingDefinition.Id,
+              gass.Guest.ThingDefinition.Name,
+            }
+          }
+        })
+      })
+  )
+  
+>
+  <IfSome Context="model">
+    @if (!model.Things.Any()){
+      <span class="muted">None</span>
+    } else 
+    {
+      var unclasifiedThings = model.Things.Where(item => item.Slot == null).Select(item => item.Thing);
+      <ul>
+        @if (model.Slots.Any())
+        {
+          @foreach (var slot in model.Slots)
+          {
+            var things = model.Things.Where(item => item.Slot != null && item.Slot.Id == slot.Id).Select(item => item.Thing);
+            <li>
+              @if (things.Count() == 0)
+              {
+                <text>@slot.NamePlural: </text>
+                <span class="muted">None</span>
+              }
+              else
+              {
+                if (things.Count() == 1)
+                {
+                  var thing = things.First();
+                  <text>
+                    @slot.Name:
+                    @thing.Definition.Name&raquo;<a href="/o/t/@thing.Id">@thing.Name</a>
+                  </text>
+                }
+                else
+                {
+                  @slot.NamePlural
+                  <text>: </text>
+                  <ul>
+                    @foreach (var thing in things)
+                    {
+                      <li>
+                        @thing.Definition.Name&raquo;<a href="/o/t/@thing.Id">@thing.Name</a>
+                      </li>
+                    }
+                  </ul>
+                }
+              }
+            </li>
+          }
+        }
+        @if (unclasifiedThings.Any())
+        {
+          @if (model.Slots.Any())
+          {
+            <li>
+              Other:
+              <ul>
+                @foreach (var thing in unclasifiedThings)
+                {
+                  <li>
+                    @thing.Definition.Name&raquo;<InnerLinkThing Id=@thing.Id Name=@thing.Name />
+                  </li>
+                }
+              </ul>
+            </li>
+          }
+          else
+          {
+            @foreach (var thing in unclasifiedThings)
+            {
+              <li>
+                @thing.Definition.Name&raquo;<InnerLinkThing Id=@thing.Id Name=@thing.Name />
+              </li>
+            }
+          }
+        }
+      </ul>
+    }
+  </IfSome>
+  <IfNone></IfNone>
+</ExpList>

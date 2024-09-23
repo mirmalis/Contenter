@@ -1,15 +1,27 @@
 ﻿@code {
-  [EditorRequired]
   [Parameter]
   public ILinkable? Model { get; set; }
 
   [Parameter]
+  public Guid? Id { get; set; }
+  [Parameter]
+  public string? Name { get; set; }
+
+  [Parameter]
   public bool NoDefinition { get; set; }
 }
-@if (this.Model != null)
-{
-  <AnchorBase
-    href=@($"/o/t/{this.Model.GetId()}")
-    Text=@this.Model.ToString()
-  />
+@code {
+  private string GetId() 
+  => this.Id?.ToString() 
+  ?? this.Model?.GetId() 
+  ?? throw new Exception($"Id or Model has to be provided to {nameof(InnerLinkThing)} component.");
+  
+  private string GetName()
+  => this.Name
+  ?? this.Model?.ToString()
+  ?? throw new Exception($"Name or Model has to be provided to {nameof(InnerLinkThing)} component.");
 }
+<AnchorBase
+  href=@($"/o/t/{this.GetId()}")
+  Text=@this.GetName()
+/>
